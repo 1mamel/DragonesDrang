@@ -11,7 +11,7 @@
 using namespace std;
 
 
-
+uhiuh
 
 
 class szablonPostaci
@@ -1486,7 +1486,7 @@ public:
 
 	}
 
-	void range() // kwintesencja zawzietosci ludzkiej: krzywa wie¿a ifów
+	void range() // kwintesencja zawzietosci ludzkiej: krzywa wieï¿½a ifï¿½w
 	{
 		for (int i = 0; i<41;i++)
 			for (int j = 0; j<81;j++)
@@ -1806,7 +1806,7 @@ public:
 			if (GetAsyncKeyState(VK_ESCAPE)){                                         
 				ramkaWyboru("Czy napewno chcesz wyjsc?","Tak|Nie|");
 				if (wybor ==1){
-					ramkaWyboru("Czy chcesz zapisaæ przed wyjsciem?","Tak|Nie|");
+					ramkaWyboru("Czy chcesz zapisaï¿½ przed wyjsciem?","Tak|Nie|");
 					if (wybor ==1){
 						ofstream plik;  
 						if (  postac.wybranyPoziom==1)plik.open("poziomy/poziom 1.txt",ios::out);
