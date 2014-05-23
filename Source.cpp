@@ -2182,7 +2182,7 @@ Gra::Gra()
 	}
 }
 
-int main()
+int main() //sprawdzamy 
 {
 	Gra rozgrywka;
 	return 0; 
