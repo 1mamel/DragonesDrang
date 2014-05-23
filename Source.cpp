@@ -2123,7 +2123,7 @@ Gra::Gra()
 	}
 }
 
-int main() //sprawdzamy 
+int main() //sprawdzamy po raz kolejny tylko ze tym razem z visualem
 {
 	Gra rozgrywka;
 	return 0; 
