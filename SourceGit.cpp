@@ -113,7 +113,9 @@ public:
 	unsigned int gdzie;
 	string potw;
 	int x;
+	int respawnX;
 	int y;
+	int respawnY;
 	char nick[100];
 	int uzylhp;
 	int uzylmp;
@@ -342,22 +344,22 @@ public:
 	}
 
 
-	void ramkabig()
+	/*void ramkabig() //raczej nie bedzie uzyta
 	{
-		gotoxy(0,0);cout << lewy_gorny;for (int i = 0; i<81;i++) cout << poziomy_dolny;
-		gotoxy(81,0);cout << prawy_gorny;
-		gotoxy(0,39);cout << lewy_dolny;for (int i = 0; i<81;i++) cout << poziomy_gorny;
-		gotoxy(81,39);cout << prawy_dolny;
-		for (int i = 0; i<38;i++)
-		{
-			gotoxy(0,1+i);cout<< pionowy_prawy; 
-			gotoxy(81,1+i);cout<< pionowy_lewy;     
-		}
-		gotoxy(1,1);cout << srodkowy;for (int i = 0; i<79;i++) cout << poziomy_gorny;
-		gotoxy(80,1);cout << srodkowy;
-		gotoxy(1,38);cout << srodkowy;for (int i = 0; i<79;i++) cout << poziomy_dolny;
-		gotoxy(81,39);cout << prawy_dolny;
+	gotoxy(0,0);cout << lewy_gorny;for (int i = 0; i<81;i++) cout << poziomy_dolny;
+	gotoxy(81,0);cout << prawy_gorny;
+	gotoxy(0,39);cout << lewy_dolny;for (int i = 0; i<81;i++) cout << poziomy_gorny;
+	gotoxy(81,39);cout << prawy_dolny;
+	for (int i = 0; i<38;i++)
+	{
+	gotoxy(0,1+i);cout<< pionowy_prawy; 
+	gotoxy(81,1+i);cout<< pionowy_lewy;     
 	}
+	gotoxy(1,1);cout << srodkowy;for (int i = 0; i<79;i++) cout << poziomy_gorny;
+	gotoxy(80,1);cout << srodkowy;
+	gotoxy(1,38);cout << srodkowy;for (int i = 0; i<79;i++) cout << poziomy_dolny;
+	gotoxy(81,39);cout << prawy_dolny;
+	}*/
 
 	void pas()
 	{
@@ -454,7 +456,6 @@ public:
 			for (int j = 0; j<81;j++){
 				r[j][i]=0;}}
 		fstream plik;
-		int koniec;
 		system("cls");
 		pokaz();
 		mciSendString("play sounds/miasto.mp3 ",NULL,1,NULL);
@@ -462,67 +463,26 @@ public:
 		if (wybor == 1)
 		{
 			ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Krypta Pacmana (chaos)|Sancre Tor (trudny)|Leze smoka (BOSS)|Powrot|");
-			if (wybor ==1)
-			{
-				koniec=1;level1();trudnoscPoziomu = 1;
-			}
-			else if (wybor ==2)
-			{
-				koniec=2;level2();trudnoscPoziomu = 2;
-			}
-			else if (wybor ==3)
-			{
-				koniec=3;level3();trudnoscPoziomu = 3;
-			}
-			else if (wybor ==4)
-			{
-				koniec=4;level4();trudnoscPoziomu = 4;
-			}
-			else if (wybor ==5)
-			{
-				koniec=5;level5();trudnoscPoziomu = 5;
-			}
-			else if (wybor ==6)
-			{
-				koniec=5;level5();trudnoscPoziomu = 5;
-			}
-			else if (wybor ==7)
-			{
-				koniec=5;level5();trudnoscPoziomu = 5;
-			}
-			else if (wybor == 8)
+			if (wybor !=8)
+				level(wybor);
+			else 
 				return;
 			labirynt();
 		}
 		else if (wybor == 2)
-		{
 			karczma();
-		}
 		else if (wybor == 3)
-		{
 			kowal();
-		}
 		else if (wybor == 4)
-		{
 			alchemik();
-		}
 		else if (wybor ==5 )
-		{
 			staty();
-		}
 		else if (wybor == 6)
-		{
 			save();
-		}
 		else if (wybor == 7)
-		{
 			opcje();
-		}
 		else if (wybor == 8)
-		{
 			ekwipunek();
-		}
-
 	}
 	void odswiezWalke(int pothppas,int ktoraTura)
 	{
@@ -844,18 +804,16 @@ public:
 			}
 			rodzajPotwora=0;
 		};
-		while (postac.doswiadczenie>postac.maksymalneDoswiadczenie){        
-			postac.poziom=postac.poziom+ lvlup();}
+		while (postac.doswiadczenie>postac.maksymalneDoswiadczenie)       
+			postac.poziom=postac.poziom+ lvlup();
 		wylaczmuze();
 		wygrana = 1;
 		system("CLS");
 		return;
-
 	}
 
 	string potwor()
 	{
-
 		int k = rand() % 6;
 		if (rodzajPotwora==1){
 			if (k==0) {potw = "Szczur"; pothp = 25; potdmgmin = 5;potgold=15;}
@@ -1371,9 +1329,6 @@ public:
 	int klasa(int id)
 	{
 	if(id==1){nazwaklasy = "Rycerz"; }         //za kazdy lvl dodatkowe 2 obrona
-
-
-
 	if(id==2){nazwaklasy = "Czarodziej"; obrona = 2; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 220;} //za kazdy lvl dodatkowa mana
 	if(id==3){nazwaklasy = "Lotrzyk"; obrona = 4; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 420;}    //za kazdy lvl dodatkowy kryt
 	if(id==4){nazwaklasy = "Barbarzynca"; obrona = 6; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 620;}//za kazdy lvl dodatkowy dmg(?)
@@ -1417,106 +1372,29 @@ public:
 
 	void logo()
 	{
-		x= 32;
-		y=3;
 		ifstream wczytajpoziom;
 		wczytajpoziom.open("poziomy/logo.txt",ios::in);
 		for (int i=0;i<40;i++)
 			for (int j=0;j<81;j++){
 				wczytajpoziom >>sciana[j][i];}
 			wczytajpoziom.close();
-			postac.wybranyPoziom=1;
 	}
 
-	void level1()
+	void level(int ktoryPoziom)
 	{
-		x=32;
-		y=3;
 		ifstream wczytajpoziom;
-		wczytajpoziom.open("poziomy/poziom 1.txt",ios::in);
+		tempTekst1 = "poziomy/poziom " + to_string(ktoryPoziom) + string(".txt");
+		wczytajpoziom.open(tempTekst1,ios::in);
 		for (int i=0;i<40;i++)
 			for (int j=0;j<81;j++){
 				wczytajpoziom >>sciana[j][i];}
+			wczytajpoziom >> x;
+			wczytajpoziom >> y;
 			wczytajpoziom.close();
-			postac.wybranyPoziom=1;
+			postac.wybranyPoziom= ktoryPoziom;
+			trudnoscPoziomu = ktoryPoziom;
 	}
 
-	void level2()
-	{
-		x= 20;
-		y=2;
-		ifstream wczytajpoziom;
-		wczytajpoziom.open("poziomy/poziom 2.txt",ios::in);
-		for (int i=0;i<40;i++)
-			for (int j=0;j<81;j++){
-				wczytajpoziom >>sciana[j][i];} 
-			wczytajpoziom.close();  
-			postac.wybranyPoziom=2;
-	}
-
-	void level3()
-	{
-		x= 36;
-		y=3;
-		ifstream wczytajpoziom;
-		wczytajpoziom.open("poziomy/poziom 3.txt",ios::in);
-		for (int i=0;i<40;i++)
-			for (int j=0;j<81;j++){
-				wczytajpoziom >>sciana[j][i];} 
-			wczytajpoziom.close(); 
-			postac.wybranyPoziom=3;
-	}
-
-	void level4()
-	{
-		x= 32;
-		y=3;
-		ifstream wczytajpoziom;
-		wczytajpoziom.open("poziomy/poziom 4.txt",ios::in);
-		for (int i=0;i<40;i++)
-			for (int j=0;j<81;j++){
-				wczytajpoziom >>sciana[j][i];}
-			wczytajpoziom.close();
-			postac.wybranyPoziom=4;
-	}
-
-	void level5()
-	{
-		x=32;
-		y=3;
-		ifstream wczytajpoziom;
-		wczytajpoziom.open("poziomy/poziom 5.txt",ios::in);
-		for (int i=0;i<40;i++)
-			for (int j=0;j<81;j++){
-				wczytajpoziom >>sciana[j][i];}
-			wczytajpoziom.close();
-			postac.wybranyPoziom=5;
-	}
-
-	void level6()
-	{
-		x=32;
-		y=3;
-		ifstream wczytajpoziom;
-		wczytajpoziom.open("poziomy/poziom 6.txt",ios::in);
-		for (int i=0;i<40;i++)
-			for (int j=0;j<81;j++){
-				wczytajpoziom >>sciana[j][i];}
-			wczytajpoziom.close();
-			postac.wybranyPoziom=6;
-	}
-	void level7()
-	{
-		x=32;
-		y=3;
-		ifstream wczytajpoziom;
-		wczytajpoziom.open("poziomy/poziom 7.txt",ios::in);
-		for (int i=0;i<40;i++)
-			for (int j=0;j<81;j++){
-				wczytajpoziom >>sciana[j][i];}
-			wczytajpoziom.close();
-			postac.wybranyPoziom=7;
-	}
 	int randus;
 	void krok()
 	{
@@ -1576,7 +1454,7 @@ public:
 		wygrana = 1;
 	};
 
-	void resetedytor()
+	void resetEdytora()
 	{
 
 		for (int i=0;i<81;i++)
@@ -1629,10 +1507,8 @@ public:
 			cout << "9";
 			gotoxy(81,25);zolty();
 			cout << black;szary();
-
 			gotoxy(0,40);
-
-			cout <<"Klawisze: Lewy shift-przyspieszenie, q-wymazywanie, s-zapis, r-reset, ESC-wyjscie";
+			cout <<"Lshift-przyspieszenie, q-wymazywanie, s-zapis, r-reset, g-ustaw respawn ESC-wyjdz";
 
 	}
 
@@ -1837,6 +1713,20 @@ public:
 		}
 	}           
 
+	void zapiszMape()
+	{
+		ofstream plik;  
+		tempTekst1 = "poziomy/poziom " + to_string(postac.wybranyPoziom) + string(".txt");
+		plik.open(tempTekst1,ios::in);
+		for (int i=0;i<40;i++)
+			for (int j=0;j<81;j++)
+				plik << sciana[j][i]<<endl;
+		plik << respawnX<<endl;
+		plik << respawnY<<endl;
+		plik.close();
+		ramkaInformacji("Pomyslnie zapisano stan mapy");
+	}
+
 	void edytor ()
 	{
 		int b=0;
@@ -1845,16 +1735,16 @@ public:
 		system("pause");
 		return 1;
 		}*/
-		if (wybor==1)level1();
-		if (wybor==2)level2();
-		if (wybor==3)level3();
-		if (wybor==4)level4();
-		if (wybor==5)level5();
-		if (wybor==6)level6();
-		if (wybor==7)level7();
-		resetedytor();
+		level(wybor);
+		respawnX = x;
+		respawnY = y;
+		resetEdytora();
 		while(1>0){
-			if (GetAsyncKeyState(VK_LSHIFT)){Sleep(100);}else
+			if (GetAsyncKeyState(VK_LSHIFT))
+			{
+				Sleep(100);
+			}
+			else
 				Sleep(300);
 			if (GetAsyncKeyState(VK_LEFT))
 			{
@@ -1943,33 +1833,28 @@ public:
 			if (GetAsyncKeyState('7')){sciana[x][y] = 7;}
 			if (GetAsyncKeyState('8')){sciana[x][y] = 8;}
 			if (GetAsyncKeyState('9')){sciana[x][y] = 9;}
+			if (GetAsyncKeyState('G')){
+				ramkaInformacji("Pomyslnie ustawilem respawn na: " +to_string(x) + string(",") + to_string(y) + string("!"));
+				respawnX = x;
+				respawnY = y;
+				system("cls");
+				resetEdytora();
+			}
 			if (GetAsyncKeyState('R')){
 				ramkaWyboru("Czy napewno chcesz przeladowac?","Tak|Nie|");
 				if (wybor ==1){
-					if (  postac.wybranyPoziom==1)level1();
-					if (  postac.wybranyPoziom==2)level2();
-					if (  postac.wybranyPoziom==3)level3();
-					if (  postac.wybranyPoziom==4)level4();
+					level(postac.wybranyPoziom);
 					ramkaInformacji("Pomyslnie zresetowano stan mapy");
 				}
 				system("cls");
-				resetedytor();
+				resetEdytora();
 			}
 			if (GetAsyncKeyState(VK_ESCAPE)){                                         
 				ramkaWyboru("Czy napewno chcesz wyjsc?","Tak|Nie|");
 				if (wybor ==1){
 					ramkaWyboru("Czy chcesz zapisac przed wyjsciem?","Tak|Nie|");
 					if (wybor ==1){
-						ofstream plik;  
-						if (  postac.wybranyPoziom==1)plik.open("poziomy/poziom 1.txt",ios::out);
-						if (  postac.wybranyPoziom==2)plik.open("poziomy/poziom 2.txt",ios::out);
-						if (  postac.wybranyPoziom==3)plik.open("poziomy/poziom 3.txt",ios::out);
-						if (  postac.wybranyPoziom==4)plik.open("poziomy/poziom 4.txt",ios::out);
-						for (int i=0;i<40;i++)
-							for (int j=0;j<81;j++)
-								plik << sciana[j][i]<<endl;
-						plik.close();
-						ramkaInformacji("Pomyslnie zapisano stan mapy");
+						zapiszMape();
 						return;
 					}
 					else 
@@ -1981,28 +1866,17 @@ public:
 				else
 				{
 					system("cls");
-					resetedytor();
+					resetEdytora();
 				}
 			}
 			if (GetAsyncKeyState('S')){
 				ramkaWyboru("Czy napewno chcesz zapisac?","Tak|Nie|");
-				if (wybor ==1){
-					ofstream plik;  
-					if (  postac.wybranyPoziom==1)plik.open("poziomy/poziom 1.txt",ios::out);
-					if (  postac.wybranyPoziom==2)plik.open("poziomy/poziom 2.txt",ios::out);
-					if (  postac.wybranyPoziom==3)plik.open("poziomy/poziom 3.txt",ios::out);
-					if (  postac.wybranyPoziom==4)plik.open("poziomy/poziom 4.txt",ios::out);
-					for (int i=0;i<40;i++)
-						for (int j=0;j<81;j++)
-							plik << sciana[j][i]<<endl;
-					plik.close();
-					ramkaInformacji("Pomyslnie zapisano stan mapy");
-				}     
+				if (wybor ==1)
+					zapiszMape();
 				system("cls");
-				resetedytor();
+				resetEdytora();
 			}
 			gotoxy(x,y);
-
 			if (b==0)
 				cout << "O";
 			if (b==1){
