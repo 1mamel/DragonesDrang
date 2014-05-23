@@ -33,7 +33,7 @@ public:
 	int posiadanePrzedmioty[200];
 	void resetujWartosci()
 	{
-			opoznienieTekstu=1000;
+		opoznienieTekstu=1000;
 		sila=10;
 		inteligencja=10;
 		zrecznosc=10;
@@ -170,9 +170,6 @@ public:
 			sciezka[i] = NULL;
 			nick[i] = NULL;
 		}
-
-
-
 	}
 	void inicjalizujCzcionke()
 	{
@@ -250,7 +247,6 @@ public:
 			tempDluzszyTekst = tempDluzszyTekst.substr(tempDluzszyTekst.find('|') + 1);
 			i++;
 		}
-
 		i=i-7;
 		ramka(i);
 		gotoxy(39-(pytanie.length())/2 +1,14-i/2);
@@ -315,7 +311,6 @@ public:
 				else
 					cout << " ";
 			}
-
 			FlushConsoleInputBuffer(hInput);    
 			gdzie=_getch();
 			if ((gdzie==224))
@@ -340,7 +335,6 @@ public:
 			}
 		}
 	}
-
 
 	void ramkabig()
 	{
@@ -510,8 +504,8 @@ public:
 		{
 			ekwipunek();
 		}
-
 	}
+	
 	void odswiezWalke(int pothppas,int ktoraTura)
 	{
 		system("cls");
@@ -667,7 +661,6 @@ public:
 						gotoxy(33,6);cout<<"10";Sleep(150);
 						gotoxy(33,6);cout<<"    ";szary();
 					}
-
 				}
 				if (pothp >0){
 					pdmg = potdmgmin+(rand()%7) -zliczdef();
@@ -684,9 +677,7 @@ public:
 					czerwony();cout<< postac.hp;szary();cout << "/";czerwony();cout << postac.maxhp;szary();cout << "   "; 
 					gotoxy(2,20); 
 					cout << "Zostales uderzony przez " << potw << "a za " << pdmg << " punktow obrazen";
-
 					gotoxy(2,21);
-
 					cout << "Posiadasz teraz "<< postac.hp << " hp                        ";
 					if (zliczdef()>0){
 						gotoxy(2,22); 
@@ -755,12 +746,10 @@ public:
 		wygrana = 1;
 		system("CLS");
 		return;
-
 	}
 
 	string potwor()
 	{
-
 		int k = rand() % 6;
 		if (rodzajPotwora==1){
 			if (k==0) {potw = "Szczur"; pothp = 25; potdmgmin = 5;potgold=15;}
@@ -792,8 +781,6 @@ public:
 			{potw = "Smok"; pothp = 5000; potdmgmin = 80;potgold=5000;}
 		}
 		return potw;
-
-
 	}
 
 	void pokaz()
@@ -823,10 +810,8 @@ public:
 		gotoxy(0,5);
 	}
 
-
 	int lvlup()
 	{
-
 		if (postac.doswiadczenie > postac.maksymalneDoswiadczenie-1)
 		{
 			wylaczmuze();
@@ -995,7 +980,6 @@ public:
 		cout << "Szansa na krytyczny cios: " << crit << "%\n\n";
 		cout << "Sila wplywa na ilosc zadawanych obrazen\nZrecznosc wplywa na szanse krytycznego trafienia\nBudowa wplywa na ilosc maksymalnego hp po zdobyciu poziomu\nInteligencja wplywa na moc czarow\n\n";
 		system("PAUSE");    
-
 	}
 
 	void save()
@@ -1009,8 +993,6 @@ public:
 		plik.close();
 		ramkaInformacji("Pomyslnie zapisano stan gry.");
 	}
-
-
 
 	void opcje()
 	{
@@ -1041,8 +1023,6 @@ public:
 			}
 		}
 	}   
-
-
 
 	string tablicaTekstu[30];
 	unsigned int ileTekstu;
@@ -1113,8 +1093,6 @@ public:
 		int bylo1= 0,bylo2= 0,bylo3= 0,bylo4= 0,bylo5= 0,bylo6 = 0;
 		for (int i =1;i<200;i++){
 			items(i);
-
-
 			if (postac.posiadanePrzedmioty[i]==1 || postac.posiadanePrzedmioty[i]==2){
 				if (i>0 && i<20 && bylo1==0) {bialy();cout << "\nHelmy:\n";szary(); bylo1=1;}
 				if (i>19 && i<40 && bylo2==0) {bialy();cout << "\nZbroje:\n";szary(); bylo2 =1;}
@@ -1124,14 +1102,11 @@ public:
 				if (i>99 && i<200 && bylo6==0) {bialy();cout << "\nBronie:\n";szary(); bylo6 =1;}
 				pokazitem();
 				ilezlota = ilezlota+ wartoscPrzedmiotu;}
-
-
 		}
 		cout << endl<<endl << "Wartosc twojego ekwipunku: " << ilezlota << " sztuk zlota";
 		cout << endl << endl;
 		system("pause");
 	}
-
 
 	void wybory(int ktoryPrzedmiot)
 	{     
@@ -1170,7 +1145,6 @@ public:
 					postac.zloto = postac.zloto-wartoscPrzedmiotu;
 					mciSendString("play sounds/goldd.wav ",NULL,1,NULL);
 					ramkaInformacji("Kupiles " + nazwaitemu +string(" za ") + to_string(int(wartoscPrzedmiotu)) +string(" sztuk zlota."));
-
 				}
 				else
 				{
@@ -1180,9 +1154,6 @@ public:
 			}
 		}
 	}
-
-
-
 
 	//Helm od 1
 	//Zbroja od 20
@@ -1255,14 +1226,10 @@ public:
 	int klasa(int id)
 	{
 	if(id==1){nazwaklasy = "Rycerz"; }         //za kazdy lvl dodatkowe 2 obrona
-
-
-
 	if(id==2){nazwaklasy = "Czarodziej"; obrona = 2; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 220;} //za kazdy lvl dodatkowa mana
 	if(id==3){nazwaklasy = "Lotrzyk"; obrona = 4; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 420;}    //za kazdy lvl dodatkowy kryt
 	if(id==4){nazwaklasy = "Barbarzynca"; obrona = 6; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 620;}//za kazdy lvl dodatkowy dmg(?)
 	}*/
-
 
 	void gotoxy( int column, int line )
 	{
@@ -1424,7 +1391,6 @@ public:
 
 	void resetedytor()
 	{
-
 		for (int i=0;i<81;i++)
 			for (int j=0;j<40;j++)
 			{   
@@ -1475,11 +1441,8 @@ public:
 			cout << "9";
 			gotoxy(81,25);zolty();
 			cout << black;szary();
-
 			gotoxy(0,40);
-
 			cout <<"Klawisze: Lewy shift-przyspieszenie, q-wymazywanie, s-zapis, r-reset, ESC-wyjscie";
-
 	}
 
 	void range() // kwintesencja zawzietosci ludzkiej: krzywa wieza ifow
@@ -1526,7 +1489,6 @@ public:
 
 	void sprawdz(int ktoryTekst)
 	{
-
 		litera = 1;
 		ilestam++;
 		while (litera != 13){
@@ -1538,12 +1500,9 @@ public:
 				cout << "  Podaj nick do stworzenia nowego zapisu:";
 			else
 				cout << "      Podaj nick do wczytania zapisu:";
-
 			gotoxy(39-ilestam/2,16);
-
 			for (int b = 0; b<ilestam;b++)
 				cout << nick[b];
-
 			litera=_getch();
 			mciSendString("stop sounds/skrot.wav ",NULL,1,NULL);
 			mciSendString("play sounds/skrot.wav ",NULL,1,NULL);
@@ -1625,12 +1584,10 @@ public:
 			if (litera == 45) jaka = '-';
 			if (litera == 63) jaka = '?';
 			if (litera == 32) jaka = ' ';
-
 			if ((litera != 13) && (litera !=8)){
 				nick[ilestam] = jaka;
 				cout << jaka;
 				ilestam++;
-
 			}
 			if (litera == 8) {
 				if (ilestam>zapamietaj+1) { nick[ilestam] = ' ';ilestam--;}}
@@ -1722,7 +1679,6 @@ public:
 			{
 				if (x==80){}
 				else{
-
 					gotoxy(x,y);
 					if (sciana[x][y]==0){cout << " ";};
 					if (sciana[x][y]==1){cout << scianka;};
@@ -1846,7 +1802,6 @@ public:
 				resetedytor();
 			}
 			gotoxy(x,y);
-
 			if (b==0)
 				cout << "O";
 			if (b==1){
@@ -1958,10 +1913,7 @@ public:
 					edytor();
 				}
 		}
-
 	}
-
-
 
 	void reset()
 	{
@@ -1985,7 +1937,6 @@ public:
 				if (sciana[i][j]==8) if((r[i][j]==1)||(r[i][j]==2)||(r[i][j]==3)){gotoxy(i,j);cout << black;};
 				if (sciana[i][j]==9) if((r[i][j]==1)||(r[i][j]==2)||(r[i][j]==3)){gotoxy(i,j);zolty();cout << black;szary();};
 			}
-
 	}
 
 	void gameover()
@@ -2007,9 +1958,7 @@ public:
 				if (sciana[i][j]==2) iloscpotworow++;
 				if (sciana[i][j]==3) iloscpotworow++;
 				if (sciana[i][j]==7) iloscskrzynek++;
-
 			}
-
 			zdobyteZloto=0;
 			zdobyteDoswiadczenie=0;
 			zabitepotwory=0;
@@ -2051,7 +2000,6 @@ public:
 						cout << " ";
 					}
 				}
-
 				if (GetAsyncKeyState(VK_UP))
 				{
 					wktora = 3;
@@ -2077,7 +2025,6 @@ public:
 						cout << " ";
 					}
 				}
-
 				if (GetAsyncKeyState('X'))
 				{
 					if (wktora==1)
@@ -2145,7 +2092,6 @@ public:
 				cout << skrzynka << " - skrzynia, "<< white << " - potwor, "; czerwony();cout<<white;szary();cout << " - lepszy potwor, "<< wyjscie << " - wyjscie, " << wejscie << " - wejscie, " << drzwi << " - drzwi.";
 				Sleep(50);
 				tura();
-
 			}
 			rodzajPotwora=0;
 			wygrana = 1;
@@ -2157,7 +2103,6 @@ public:
 
 Gra::Gra()
 {
-
 	SetConsoleTitle( "Menu glowne");
 	system("MODE 82,41");
 	inicjalizujCzcionke();
@@ -2183,4 +2128,3 @@ int main() //sprawdzamy
 	Gra rozgrywka;
 	return 0; 
 }
-
