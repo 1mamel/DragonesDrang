@@ -10,10 +10,6 @@
 
 using namespace std;
 
-
-uhiuh
-
-
 class szablonPostaci
 {
 public:
