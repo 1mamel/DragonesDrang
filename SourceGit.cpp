@@ -761,25 +761,38 @@ public:
 			}
 			else if (wybor == 3)//uzycie potionow jest natychmiastowe
 			{
-				pas();
-				system("cls");
-				odswiezEkranWalki();
-				if (uzylhp==1){
-					system("cls");
-					odswiezEkranWalki();
-					wykonanoRuch = true;
-					ktoryRuch =0;
-					timerGracza = 0;
-					mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
-					wyswietlNadGraczem(-50,0,2);
+				ramkaWyboru("Zawartosc pasa:",(string("Mikstura zdrowia: ") + to_string(postac.hppot) + string("|Mikstura many: ") + to_string(postac.mppot) + string("|Powrot|")));
+				if (wybor == 1){
+					if (postac.hppot <1) 
+						ramkaInformacji("Masz za malo mikstur zdrowia:");
+					else
+					{
+						postac.hp= postac.hp + 50 ;
+						if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
+						postac.hppot=postac.hppot-1;
+						system("cls");
+						odswiezEkranWalki();
+						wykonanoRuch = true;
+						ktoryRuch =0;
+						timerGracza = 0;
+						mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
+						wyswietlNadGraczem(-50,0,2);
+					}
 				}
-				if (uzylmp==1){
-					system("cls");
-					ktoryRuch =0;
-					timerGracza = 0;
-					odswiezEkranWalki();
-					wykonanoRuch = true;
-					wyswietlNadGraczem(-10,0,9);
+				if (wybor == 2){
+					if (postac.mppot <1) 
+						ramkaInformacji("Masz za malo mikstur many");
+					else{
+						postac.mp=postac.mp+10;
+						if (postac.mp>postac.maxmp) postac.mp = postac.maxmp;
+						postac.mppot=postac.mppot-1;
+						system("cls");
+						ktoryRuch =0;
+						timerGracza = 0;
+						odswiezEkranWalki();
+						wykonanoRuch = true;
+						wyswietlNadGraczem(-10,0,9);
+					}
 				}
 			}
 		}
@@ -1407,6 +1420,23 @@ public:
 	void zmienKolor(int jakiKolor)
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), jakiKolor);
+			//0   BLACK
+			//1   BLUE
+			//2   GREEN
+			//3   CYAN
+			//4   RED
+			//5   MAGENTA
+			//6   BROWN
+			//7   LIGHTGRAY
+			//8   DARKGRAY
+			//9   LIGHTBLUE
+			//10  LIGHTGREEN
+			//11  LIGHTCYAN
+			//12  LIGHTRED
+			//13  LIGHTMAGENTA
+			//14  YELLOW
+			//15  WHITE
+			//ustawianie tla = dodac ilosc szesnastek do koloru
 	}
 	void zolty()
 	{
@@ -1491,18 +1521,18 @@ public:
 	}
 
 	int randus;
-	void krok()
-	{
-		/*if (randus==0)mciSendString("stop sounds/krok1.wav ",NULL,1,NULL);
-		if (randus==1)mciSendString("stop sounds/krok2.wav ",NULL,1,NULL);
-		if (randus==2)mciSendString("stop sounds/krok3.wav ",NULL,1,NULL);
-		if (randus==3)mciSendString("stop sounds/krok4.wav ",NULL,1,NULL);*/
-		randus = (rand() % 3);
-		if (randus==0)mciSendString("play sounds/krok1.wav ",NULL,1,NULL);
-		if (randus==1)mciSendString("play sounds/krok2.wav ",NULL,1,NULL);
-		if (randus==2)mciSendString("play sounds/krok3.wav ",NULL,1,NULL);
-		if (randus==3)mciSendString("play sounds/krok4.wav ",NULL,1,NULL);
-	}
+	//void krok()
+	//{
+	//	/*if (randus==0)mciSendString("stop sounds/krok1.wav ",NULL,1,NULL);
+	//	if (randus==1)mciSendString("stop sounds/krok2.wav ",NULL,1,NULL);
+	//	if (randus==2)mciSendString("stop sounds/krok3.wav ",NULL,1,NULL);
+	//	if (randus==3)mciSendString("stop sounds/krok4.wav ",NULL,1,NULL);*/
+	//	randus = (rand() % 3);
+	//	if (randus==0)mciSendString("play sounds/krok1.wav ",NULL,1,NULL);
+	//	if (randus==1)mciSendString("play sounds/krok2.wav ",NULL,1,NULL);
+	//	if (randus==2)mciSendString("play sounds/krok3.wav ",NULL,1,NULL);
+	//	if (randus==3)mciSendString("play sounds/krok4.wav ",NULL,1,NULL);
+	//}
 
 	void usedrzwi()
 	{
@@ -1534,9 +1564,7 @@ public:
 	{
 		int ilosczlota;
 		otwarteskrzynki++;
-		int randus = (rand() % 1);
-		if (randus==0)mciSendString("play sounds/skrzynka1.wav ",NULL,1,NULL);
-		if (randus==1)mciSendString("play sounds/skrzynka2.wav ",NULL,1,NULL);
+		odtworzLosowyDzwiek("skrzynka1.wav|skrzynka2.wav|");
 		if (trudnoscPoziomu == 1) {ilosczlota = (rand() % 20)+20;zdobyteZloto=zdobyteZloto+ilosczlota;}
 		if (trudnoscPoziomu == 2) {ilosczlota = (rand() % 100)+500;zdobyteZloto=zdobyteZloto+ilosczlota;}
 		if (trudnoscPoziomu == 3) {ilosczlota = (rand() % 100)+1000;zdobyteZloto=zdobyteZloto+ilosczlota;}
@@ -2108,6 +2136,18 @@ public:
 		ramkaInformacji("Twoja postac nie zyje.","Przegrales");
 	}
 
+	void sprawdzAkcjeIUzyj(int numerAkcji)
+	{
+		if (numerAkcji==7) usedrzwi();
+		if (numerAkcji==2) usePotwor(1,false);
+		if (numerAkcji==4) usewyjscie();
+		if (numerAkcji==5) usewejscie();
+		if (numerAkcji==6) useskrzynka();
+		if (numerAkcji==3) usePotwor(2,false);
+		if (numerAkcji==8) usePotwor(3,false);
+		if (numerAkcji==9) usePotwor(4,false);
+	}
+
 	void labirynt()
 	{
 		system("cls");
@@ -2143,7 +2183,7 @@ public:
 					wktora = 1;
 					if (sciana[x-1][y]==0)
 					{
-						krok();
+						odtworzLosowyDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
 						if (x>0)
 							x--;
 						reset();
@@ -2156,7 +2196,7 @@ public:
 					wktora = 2;
 					if (sciana[x+1][y]==0)
 					{
-						krok();
+						odtworzLosowyDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
 						x++;
 						reset();
 						gotoxy(x-1,y);
@@ -2168,7 +2208,7 @@ public:
 					wktora = 3;
 					if (sciana[x][y-1]==0)
 					{
-						krok();
+						odtworzLosowyDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
 						if (y>0)
 							y--;
 						reset();
@@ -2181,60 +2221,23 @@ public:
 					wktora = 4;
 					if (sciana[x][y+1]==0)
 					{ 
-						krok();
+						odtworzLosowyDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
 						y++;
 						reset();
 						gotoxy(x,y-1);
 						cout << " ";
 					}
 				}
-
 				if (GetAsyncKeyState('X'))
 				{
 					if (wktora==1)
-					{
-						if (sciana[x-1][y]==7) usedrzwi();
-						if (sciana[x-1][y]==2) usePotwor(1,false);
-						if (sciana[x-1][y]==4) usewyjscie();
-						if (sciana[x-1][y]==5) usewejscie();
-						if (sciana[x-1][y]==6) useskrzynka();
-						if (sciana[x-1][y]==3) usePotwor(2,false);
-						if (sciana[x-1][y]==8) usePotwor(3,false);
-						if (sciana[x-1][y]==9) usePotwor(4,false);
-					}
-					if (wktora==2)
-					{
-						if (sciana[x+1][y]==7) usedrzwi();
-						if (sciana[x+1][y]==2) usePotwor(1,false);
-						if (sciana[x+1][y]==4) usewyjscie();
-						if (sciana[x+1][y]==5) usewejscie();
-						if (sciana[x+1][y]==6) useskrzynka();
-						if (sciana[x+1][y]==3) usePotwor(2,false);
-						if (sciana[x+1][y]==8) usePotwor(3,false);
-						if (sciana[x+1][y]==9) usePotwor(4,false);
-					}
-					if (wktora==3)
-					{
-						if (sciana[x][y-1]==7) usedrzwi();
-						if (sciana[x][y-1]==2) usePotwor(1,false);
-						if (sciana[x][y-1]==4) usewyjscie();
-						if (sciana[x][y-1]==5) usewejscie();
-						if (sciana[x][y-1]==6) useskrzynka();
-						if (sciana[x][y-1]==3) usePotwor(2,false);
-						if (sciana[x][y-1]==8) usePotwor(3,false);
-						if (sciana[x][y-1]==9) usePotwor(4,false);
-					}
-					if (wktora==4)
-					{
-						if (sciana[x][y+1]==7) usedrzwi();
-						if (sciana[x][y+1]==2) usePotwor(1,false);
-						if (sciana[x][y+1]==4) usewyjscie();
-						if (sciana[x][y+1]==5) usewejscie();
-						if (sciana[x][y+1]==6) useskrzynka();
-						if (sciana[x][y+1]==3) usePotwor(2,false);
-						if (sciana[x][y+1]==8) usePotwor(3,false);
-						if (sciana[x][y+1]==9) usePotwor(4,false);
-					}
+						sprawdzAkcjeIUzyj(sciana[x-1][y]);
+					else if (wktora==2)
+						sprawdzAkcjeIUzyj(sciana[x+1][y]);
+					else if (wktora==3)
+						sprawdzAkcjeIUzyj(sciana[x][y-1]);
+					else if (wktora==4)
+						sprawdzAkcjeIUzyj(sciana[x][y+1]);
 				}
 				if (GetAsyncKeyState('Z'))
 				{
