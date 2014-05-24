@@ -102,7 +102,8 @@ public:
 	ofstream plik;
 	ifstream zplik;
 	HANDLE hInput, hOutput;
-	int rodzajPotwora,potdmgmax,potdmgmin,pothp,potgold;
+	int rodzajPotwora,potdmgmax,potdmgmin,pothp,potgold,typAtaku;
+	bool czyZasiegowy;
 	int crit;
 	int czyPrzedmiotPosiadany;
 	int wartoscPrzedmiotu;
@@ -228,7 +229,7 @@ public:
 
 	void ramka(int ileDodatkowo = 0)
 	{
-		ileDodatkowo = 3; // porzucamy to bo nie bardzo dziala
+		ileDodatkowo = 5; // porzucamy to bo nie umiemy matematyki
 		gotoxy(17,13-ileDodatkowo/2); cout << lewy_gorny; for (int i = 0; i<45;i++) cout << pozioma; cout << prawy_gorny;
 		for (int i = 0; i<10+ileDodatkowo;i++){
 			gotoxy(17,14+i-ileDodatkowo/2); cout << pionowa; for (int j = 0; j<45;j++) cout << " "; cout << pionowa;
@@ -484,300 +485,279 @@ public:
 		else if (wybor == 8)
 			ekwipunek();
 	}
-	void odswiezWalke(int pothppas,int ktoraTura)
+	void odswiezEkranWalki(int pothppas, bool podczasRuchu = false)
 	{
-		system("cls");
-		gotoxy(37,2);
-		cout << "TURA: " << ktoraTura;
+		if (podczasRuchu == false)
+			system("cls");
+		gotoxy(30,3);
+		cout << "    ";
 		gotoxy(30,3);
 		czerwony();cout<< postac.hp;szary();cout << "/";czerwony();cout << postac.maxhp;szary();
-		gotoxy(31,4);niebieski();cout << postac.mp ;szary();cout << "/" ;niebieski();cout << postac.maxmp;szary();
-		gotoxy(45,3);czerwony();cout << pothp;szary();cout << "/";czerwony();cout << pothppas;szary();
+		gotoxy(31,4);cout << "    ";
+		gotoxy(31,4);
+		niebieski();cout << postac.mp ;szary();cout << "/" ;niebieski();cout << postac.maxmp;szary();
+		gotoxy(45,3);cout << "    ";gotoxy(45,3);czerwony();cout << pothp;szary();cout << "/";czerwony();cout << pothppas;szary();
+		if (podczasRuchu == false)
+		{
+			gotoxy(33,10);cout << prawo;
+			if (rodzajPotwora == 2) czerwony(); //TODO: dokonczyc
+			gotoxy(47,10);cout << white;
+			szary();
+		}
+	}
+
+	void ramkaAtaku(bool czyPotwor)
+	{
+		if (czyPotwor == true)
+			tempTekst1 = "Zaatakowales " + potw + string("a!");
+		else
+			tempTekst1 = "Zostales zaatakowany przez " + potw + string("a!");
+		tempTekst2 = "Potwor " + potw + string(" jest poziomu ");
+		if (rodzajPotwora==1) tempTekst2 += "slabego.";
+		else if (rodzajPotwora==2) tempTekst2 += "normalnego.";
+		else if (rodzajPotwora==3) tempTekst2 += "mocnego.";
+		else if (rodzajPotwora==4) tempTekst2 += "Legendarnego!";
+		ramkaInformacji(tempTekst1,tempTekst2);
+	}
+
+	void podejdzDoWroga()
+	{
+		for (int i = 0; i<13;i++)
+		{
+			gotoxy(33+i,10);cout << " ";
+			gotoxy(34+i,10);cout << prawo;
+			Sleep(50);
+		}  
+	}
+	void odejdzOdWroga()
+	{
+		for (int i = 0; i<13;i++)
+		{
+			gotoxy(46-i,10);cout << " ";
+			gotoxy(45-i,10);cout << lewo;
+			Sleep(50);
+		}
 		gotoxy(33,10);cout << prawo;
-		gotoxy(47,10);cout << white;
+	}
+	void wyswietlNadWrogiem(int zmianaWartosci,int czyKrytyk, int jakiKolor)
+	{
+		zmienKolor(jakiKolor);
+		gotoxy(46,9);cout <<-zmianaWartosci;if(czyKrytyk == 1) cout << " KRYTYCZNE!";Sleep(150);
+		gotoxy(46,9);cout << "                            ";
+		gotoxy(46,8);cout <<-zmianaWartosci;if(czyKrytyk == 1) cout << " KRYTYCZNE!";Sleep(150);
+		gotoxy(46,8);cout << "                            ";
+		gotoxy(46,7);cout <<-zmianaWartosci;if(czyKrytyk == 1) cout << " KRYTYCZNE!";Sleep(150);
+		gotoxy(46,7);cout << "                            ";
+		gotoxy(46,6);cout <<-zmianaWartosci;if(czyKrytyk == 1) cout << " KRYTYCZNE!";Sleep(150);
+		gotoxy(46,6);cout << "                   ";
+		szary();
+	}
+
+	void wyswietlNadGraczem(int zmianaWartosci,int czyKrytyk, int jakiKolor)
+	{
+		zmienKolor(jakiKolor);
+		gotoxy(32,9);cout <<-zmianaWartosci;if(czyKrytyk == 1) cout << " KRYTYCZNE!";Sleep(150);
+		gotoxy(32,9);cout << "                            ";
+		gotoxy(32,8);cout <<-zmianaWartosci;if(czyKrytyk == 1) cout << " KRYTYCZNE!";Sleep(150);
+		gotoxy(32,8);cout << "                            ";
+		gotoxy(32,7);cout <<-zmianaWartosci;if(czyKrytyk == 1) cout << " KRYTYCZNE!";Sleep(150);
+		gotoxy(32,7);cout << "                            ";
+		gotoxy(32,6);cout <<-zmianaWartosci;if(czyKrytyk == 1) cout << " KRYTYCZNE!";Sleep(150);
+		gotoxy(32,6);cout << "                   ";
+		szary();
+	}
+	void odtworzLosowyDzwiek(string listaDzwiekow)
+	{
+		for (int i = 0; i < 30; i++)
+			tablicaTekstu[i] = "puste";
+		unsigned int ileTekstu;
+
+		int przyKtorym = 1;
+		int i = 0;
+		while(true)
+		{
+			string::size_type pos = listaDzwiekow.find('|');
+			if (pos == 4294967295) {
+				ileTekstu=i;
+				break;
+			}
+			tablicaTekstu[i] = listaDzwiekow.substr(0, pos);
+			listaDzwiekow = listaDzwiekow.substr(listaDzwiekow.find('|') + 1);
+			i++;
+		}
+		int losowaLiczba = (rand() % (ileTekstu));
+
+		tempTekst1 = "play sounds/" + tablicaTekstu[losowaLiczba] + string(" ");
+		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
+
+	}
+	void poslijPocisk(char jakiZnaczek, int jakiKolor)
+	{
+		for (int i = 1; i<13;i++)
+		{
+			zmienKolor(jakiKolor);
+			gotoxy(33+i,10);cout << " ";
+			gotoxy(34+i,10);cout << jakiZnaczek;
+			Sleep(50);
+			szary();
+		}  
+	}
+	void poslijPociskWGracza(char jakiZnaczek, int jakiKolor)
+	{
+		for (int i = 1; i<13;i++)
+		{
+			zmienKolor(jakiKolor);
+			gotoxy(47-i,10);cout << " ";
+			gotoxy(46-i,10);cout << jakiZnaczek;
+			Sleep(50);
+			szary();
+		}  
+		gotoxy(47-13,10);cout << " ";
+	}
+	void podejscieWroga()
+	{
+		for(int i=0;i<13;i++)
+		{
+			gotoxy(47-i,10);cout<<" ";
+			gotoxy(46-i,10);cout<<white;
+			Sleep(50);
+		}
+	}
+
+	void odejscieWroga()
+	{
+		for(int i=0;i<13;i++)
+		{
+			gotoxy(34+i,10);cout<<" ";
+			gotoxy(35+i,10);cout<<white;
+			Sleep(50);
+		}
 	}
 
 	void walka(bool czyPotworZaatakowal)
 	{
 		FlushConsoleInputBuffer(hInput);    
-		int czyTrafienieKrytyczne = 0;
+		int czyTrafienieKrytyczne,dmg,pdmg;
+		bool wykonanoRuch;
 		wylaczmuze();
-		int dmg,pdmg,ktoraTura;
+		mciSendString("play sounds/walka.mp3 ",NULL,1,NULL);
 		potwor();
-		ktoraTura = 1;
-		potwor();
-		ramka();
-		gotoxy(22,16);
-		cout << "Zostales zaatakowany przez: " << potw << "a";
-		gotoxy(30,18);czerwony();
-		cout << zycie<< " " << pothp;
-		szary();
-		gotoxy(38,18);
-		bialy();
-		cout<< "Poziom: ";
-		if (rodzajPotwora==1) cout << "slaby";
-		if (rodzajPotwora==2) cout << "normalny";
-		if (rodzajPotwora==3) cout << "mocny";
-		if (rodzajPotwora==4) cout << "Legendarny";
-		szary();
-		gotoxy(19,20);
-		system("pause");
-		wylaczmuze();
+		ramkaAtaku(czyPotworZaatakowal);
 		int pothppas=pothp;
-		system("CLS");
-		int powrot =0;
 		while (pothp>0 && postac.hp>0)
 		{
+			system("cls");
 			FlushConsoleInputBuffer(hInput);    
-			mciSendString("play sounds/walka.mp3 ",NULL,1,NULL);
 			while (true){
-				powrot = 1;
-				odswiezWalke(pothppas,ktoraTura);
+				wykonanoRuch = false;
+				odswiezEkranWalki(pothppas);
 				gotoxy(10,30);
 				cout << "Twoj ruch?";
 				menuWyboru(10,31,"Atakuj|Magia|Pas|",false);
 				if (wybor == 1){
-					powrot = 0;
+					wykonanoRuch = true;
+					odswiezEkranWalki(pothppas);
 					dmg = int((rand() % 7)*0.1*postac.sila + postac.sila+zliczdmg());
-					pothp= pothp-dmg;
-					for (int i = 0; i<13;i++)
-					{
-						gotoxy(33+i,10);cout << " ";
-						gotoxy(34+i,10);cout << prawo;
-						Sleep(50);
-					}  
-					czyTrafienieKrytyczne = 0;
+					podejdzDoWroga();
 					if ( ((rand() % 99)+1)< crit)
 					{
-						gotoxy(2,19); 
 						czyTrafienieKrytyczne = 1;
-						pothp= pothp-dmg;
-						dmg=dmg*2;
-						czerwony();
-						cout << "TRAFIENIE KRYTYCZNE!";
-						szary();
-					}
-					gotoxy(45,3);
-					czerwony();
-					cout << pothp;szary();cout << "/";czerwony();cout << pothppas;szary();cout << "   ";
-					gotoxy(2,20); 
-					cout << "Uderzyles " << potw << "a za " ;
-					czerwony();
-					cout << dmg ;
-					szary();
-					cout << " punktow obrazen";
-					gotoxy(2,21); cout << potw << " posiada teraz ";
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
-					cout << pothp ;
-					szary();
-					cout << " hp";
-					if (czyTrafienieKrytyczne==1){
-						int randus = (rand() % 3);
-						if (randus==0)mciSendString("play sounds/krytyk.wav ",NULL,1,NULL);
-						if (randus==1)mciSendString("play sounds/krytyk2.mp3 ",NULL,1,NULL);
-						if (randus==2)mciSendString("play sounds/krytyk3.mp3 ",NULL,1,NULL);
+						dmg=int(dmg*1.5);
 					}
 					else
-					{
-						int randus = (rand() % 4);
-						if (randus==0)mciSendString("play sounds/hit1.wav ",NULL,1,NULL);
-						if (randus==1)mciSendString("play sounds/hit2.wav ",NULL,1,NULL);
-						if (randus==2)mciSendString("play sounds/hit3.wav ",NULL,1,NULL);
-						if (randus==3)mciSendString("play sounds/hit4.wav ",NULL,1,NULL);
-						if (randus==4)mciSendString("play sounds/hit5.mp3 ",NULL,1,NULL);
-					}
-					gotoxy(46,9);czerwony();cout << "-"<<dmg;Sleep(150);
-					gotoxy(46,9);cout << "             ";
-					gotoxy(46,8);czerwony();cout << "-"<<dmg;Sleep(150);
-					gotoxy(46,8);cout << "             ";
-					gotoxy(46,7);czerwony();cout << "-"<<dmg;Sleep(150);
-					gotoxy(46,7);cout << "             ";
-					gotoxy(46,6);czerwony();cout << "-"<<dmg;Sleep(150);
-					gotoxy(46,6);cout << "             ";szary();
-					for (int i = 0; i<13;i++)
-					{
-						gotoxy(46-i,10);cout << " ";
-						gotoxy(45-i,10);cout << lewo;
-						Sleep(50);
-					}
-					gotoxy(33,10);cout << prawo;
-					Sleep(0);
+						czyTrafienieKrytyczne = 0;
+					pothp= pothp-dmg;
+					odswiezEkranWalki(pothppas,true);
+					if (czyTrafienieKrytyczne==1)
+						odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|");
+					else
+						odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");
+					wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,3);
+					odejdzOdWroga();
 				}
 				else if (wybor == 2)
 				{
-
 					ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(postac.inteligencja) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Powrot|"));
 					if (wybor == 1)
 						if(postac.mp <5)
 							ramkaInformacji("Niestety masz za malo punktow many");
 						else
 						{
-							powrot = 0;
+							wykonanoRuch = true;
 							postac.hp= postac.hp + postac.inteligencja ;
 							if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
 							postac.mp=postac.mp-5;
 							ramkaInformacji("Uleczyles sie za " + to_string(postac.inteligencja) + string(" hp, posiadasz teraz ") + to_string(postac.hp) +string("hp"));
+							mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
+							wyswietlNadGraczem(-50,0,2);
 						}
 					else if (wybor == 2)
 					{
 						if(postac.mp <5)
-						{
 							ramkaInformacji("Niestety masz za malo punktow many");
-						}
 						else
 						{
-							postac.mp=postac.mp-5;
-							powrot = 0;
-							dmg = int((rand() % 7)*0.1*postac.inteligencja + postac.inteligencja*2);
-							pothp= pothp-dmg;
-							for (int i = 1; i<13;i++)
-							{
-								czerwony();
-								gotoxy(33+i,10);cout << " ";
-								gotoxy(34+i,10);cout << prawo;
-								Sleep(50);
-								szary();
-							}  
+							postac.mp-=5;
 							czyTrafienieKrytyczne = 0;
+							wykonanoRuch = true;
+							dmg = int((rand() % 7)*0.1*postac.inteligencja + postac.inteligencja*2);
+							odswiezEkranWalki(pothppas);
+							poslijPocisk(12,12);
 							if ( ((rand() % 99)+1)< crit)
 							{
-								gotoxy(2,19); 
 								czyTrafienieKrytyczne = 1;
-								pothp= pothp-dmg;
-								dmg=dmg*2;
-								czerwony();
-								cout << "TRAFIENIE KRYTYCZNE!";
-								szary();
-							}
-							gotoxy(45,3);
-							czerwony();
-							cout << pothp;szary();cout << "/";czerwony();cout << pothppas;szary();cout << "   ";
-							gotoxy(2,20); 
-							cout << "Uderzyles " << potw << "a za " ;
-							czerwony();
-							cout << dmg ;
-							szary();
-							cout << " punktow obrazen";
-							gotoxy(2,21); cout << potw << " posiada teraz ";
-							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
-							cout << pothp ;
-							szary();
-							cout << " hp";
-							if (czyTrafienieKrytyczne==1){
-								int randus = (rand() % 3);
-								if (randus==0)mciSendString("play sounds/krytyk.wav ",NULL,1,NULL);
-								if (randus==1)mciSendString("play sounds/krytyk2.mp3 ",NULL,1,NULL);
-								if (randus==2)mciSendString("play sounds/krytyk3.mp3 ",NULL,1,NULL);
+								dmg=int(dmg*1.5);
 							}
 							else
-							{
-								int randus = (rand() % 4);
-								if (randus==0)mciSendString("play sounds/hit1.wav ",NULL,1,NULL);
-								if (randus==1)mciSendString("play sounds/hit2.wav ",NULL,1,NULL);
-								if (randus==2)mciSendString("play sounds/hit3.wav ",NULL,1,NULL);
-								if (randus==3)mciSendString("play sounds/hit4.wav ",NULL,1,NULL);
-								if (randus==4)mciSendString("play sounds/hit5.mp3 ",NULL,1,NULL);
-							}
-							gotoxy(46,9);czerwony();cout << "-"<<dmg;Sleep(150);
-							gotoxy(46,9);cout << "             ";
-							gotoxy(46,8);czerwony();cout << "-"<<dmg;Sleep(150);
-							gotoxy(46,8);cout << "             ";
-							gotoxy(46,7);czerwony();cout << "-"<<dmg;Sleep(150);
-							gotoxy(46,7);cout << "             ";
-							gotoxy(46,6);czerwony();cout << "-"<<dmg;Sleep(150);
-							gotoxy(46,6);cout << "             ";szary();
-							gotoxy(46,10);cout << " ";
-							Sleep(0);
+								czyTrafienieKrytyczne = 0;
+							pothp= pothp-dmg;
+							odswiezEkranWalki(pothppas,true);
+							if (czyTrafienieKrytyczne==1)
+								odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|"); //TODO: zmienic na odglosy czarow
+							else
+								odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");//TODO: zmienic na odglosy czarow
+							wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
 						}
 					}
 				}
 				else if (wybor == 3)
 				{
 					pas();
-					odswiezWalke(pothppas,ktoraTura);
+					odswiezEkranWalki(pothppas);
 					if (uzylhp==1){
-						powrot = 0;
-
+						wykonanoRuch = true;
 						mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
-						gotoxy(33,9);zielony();cout<<"50";Sleep(150);
-						gotoxy(33,9);cout<<"    ";
-						gotoxy(33,8);cout<<"50";Sleep(150);
-						gotoxy(33,8);cout<<"    ";
-						gotoxy(33,7);cout<<"50";Sleep(150);
-						gotoxy(33,7);cout<<"    ";
-						gotoxy(33,6);cout<<"50";Sleep(150);
-						gotoxy(33,6);cout<<"    ";szary();
+						wyswietlNadGraczem(-50,0,2);
 					}
 					if (uzylmp==1){
-						powrot = 0;
-						gotoxy(33,9);niebieski();cout<<"10";Sleep(150);
-						gotoxy(33,9);cout<<"    ";
-						gotoxy(33,8);cout<<"10";Sleep(150);
-						gotoxy(33,8);cout<<"    ";
-						gotoxy(33,7);cout<<"10";Sleep(150);
-						gotoxy(33,7);cout<<"    ";
-						gotoxy(33,6);cout<<"10";Sleep(150);
-						gotoxy(33,6);cout<<"    ";szary();
+						wykonanoRuch = true;
+						wyswietlNadGraczem(-10,0,9);
 					}
-
 				}
-				if (powrot == 0){
+				if (wykonanoRuch == true){
 					if (pothp >0){
-						odswiezWalke(pothppas,ktoraTura);
+						odswiezEkranWalki(pothppas);
 						pdmg = potdmgmin+(rand()%7) -zliczdef();
 						if (pdmg<0) pdmg = 0;
 						postac.hp=postac.hp-pdmg;
-						Sleep(postac.opoznienieTekstu);
-						for(int i=0;i<13;i++)
-						{
-							gotoxy(47-i,10);cout<<" ";
-							gotoxy(46-i,10);cout<<white;
-							Sleep(50);
-						}
-						gotoxy(30,3);
-						czerwony();cout<< postac.hp;szary();cout << "/";czerwony();cout << postac.maxhp;szary();cout << "   "; 
-						gotoxy(2,20); 
-						cout << "Zostales uderzony przez " << potw << "a za " << pdmg << " punktow obrazen";
-
-						gotoxy(2,21);
-
-						cout << "Posiadasz teraz "<< postac.hp << " hp                        ";
-						if (zliczdef()>0){
-							gotoxy(2,22); 
-							cout << "Twoja zbroja zaabsorbowala " << zliczdef() << " punktow obrazen";}
-						int randus = (rand() % 6);
-						if (randus==0)mciSendString("play sounds/punch1.mp3 ",NULL,1,NULL);
-						else if (randus==1)mciSendString("play sounds/punch2.mp3 ",NULL,1,NULL);
-						else if (randus==2)mciSendString("play sounds/punch3.mp3 ",NULL,1,NULL);
-						else if (randus==3)mciSendString("play sounds/punch4.mp3 ",NULL,1,NULL);
-						else if (randus==4)mciSendString("play sounds/punch5.mp3 ",NULL,1,NULL);
-						else if (randus==5)mciSendString("play sounds/punch6.mp3 ",NULL,1,NULL);
-						gotoxy(32,9);czerwony();cout << "-"<<pdmg;Sleep(150);
-						gotoxy(32,9);cout << "             ";
-						gotoxy(32,8);czerwony();cout << "-"<<pdmg;Sleep(150);
-						gotoxy(32,8);cout << "             ";
-						gotoxy(32,7);czerwony();cout << "-"<<pdmg;Sleep(150);
-						gotoxy(32,7);cout << "             ";
-						gotoxy(32,6);czerwony();cout << "-"<<pdmg;Sleep(150);
-						gotoxy(32,6);cout << "             ";szary();
-						for(int i=0;i<13;i++)
-						{
-							gotoxy(34+i,10);cout<<" ";
-							gotoxy(35+i,10);cout<<white;
-							Sleep(50);
-						}
-						gotoxy(2,23); 
+						if (czyZasiegowy == false)
+							podejscieWroga();
+						else
+							poslijPociskWGracza(5,12);
+						odswiezEkranWalki(pothppas,true);
+						odtworzLosowyDzwiek("punch1.mp3|punch2.mp3|punch3.mp3|punch4.mp3|punch5.mp3|punch6.mp3|");
+						wyswietlNadGraczem(pdmg,0,12);
+						if (czyZasiegowy == false)
+							odejscieWroga();
 						if (postac.hp<1)
 						{
 							gameover();
 							return;
 						}
-						ktoraTura=ktoraTura+1;
-						system ("pause");             
 					}
 					else
 					{
-						Sleep(postac.opoznienieTekstu);
+
 						for (int i=0;i<5;i++)
 						{
 							gotoxy(47,10);
@@ -816,31 +796,31 @@ public:
 	{
 		int k = rand() % 6;
 		if (rodzajPotwora==1){
-			if (k==0) {potw = "Szczur"; pothp = 25; potdmgmin = 5;potgold=15;}
-			if (k==1) {potw = "Pajak"; pothp = 30; potdmgmin = 6;potgold=25;}
-			if (k==2) {potw = "Nietoperz"; pothp = 45; potdmgmin = 7;potgold=45;}
-			if (k==3) {potw = "Ognik"; pothp = 50; potdmgmin = 8;potgold=65;}
-			if (k==4) {potw = "Skunks"; pothp = 55; potdmgmin = 9;potgold=65;}
-			if (k==5) {potw = "Lis"; pothp = 60; potdmgmin = 10;potgold=65;}
+			if (k==0) {potw = "Szczur"; pothp = 25; potdmgmin = 5;potgold=15;czyZasiegowy = false;}
+			if (k==1) {potw = "Pajak"; pothp = 30; potdmgmin = 6;potgold=25;czyZasiegowy = true; typAtaku = 5;}
+			if (k==2) {potw = "Nietoperz"; pothp = 45; potdmgmin = 7;potgold=45;czyZasiegowy = false;}
+			if (k==3) {potw = "Ognik"; pothp = 50; potdmgmin = 8;potgold=65;czyZasiegowy = true;}
+			if (k==4) {potw = "Skunks"; pothp = 55; potdmgmin = 9;potgold=65;czyZasiegowy = false;}
+			if (k==5) {potw = "Lis"; pothp = 60; potdmgmin = 10;potgold=65;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==2){
-			if (k==0) {potw = "Szkielet"; pothp = 180; potdmgmin = 20;potgold=150;}
-			if (k==1) {potw = "Goblin"; pothp = 200; potdmgmin = 21;potgold=175;}
-			if (k==2) {potw = "Szaman"; pothp = 220; potdmgmin = 22;potgold=200;}
-			if (k==3) {potw = "Troll"; pothp = 240; potdmgmin = 23;potgold=220;}
-			if (k==4) {potw = "Elf"; pothp = 260; potdmgmin = 24;potgold=220;}
-			if (k==5) {potw = "Minotaur"; pothp = 280; potdmgmin = 25;potgold=220;}
+			if (k==0) {potw = "Szkielet"; pothp = 180; potdmgmin = 20;potgold=150;czyZasiegowy = false;}
+			if (k==1) {potw = "Goblin"; pothp = 200; potdmgmin = 21;potgold=175;czyZasiegowy = false;}
+			if (k==2) {potw = "Szaman"; pothp = 220; potdmgmin = 22;potgold=200;czyZasiegowy = true; typAtaku = 4;}
+			if (k==3) {potw = "Troll"; pothp = 240; potdmgmin = 23;potgold=220;czyZasiegowy = true; typAtaku = 7;}
+			if (k==4) {potw = "Elf"; pothp = 260; potdmgmin = 24;potgold=220;czyZasiegowy = true; typAtaku = 15;}
+			if (k==5) {potw = "Minotaur"; pothp = 280; potdmgmin = 25;potgold=220;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==3){
-			if (k==0) {potw = "Wampir"; pothp = 400; potdmgmin = 35;potgold=280;}
-			if (k==1) {potw = "Duch"; pothp = 420; potdmgmin = 36;potgold=300;}
-			if (k==2) {potw = "Ogr"; pothp = 440; potdmgmin = 37;potgold=320;}
-			if (k==3) {potw = "Wilkolak"; pothp = 460; potdmgmin = 38;potgold=340;}
-			if (k==4) {potw = "Dzin"; pothp = 480; potdmgmin = 39;potgold=340;}
-			if (k==5) {potw = "Golem"; pothp = 500; potdmgmin = 40;potgold=340;}
+			if (k==0) {potw = "Wampir"; pothp = 400; potdmgmin = 35;potgold=280;czyZasiegowy = false;}
+			if (k==1) {potw = "Duch"; pothp = 420; potdmgmin = 36;potgold=300;czyZasiegowy = false;}
+			if (k==2) {potw = "Ogr"; pothp = 440; potdmgmin = 37;potgold=320;czyZasiegowy = true; typAtaku = 22;}
+			if (k==3) {potw = "Wilkolak"; pothp = 460; potdmgmin = 38;potgold=340;czyZasiegowy = false;}
+			if (k==4) {potw = "Dzin"; pothp = 480; potdmgmin = 39;potgold=340;czyZasiegowy = true; typAtaku = 8;}
+			if (k==5) {potw = "Golem"; pothp = 500; potdmgmin = 40;potgold=340;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==4){
-			if (k==0) {potw = "Smok"; pothp = 5000; potdmgmin = 80;potgold=5000;}
+			if (k==0) {potw = "Smok"; pothp = 5000; potdmgmin = 80;potgold=5000;czyZasiegowy = true; typAtaku = 3;}
 			else
 			{potw = "Smok"; pothp = 5000; potdmgmin = 80;potgold=5000;}
 		}
@@ -1172,9 +1152,8 @@ public:
 		int bylo1= 0,bylo2= 0,bylo3= 0,bylo4= 0,bylo5= 0,bylo6 = 0;
 		for (int i =1;i<200;i++){
 			items(i);
-
-
-			if (postac.posiadanePrzedmioty[i]==1 || postac.posiadanePrzedmioty[i]==2){
+			if (postac.posiadanePrzedmioty[i]==1 || postac.posiadanePrzedmioty[i]==2)
+			{
 				if (i>0 && i<20 && bylo1==0) {bialy();cout << "\nHelmy:\n";szary(); bylo1=1;}
 				if (i>19 && i<40 && bylo2==0) {bialy();cout << "\nZbroje:\n";szary(); bylo2 =1;}
 				if (i>39 && i<60 && bylo3==0) {bialy();cout << "\nButy:\n";szary(); bylo3 =1;}
@@ -1182,9 +1161,8 @@ public:
 				if (i>79 && i<100 && bylo5==0) {bialy();cout << "\nRekawice:\n";szary(); bylo5 =1;}
 				if (i>99 && i<200 && bylo6==0) {bialy();cout << "\nBronie:\n";szary(); bylo6 =1;}
 				pokazitem();
-				ilezlota = ilezlota+ wartoscPrzedmiotu;}
-
-
+				ilezlota = ilezlota+ wartoscPrzedmiotu;
+			}
 		}
 		cout << endl<<endl << "Wartosc twojego ekwipunku: " << ilezlota << " sztuk zlota";
 		cout << endl << endl;
@@ -1312,6 +1290,10 @@ public:
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 	}
+	void zmienKolor(int jakiKolor)
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), jakiKolor);
+	}
 	void zolty()
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);    
@@ -1430,8 +1412,10 @@ public:
 			if (wktora==2){gotoxy(x+1,y);sciana[x+1][y]= 0; cout << " ";}
 			if (wktora==3){gotoxy(x,y-1);sciana[x][y-1]= 0; cout << " ";}
 			if (wktora==4){gotoxy(x,y+1);sciana[x][y+1]= 0; cout << " ";}
+			walka(true);
 		}
-		walka(true);
+		else
+			walka(false);
 	}
 
 	void useskrzynka()
@@ -2030,6 +2014,7 @@ public:
 		reset();
 		postac.doswiadczenie=tempexp;
 		iloscpotworow=0;
+		int opozniaczTuryPotwora = 0;
 		for (int i=0;i<81;i++)
 			for (int j=0;j<40;j++)
 			{
@@ -2177,8 +2162,12 @@ public:
 				szary();
 				cout << " - lepszy potwor, "<< wyjscie << " - wyjscie, " << wejscie << " - wejscie, " << drzwi << " - drzwi.";
 				Sleep(50);
-				tura();
-
+				if (opozniaczTuryPotwora == 4) //spowolnienie chodzenia potworow
+				{
+					opozniaczTuryPotwora = 0;
+					tura();
+				}
+				opozniaczTuryPotwora++;
 			}
 			rodzajPotwora=0;
 			wygrana = 1;
@@ -2200,6 +2189,11 @@ Gra::Gra()
 	srand ( (unsigned int)time(NULL) );  
 	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	while (true){
+		//while (true) // while do szybkich testow
+		//{
+		//				odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");
+		//	cin.get();
+		//}
 		glowne();
 		while (postac.hp>0)
 			menu();
