@@ -10,6 +10,27 @@
 
 using namespace std;
 
+class timer {
+private:
+	unsigned long begTime;
+public:
+	void start() {
+		begTime = clock();
+	}
+
+	unsigned long elapsedTime() {
+		return ((unsigned long) clock() - begTime) / CLOCKS_PER_SEC;
+	}
+
+	unsigned long elapsedTimeDziesietny() {
+		return ((unsigned long) clock() - begTime) / 100;
+	}
+
+	bool isTimeout(unsigned long seconds) {
+		return seconds >= elapsedTime();
+	}
+};
+
 class szablonPostaci
 {
 public:
@@ -98,11 +119,12 @@ public:
 	int ilestam;
 	int wyszedlem;
 	int zdobyteDoswiadczenie;
+	int szybkoscPotwora,szybkoscGracza;
 	string nazwaitemu;
 	ofstream plik;
 	ifstream zplik;
 	HANDLE hInput, hOutput;
-	int rodzajPotwora,potdmgmax,potdmgmin,pothp,potgold,typAtaku;
+	int rodzajPotwora,potdmgmax,potdmgmin,hpPotwora,potgold,typAtaku;
 	bool czyZasiegowy;
 	int crit;
 	int czyPrzedmiotPosiadany;
@@ -110,6 +132,7 @@ public:
 	int obrona;
 	int tempexp;
 	int litera;
+	bool wykonanoRuch;
 	char jaka;
 	unsigned int gdzie;
 	string potw;
@@ -117,6 +140,10 @@ public:
 	int respawnX;
 	int y;
 	int respawnY;
+	int ktoryRuch;
+	int maksymalneHpPotwora;
+	int timerPotwora, timerGracza;
+	int czyTrafienieKrytyczne,dmg;
 	char nick[100];
 	int uzylhp;
 	int uzylmp;
@@ -435,7 +462,7 @@ public:
 		system("CLS");
 	};
 
-	void wylaczmuze()
+	void wylaczMuzyke()
 	{
 		mciSendString("stop sounds/miasto.mp3 ",NULL,1,NULL);
 		mciSendString("stop sounds/tawerna.wav ",NULL,1,NULL);
@@ -485,18 +512,36 @@ public:
 		else if (wybor == 8)
 			ekwipunek();
 	}
-	void odswiezEkranWalki(int pothppas, bool podczasRuchu = false)
+	void odswiezEkranWalki(bool podczasRuchu = false)
 	{
-		if (podczasRuchu == false)
-			system("cls");
-		gotoxy(30,3);
+		gotoxy(3,15); cout << " ";
+		for (int i = 0; i < 71; i++)
+		{
+			if (i>=50)zmienKolor(12);
+			cout << char(219);
+			szary();
+		}
 		cout << "    ";
+		gotoxy(3,16);  cout << " ";
+		for (int i = 0; i < 71; i++)
+		{
+			if (i>=50)zmienKolor(12);
+			cout << char(219);
+			szary();
+		}
+		cout << "    ";
+
+		gotoxy(4+timerGracza,15); cout << prawo;
+		gotoxy(4+timerPotwora,16); cout << white;
+
+		gotoxy(30,3);
+		cout << "     ";
 		gotoxy(30,3);
 		czerwony();cout<< postac.hp;szary();cout << "/";czerwony();cout << postac.maxhp;szary();
-		gotoxy(31,4);cout << "    ";
+		gotoxy(31,4);cout << "     ";
 		gotoxy(31,4);
 		niebieski();cout << postac.mp ;szary();cout << "/" ;niebieski();cout << postac.maxmp;szary();
-		gotoxy(45,3);cout << "    ";gotoxy(45,3);czerwony();cout << pothp;szary();cout << "/";czerwony();cout << pothppas;szary();
+		gotoxy(45,3);cout << "     ";gotoxy(45,3);czerwony();cout << hpPotwora;szary();cout << "/";czerwony();cout << maksymalneHpPotwora;szary();
 		if (podczasRuchu == false)
 		{
 			gotoxy(33,10);cout << prawo;
@@ -601,6 +646,7 @@ public:
 			Sleep(50);
 			szary();
 		}  
+		gotoxy(34+12,10); cout << " ";
 	}
 	void poslijPociskWGracza(char jakiZnaczek, int jakiKolor)
 	{
@@ -633,160 +679,262 @@ public:
 			Sleep(50);
 		}
 	}
+	void atakNormalnyGracza()
+	{
+		odswiezEkranWalki();
+		dmg = int((rand() % 7)*0.1*postac.sila + postac.sila+zliczdmg());
+		podejdzDoWroga();
+		if ( ((rand() % 99)+1)< crit)
+		{
+			czyTrafienieKrytyczne = 1;
+			dmg=int(dmg*1.5);
+		}
+		else
+			czyTrafienieKrytyczne = 0;
+		hpPotwora= hpPotwora-dmg;
+		odswiezEkranWalki(true);
+		if (czyTrafienieKrytyczne==1)
+			odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|");
+		else
+			odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");
+		wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,3);
+		odejdzOdWroga();
+	}
+
+	void uzycieCzaru()
+	{
+		if (wybor == 1)//uleczenie
+		{
+			postac.hp= postac.hp + int(postac.inteligencja*1.5) ;
+			if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
+			postac.mp=postac.mp-5;
+			mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
+			wyswietlNadGraczem(-50,0,2);
+		}
+		else if (wybor == 2)//ognisty podmuch
+		{
+			postac.mp-=5;
+			czyTrafienieKrytyczne = 0;
+			dmg = int((rand() % 7)*0.1*postac.inteligencja + postac.inteligencja*2);
+			odswiezEkranWalki();
+			poslijPocisk(12,12);
+			if ( ((rand() % 99)+1)< crit)
+			{
+				czyTrafienieKrytyczne = 1;
+				dmg=int(dmg*1.5);
+			}
+			else
+				czyTrafienieKrytyczne = 0;
+			hpPotwora= hpPotwora-dmg;
+			odswiezEkranWalki(true);
+			if (czyTrafienieKrytyczne==1)
+				odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|"); //TODO: zmienic na odglosy czarow
+			else
+				odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");//TODO: zmienic na odglosy czarow
+			wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
+		}
+
+	}
+	void ruchGracza()
+	{
+		while (wykonanoRuch == false)
+		{
+			gotoxy(10,30);
+			cout << "Twoj ruch?";
+			menuWyboru(10,31,"Atakuj|Magia|Pas|",false);
+
+			if (wybor == 1){
+				wykonanoRuch = true;
+				ktoryRuch = 1;
+			}
+			else if (wybor == 2)
+			{
+				ktoryRuch = 2;
+				ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(int(postac.inteligencja*1.5)) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Powrot|"));
+				system("cls");
+				odswiezEkranWalki();
+				if (wybor == 1)
+					if(postac.mp <5)
+					{
+						ramkaInformacji("Niestety masz za malo punktow many");
+						system("cls");
+						odswiezEkranWalki();
+					}
+					else
+					{
+						wykonanoRuch = true;
+						ktoryRuch = 2;
+					}
+				else if (wybor == 2)
+				{
+					if(postac.mp <5)
+					{
+						ramkaInformacji("Niestety masz za malo punktow many");
+						system("cls");
+						odswiezEkranWalki();
+					}
+					else
+					{
+						wykonanoRuch = true;
+						ktoryRuch = 2;
+					}
+				}
+			}
+			else if (wybor == 3)//uzycie potionow jest natychmiastowe
+			{
+				pas();
+				system("cls");
+				odswiezEkranWalki();
+				if (uzylhp==1){
+					system("cls");
+					odswiezEkranWalki();
+					wykonanoRuch = true;
+					ktoryRuch =0;
+					timerGracza = 0;
+					mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
+					wyswietlNadGraczem(-50,0,2);
+				}
+				if (uzylmp==1){
+					system("cls");
+					ktoryRuch =0;
+					timerGracza = 0;
+					odswiezEkranWalki();
+					wykonanoRuch = true;
+					wyswietlNadGraczem(-10,0,9);
+				}
+			}
+		}
+		for (int i = 0; i < 5; i++)
+		{
+			gotoxy(10,30+i);
+			cout << "           ";
+		}
+
+	}
+	void ruchPotwora()
+	{
+		if (hpPotwora >0){
+			int pdmg;
+			odswiezEkranWalki();
+			pdmg = potdmgmin+(rand()%7) -zliczdef();
+			if (pdmg<0) pdmg = 0;
+			postac.hp=postac.hp-pdmg;
+			if (czyZasiegowy == false)
+				podejscieWroga();
+			else
+				poslijPociskWGracza(5,12);
+			odswiezEkranWalki(true);
+			odtworzLosowyDzwiek("punch1.mp3|punch2.mp3|punch3.mp3|punch4.mp3|punch5.mp3|punch6.mp3|");
+			wyswietlNadGraczem(pdmg,0,12);
+			if (czyZasiegowy == false)
+				odejscieWroga();
+		}
+	}
+	void sprawdzCzyPotworZyje()
+	{
+		if (hpPotwora < 1)
+		{
+			for (int i=0;i<5;i++)
+			{
+				gotoxy(47,10);
+				cout << " ";
+				Sleep(100);
+				gotoxy(47,10);
+				cout << white;
+				Sleep(100);
+			}
+			gotoxy(47,10);
+			cout << " ";
+			ramkaInformacji("Wygrales! " + potw + string(" nie zyje!"));
+			int potexp = int(maksymalneHpPotwora+0.5*(rand()%20));
+			ramkaInformacji("Otrzymujesz " + to_string(potexp) + string(" punktow doswiadczenia!"),"Otrzymales " + to_string (potgold) + string(" sztuk zlota"));
+			zdobyteDoswiadczenie=zdobyteDoswiadczenie+potexp;
+			postac.doswiadczenie=postac.doswiadczenie+potexp;
+			potgold = potgold+(rand()%20);
+			zabitepotwory++;
+			postac.zloto=postac.zloto+potgold;
+			zdobyteZloto=zdobyteZloto+potgold;
+		}
+	}
 
 	void walka(bool czyPotworZaatakowal)
 	{
 		FlushConsoleInputBuffer(hInput);    
-		int czyTrafienieKrytyczne,dmg,pdmg;
-		bool wykonanoRuch;
-		wylaczmuze();
+		wylaczMuzyke();
 		mciSendString("play sounds/walka.mp3 ",NULL,1,NULL);
 		potwor();
 		ramkaAtaku(czyPotworZaatakowal);
-		int pothppas=pothp;
-		while (pothp>0 && postac.hp>0)
+		maksymalneHpPotwora=hpPotwora;
+		system("cls");
+		timerPotwora= 0, timerGracza = 0;
+		if (czyPotworZaatakowal==false)
+			timerPotwora = 50;
+		else
+			timerGracza = 50;
+		odswiezEkranWalki();
+		szybkoscGracza = 2;
+		ktoryRuch = 0;
+		while (hpPotwora>0 && postac.hp>0)
 		{
-			system("cls");
 			FlushConsoleInputBuffer(hInput);    
-			while (true){
-				wykonanoRuch = false;
-				odswiezEkranWalki(pothppas);
-				gotoxy(10,30);
-				cout << "Twoj ruch?";
-				menuWyboru(10,31,"Atakuj|Magia|Pas|",false);
-				if (wybor == 1){
-					wykonanoRuch = true;
-					odswiezEkranWalki(pothppas);
-					dmg = int((rand() % 7)*0.1*postac.sila + postac.sila+zliczdmg());
-					podejdzDoWroga();
-					if ( ((rand() % 99)+1)< crit)
-					{
-						czyTrafienieKrytyczne = 1;
-						dmg=int(dmg*1.5);
-					}
-					else
-						czyTrafienieKrytyczne = 0;
-					pothp= pothp-dmg;
-					odswiezEkranWalki(pothppas,true);
-					if (czyTrafienieKrytyczne==1)
-						odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|");
-					else
-						odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");
-					wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,3);
-					odejdzOdWroga();
-				}
-				else if (wybor == 2)
+			wykonanoRuch = false;
+			odswiezEkranWalki(true);
+			if (timerGracza >= 50)
+			{
+				if (ktoryRuch == 0)
+					ruchGracza(); //RUCH GRACZA
+				if (timerGracza >= 70)
 				{
-					ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(postac.inteligencja) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Powrot|"));
-					if (wybor == 1)
-						if(postac.mp <5)
-							ramkaInformacji("Niestety masz za malo punktow many");
-						else
-						{
-							wykonanoRuch = true;
-							postac.hp= postac.hp + postac.inteligencja ;
-							if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
-							postac.mp=postac.mp-5;
-							ramkaInformacji("Uleczyles sie za " + to_string(postac.inteligencja) + string(" hp, posiadasz teraz ") + to_string(postac.hp) +string("hp"));
-							mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
-							wyswietlNadGraczem(-50,0,2);
-						}
-					else if (wybor == 2)
+					if (ktoryRuch == 1)
 					{
-						if(postac.mp <5)
-							ramkaInformacji("Niestety masz za malo punktow many");
-						else
-						{
-							postac.mp-=5;
-							czyTrafienieKrytyczne = 0;
-							wykonanoRuch = true;
-							dmg = int((rand() % 7)*0.1*postac.inteligencja + postac.inteligencja*2);
-							odswiezEkranWalki(pothppas);
-							poslijPocisk(12,12);
-							if ( ((rand() % 99)+1)< crit)
-							{
-								czyTrafienieKrytyczne = 1;
-								dmg=int(dmg*1.5);
-							}
-							else
-								czyTrafienieKrytyczne = 0;
-							pothp= pothp-dmg;
-							odswiezEkranWalki(pothppas,true);
-							if (czyTrafienieKrytyczne==1)
-								odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|"); //TODO: zmienic na odglosy czarow
-							else
-								odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");//TODO: zmienic na odglosy czarow
-							wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
-						}
+						atakNormalnyGracza();
+						ktoryRuch = 0;
+						if (timerPotwora>=50) timerPotwora -= 35;
+						timerGracza = 0;
 					}
-				}
-				else if (wybor == 3)
-				{
-					pas();
-					odswiezEkranWalki(pothppas);
-					if (uzylhp==1){
-						wykonanoRuch = true;
-						mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
-						wyswietlNadGraczem(-50,0,2);
-					}
-					if (uzylmp==1){
-						wykonanoRuch = true;
-						wyswietlNadGraczem(-10,0,9);
-					}
-				}
-				if (wykonanoRuch == true){
-					if (pothp >0){
-						odswiezEkranWalki(pothppas);
-						pdmg = potdmgmin+(rand()%7) -zliczdef();
-						if (pdmg<0) pdmg = 0;
-						postac.hp=postac.hp-pdmg;
-						if (czyZasiegowy == false)
-							podejscieWroga();
-						else
-							poslijPociskWGracza(5,12);
-						odswiezEkranWalki(pothppas,true);
-						odtworzLosowyDzwiek("punch1.mp3|punch2.mp3|punch3.mp3|punch4.mp3|punch5.mp3|punch6.mp3|");
-						wyswietlNadGraczem(pdmg,0,12);
-						if (czyZasiegowy == false)
-							odejscieWroga();
-						if (postac.hp<1)
-						{
-							gameover();
-							return;
-						}
-					}
-					else
+					else if (ktoryRuch == 2)
 					{
-
-						for (int i=0;i<5;i++)
-						{
-							gotoxy(47,10);
-							cout << " ";
-							Sleep(100);
-							gotoxy(47,10);
-							cout << white;
-							Sleep(100);
-						}
-						gotoxy(47,10);
-						cout << " ";
-						ramkaInformacji("Wygrales! " + potw + string(" nie zyje!"));
-						int potexp = int(pothppas+0.5*(rand()%20));
-						ramkaInformacji("Otrzymujesz " + to_string(potexp) + string(" punktow doswiadczenia!"),"Otrzymales " + to_string (potgold) + string(" sztuk zlota"));
-						zdobyteDoswiadczenie=zdobyteDoswiadczenie+potexp;
-						postac.doswiadczenie=postac.doswiadczenie+potexp;
-						potgold = potgold+(rand()%20);
-						zabitepotwory++;
-						postac.zloto=postac.zloto+potgold;
-						zdobyteZloto=zdobyteZloto+potgold;
-						break;
+						uzycieCzaru();
+						ktoryRuch = 0;
+						if (timerPotwora>=50) timerPotwora -= 35;
+						timerGracza = 0;
 					}
 				}
 			}
-			rodzajPotwora=0;
-		};
+			if (timerPotwora >= 50)
+			{
+				szybkoscPotwora=1;
+				if (timerPotwora >= 70) 
+				{
+					ruchPotwora(); 
+					ktoryRuch = 0;
+					if (timerGracza>=50) timerGracza -= 25;
+					timerPotwora = 0;
+					szybkoscPotwora=2; //TODO: powrot do poprzedniej wartosci
+				}
+			}
+			else
+			{
+				szybkoscPotwora=2;
+			}
+			if (postac.hp<1)
+			{
+				gameover();
+				return;
+			}
+			sprawdzCzyPotworZyje();
+			Sleep(100);
+			timerPotwora+=szybkoscPotwora;
+			if (timerPotwora>70)
+				timerPotwora = 70;
+			timerGracza+=szybkoscGracza;
+			if (timerGracza>70)
+				timerGracza = 70;
+		}
+
 		while (postac.doswiadczenie>postac.maksymalneDoswiadczenie)       
 			postac.poziom=postac.poziom+ lvlup();
-		wylaczmuze();
+		wylaczMuzyke();
 		wygrana = 1;
 		system("CLS");
 		return;
@@ -796,33 +944,33 @@ public:
 	{
 		int k = rand() % 6;
 		if (rodzajPotwora==1){
-			if (k==0) {potw = "Szczur"; pothp = 25; potdmgmin = 5;potgold=15;czyZasiegowy = false;}
-			if (k==1) {potw = "Pajak"; pothp = 30; potdmgmin = 6;potgold=25;czyZasiegowy = true; typAtaku = 5;}
-			if (k==2) {potw = "Nietoperz"; pothp = 45; potdmgmin = 7;potgold=45;czyZasiegowy = false;}
-			if (k==3) {potw = "Ognik"; pothp = 50; potdmgmin = 8;potgold=65;czyZasiegowy = true;}
-			if (k==4) {potw = "Skunks"; pothp = 55; potdmgmin = 9;potgold=65;czyZasiegowy = false;}
-			if (k==5) {potw = "Lis"; pothp = 60; potdmgmin = 10;potgold=65;czyZasiegowy = false;}
+			if (k==0) {potw = "Szczur"; hpPotwora = 25; potdmgmin = 5;potgold=15;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==1) {potw = "Pajak"; hpPotwora = 30; potdmgmin = 6;potgold=25;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 5;}
+			if (k==2) {potw = "Nietoperz"; hpPotwora = 45; potdmgmin = 7;potgold=45;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==3) {potw = "Ognik"; hpPotwora = 50; potdmgmin = 8;potgold=65;szybkoscPotwora=2;czyZasiegowy = true;}
+			if (k==4) {potw = "Skunks"; hpPotwora = 55; potdmgmin = 9;potgold=65;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==5) {potw = "Lis"; hpPotwora = 60; potdmgmin = 10;potgold=65;szybkoscPotwora=2;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==2){
-			if (k==0) {potw = "Szkielet"; pothp = 180; potdmgmin = 20;potgold=150;czyZasiegowy = false;}
-			if (k==1) {potw = "Goblin"; pothp = 200; potdmgmin = 21;potgold=175;czyZasiegowy = false;}
-			if (k==2) {potw = "Szaman"; pothp = 220; potdmgmin = 22;potgold=200;czyZasiegowy = true; typAtaku = 4;}
-			if (k==3) {potw = "Troll"; pothp = 240; potdmgmin = 23;potgold=220;czyZasiegowy = true; typAtaku = 7;}
-			if (k==4) {potw = "Elf"; pothp = 260; potdmgmin = 24;potgold=220;czyZasiegowy = true; typAtaku = 15;}
-			if (k==5) {potw = "Minotaur"; pothp = 280; potdmgmin = 25;potgold=220;czyZasiegowy = false;}
+			if (k==0) {potw = "Szkielet"; hpPotwora = 180; potdmgmin = 20;potgold=150;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==1) {potw = "Goblin"; hpPotwora = 200; potdmgmin = 21;potgold=175;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==2) {potw = "Szaman"; hpPotwora = 220; potdmgmin = 22;potgold=200;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 4;}
+			if (k==3) {potw = "Troll"; hpPotwora = 240; potdmgmin = 23;potgold=220;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 7;}
+			if (k==4) {potw = "Elf"; hpPotwora = 260; potdmgmin = 24;potgold=220;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 15;}
+			if (k==5) {potw = "Minotaur"; hpPotwora = 280; potdmgmin = 25;potgold=220;szybkoscPotwora=2;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==3){
-			if (k==0) {potw = "Wampir"; pothp = 400; potdmgmin = 35;potgold=280;czyZasiegowy = false;}
-			if (k==1) {potw = "Duch"; pothp = 420; potdmgmin = 36;potgold=300;czyZasiegowy = false;}
-			if (k==2) {potw = "Ogr"; pothp = 440; potdmgmin = 37;potgold=320;czyZasiegowy = true; typAtaku = 22;}
-			if (k==3) {potw = "Wilkolak"; pothp = 460; potdmgmin = 38;potgold=340;czyZasiegowy = false;}
-			if (k==4) {potw = "Dzin"; pothp = 480; potdmgmin = 39;potgold=340;czyZasiegowy = true; typAtaku = 8;}
-			if (k==5) {potw = "Golem"; pothp = 500; potdmgmin = 40;potgold=340;czyZasiegowy = false;}
+			if (k==0) {potw = "Wampir"; hpPotwora = 400; potdmgmin = 35;potgold=280;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==1) {potw = "Duch"; hpPotwora = 420; potdmgmin = 36;potgold=300;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==2) {potw = "Ogr"; hpPotwora = 440; potdmgmin = 37;potgold=320;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 22;}
+			if (k==3) {potw = "Wilkolak"; hpPotwora = 460; potdmgmin = 38;potgold=340;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==4) {potw = "Dzin"; hpPotwora = 480; potdmgmin = 39;potgold=340;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 8;}
+			if (k==5) {potw = "Golem"; hpPotwora = 500; potdmgmin = 40;potgold=340;szybkoscPotwora=2;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==4){
-			if (k==0) {potw = "Smok"; pothp = 5000; potdmgmin = 80;potgold=5000;czyZasiegowy = true; typAtaku = 3;}
+			if (k==0) {potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=5000;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 3;}
 			else
-			{potw = "Smok"; pothp = 5000; potdmgmin = 80;potgold=5000;}
+			{potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=5000;}
 		}
 		return potw;
 
@@ -862,7 +1010,7 @@ public:
 
 		if (postac.doswiadczenie > postac.maksymalneDoswiadczenie-1)
 		{
-			wylaczmuze();
+			wylaczMuzyke();
 			Sleep(100);
 			mciSendString("play sounds/levelUP.wav ",NULL,1,NULL);
 			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1),"hp: " + to_string(postac.maxhp) + string("->") + to_string(postac.maxhp+postac.budowa*1.2) + string("   mp: " )+ to_string(postac.maxmp) + string("->") + to_string(postac.maxmp*1.4));
@@ -895,7 +1043,7 @@ public:
 
 	void alchemik()
 	{
-		wylaczmuze();
+		wylaczMuzyke();
 		Sleep(100);
 		mciSendString("play sounds/alchemik.wav ",NULL,1,NULL);
 		int ilosc = -1;
@@ -960,12 +1108,12 @@ public:
 				return;
 			}
 		}
-		wylaczmuze();
+		wylaczMuzyke();
 	}
 
 	void karczma()
 	{
-		wylaczmuze();
+		wylaczMuzyke();
 		Sleep(100);
 		mciSendString("play sounds/tawerna.wav ",NULL,1,NULL);
 		ramkaWyboru("Witaj w mej karczmie, co podac?","Wynajmij pokoj...|Wlasnie wychodzilem...|");
@@ -1018,7 +1166,7 @@ public:
 			}
 
 		} 
-		wylaczmuze();
+		wylaczMuzyke();
 	}
 
 	void staty()
@@ -1232,7 +1380,7 @@ public:
 
 	void kowal()
 	{
-		wylaczmuze();
+		wylaczMuzyke();
 		Sleep(100);
 		int typ;
 		mciSendString("play sounds/kowal.wav ",NULL,1,NULL);
@@ -1275,7 +1423,7 @@ public:
 			system("cls");
 			pokaz();
 		}
-		wylaczmuze();
+		wylaczMuzyke();
 	}
 
 	void niebieski()
@@ -1408,10 +1556,10 @@ public:
 		rodzajPotwora=jaki;
 		if (potworZaatakowal == false)
 		{
-			if (wktora==1){gotoxy(x-1,y);sciana[x-1][y]= 0; cout << " ";}
-			if (wktora==2){gotoxy(x+1,y);sciana[x+1][y]= 0; cout << " ";}
-			if (wktora==3){gotoxy(x,y-1);sciana[x][y-1]= 0; cout << " ";}
-			if (wktora==4){gotoxy(x,y+1);sciana[x][y+1]= 0; cout << " ";}
+			if (wktora==1){sciana[x-1][y]= 0;}
+			if (wktora==2){sciana[x+1][y]= 0;}
+			if (wktora==3){sciana[x][y-1]= 0;}
+			if (wktora==4){sciana[x][y+1]= 0;}
 			walka(true);
 		}
 		else
@@ -1885,6 +2033,7 @@ public:
 	{
 		while(true)
 		{
+			mciSendString("stop sounds/death.mp3 ",NULL,1,NULL);
 			int p=0;
 			SetConsoleTitle( "Menu glowne");
 			mciSendString("play sounds/intro.MID ",NULL,1,NULL);
@@ -2003,7 +2152,7 @@ public:
 
 	void gameover()
 	{
-		wylaczmuze();
+		wylaczMuzyke();
 		mciSendString("play sounds/death.mp3 ",NULL,1,NULL);
 		ramkaInformacji("Twoja postac nie zyje.","Przegrales");
 	}
@@ -2036,7 +2185,7 @@ public:
 				if (wygrana ==1){
 					reset();
 					wygrana =0;
-					wylaczmuze();
+					wylaczMuzyke();
 					Sleep(100);
 					mciSendString("play sounds/ruins.wav ",NULL,1,NULL);
 				}
