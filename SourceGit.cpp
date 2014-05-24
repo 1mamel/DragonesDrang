@@ -200,9 +200,6 @@ public:
 			sciezka[i] = NULL;
 			nick[i] = NULL;
 		}
-
-
-
 	}
 	void inicjalizujCzcionke()
 	{
@@ -280,7 +277,6 @@ public:
 			tempDluzszyTekst = tempDluzszyTekst.substr(tempDluzszyTekst.find('|') + 1);
 			i++;
 		}
-
 		i=i-7;
 		ramka(i);
 		gotoxy(39-(pytanie.length())/2 +1,14-i/2);
@@ -325,7 +321,6 @@ public:
 		}
 		while (true)
 		{
-
 			for (int i = 0; i < 30; i++)
 			{
 				if (tablicaTekstu[i]== "puste")
@@ -345,7 +340,6 @@ public:
 				else
 					cout << " ";
 			}
-
 			FlushConsoleInputBuffer(hInput);    
 			gdzie=_getch();
 			if ((gdzie==224))
@@ -370,7 +364,6 @@ public:
 			}
 		}
 	}
-
 
 	/*void ramkabig() //raczej nie bedzie uzyta
 	{
@@ -530,10 +523,8 @@ public:
 			szary();
 		}
 		cout << "    ";
-
 		gotoxy(4+timerGracza,15); cout << prawo;
 		gotoxy(4+timerPotwora,16); cout << white;
-
 		gotoxy(30,3);
 		cout << "     ";
 		gotoxy(30,3);
@@ -733,8 +724,21 @@ public:
 				odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");//TODO: zmienic na odglosy czarow
 			wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
 		}
-
 	}
+
+	bool sprawdzMane(int ileMany){
+		if(postac.mp < ileMany)
+		{
+			ramkaInformacji("Niestety masz za malo punktow many");
+			system("cls");
+			odswiezEkranWalki();
+			return false;
+		}
+		wykonanoRuch = true;
+		ktoryRuch = 2;
+		return true;
+	}
+
 	void ruchGracza()
 	{
 		while (wykonanoRuch == false)
@@ -742,7 +746,6 @@ public:
 			gotoxy(10,30);
 			cout << "Twoj ruch?";
 			menuWyboru(10,31,"Atakuj|Magia|Pas|",false);
-
 			if (wybor == 1){
 				wykonanoRuch = true;
 				ktoryRuch = 1;
@@ -753,32 +756,8 @@ public:
 				ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(int(postac.inteligencja*1.5)) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Powrot|"));
 				system("cls");
 				odswiezEkranWalki();
-				if (wybor == 1)
-					if(postac.mp <5)
-					{
-						ramkaInformacji("Niestety masz za malo punktow many");
-						system("cls");
-						odswiezEkranWalki();
-					}
-					else
-					{
-						wykonanoRuch = true;
-						ktoryRuch = 2;
-					}
-				else if (wybor == 2)
-				{
-					if(postac.mp <5)
-					{
-						ramkaInformacji("Niestety masz za malo punktow many");
-						system("cls");
-						odswiezEkranWalki();
-					}
-					else
-					{
-						wykonanoRuch = true;
-						ktoryRuch = 2;
-					}
-				}
+				if (wybor == 1 || wybor == 2)
+					sprawdzMane(5);
 			}
 			else if (wybor == 3)//uzycie potionow jest natychmiastowe
 			{
@@ -809,7 +788,6 @@ public:
 			gotoxy(10,30+i);
 			cout << "           ";
 		}
-
 	}
 	void ruchPotwora()
 	{
@@ -973,8 +951,6 @@ public:
 			{potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=5000;}
 		}
 		return potw;
-
-
 	}
 
 	void pokaz()
@@ -1004,10 +980,8 @@ public:
 		gotoxy(0,5);
 	}
 
-
 	int lvlup()
 	{
-
 		if (postac.doswiadczenie > postac.maksymalneDoswiadczenie-1)
 		{
 			wylaczMuzyke();
@@ -1176,7 +1150,6 @@ public:
 		cout << "Szansa na krytyczny cios: " << crit << "%\n\n";
 		cout << "Sila wplywa na ilosc zadawanych obrazen\nZrecznosc wplywa na szanse krytycznego trafienia\nBudowa wplywa na ilosc maksymalnego hp po zdobyciu poziomu\nInteligencja wplywa na moc czarow\n\n";
 		system("PAUSE");    
-
 	}
 
 	void save()
@@ -1190,8 +1163,6 @@ public:
 		plik.close();
 		ramkaInformacji("Pomyslnie zapisano stan gry.");
 	}
-
-
 
 	void opcje()
 	{
@@ -1222,8 +1193,6 @@ public:
 			}
 		}
 	}   
-
-
 
 	string tablicaTekstu[30];
 	unsigned int ileTekstu;
@@ -1368,9 +1337,6 @@ public:
 		}
 	}
 
-
-
-
 	//Helm od 1
 	//Zbroja od 20
 	//Buty od 40
@@ -1464,7 +1430,6 @@ public:
 	if(id==4){nazwaklasy = "Barbarzynca"; obrona = 6; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 620;}//za kazdy lvl dodatkowy dmg(?)
 	}*/
 
-
 	void gotoxy( int column, int line )
 	{
 		COORD coord;
@@ -1533,7 +1498,6 @@ public:
 		if (randus==2)mciSendString("stop sounds/krok3.wav ",NULL,1,NULL);
 		if (randus==3)mciSendString("stop sounds/krok4.wav ",NULL,1,NULL);*/
 		randus = (rand() % 3);
-
 		if (randus==0)mciSendString("play sounds/krok1.wav ",NULL,1,NULL);
 		if (randus==1)mciSendString("play sounds/krok2.wav ",NULL,1,NULL);
 		if (randus==2)mciSendString("play sounds/krok3.wav ",NULL,1,NULL);
@@ -1588,7 +1552,6 @@ public:
 
 	void resetEdytora()
 	{
-
 		for (int i=0;i<81;i++)
 			for (int j=0;j<40;j++)
 			{   
@@ -1641,7 +1604,6 @@ public:
 			cout << black;szary();
 			gotoxy(0,40);
 			cout <<"Lshift-przyspieszenie, q-wymazywanie, s-zapis, r-reset, g-ustaw respawn ESC-wyjdz";
-
 	}
 
 	void range() // kwintesencja zawzietosci ludzkiej: krzywa wieza ifow
@@ -1683,12 +1645,10 @@ public:
 		sciezka[zapamietaj+6] = 's';
 		sciezka[zapamietaj+7] = 'a';
 		sciezka[zapamietaj+8] = 'v';
-
 	}
 
 	void sprawdz(int ktoryTekst)
 	{
-
 		litera = 1;
 		ilestam++;
 		while (litera != 13){
@@ -1699,12 +1659,9 @@ public:
 				cout << "  Podaj nick do stworzenia nowego zapisu:";
 			else
 				cout << "      Podaj nick do wczytania zapisu:";
-
 			gotoxy(39-ilestam/2,16);
-
 			for (int b = 0; b<ilestam;b++)
 				cout << nick[b];
-
 			litera=_getch();
 			mciSendString("stop sounds/skrot.wav ",NULL,1,NULL);
 			mciSendString("play sounds/skrot.wav ",NULL,1,NULL);
@@ -1786,12 +1743,10 @@ public:
 			if (litera == 45) jaka = '-';
 			if (litera == 63) jaka = '?';
 			if (litera == 32) jaka = ' ';
-
 			if ((litera != 13) && (litera !=8)){
 				nick[ilestam] = jaka;
 				cout << jaka;
 				ilestam++;
-
 			}
 			if (litera == 8) {
 				if (ilestam>zapamietaj+1) { nick[ilestam] = ' ';ilestam--;}}
@@ -1918,8 +1873,8 @@ public:
 			}
 			if (GetAsyncKeyState(VK_UP))
 			{
-				if (y>0){
-
+				if (y>0)
+				{
 					gotoxy(x,y);
 					if (sciana[x][y]==0){cout << " ";};
 					if (sciana[x][y]==1){cout << scianka;};
@@ -2120,10 +2075,7 @@ public:
 					edytor();
 				}
 		}
-
 	}
-
-
 
 	void reset()
 	{
@@ -2147,7 +2099,6 @@ public:
 				if (sciana[i][j]==8) if((r[i][j]==1)||(r[i][j]==2)||(r[i][j]==3)){gotoxy(i,j);cout << black;};
 				if (sciana[i][j]==9) if((r[i][j]==1)||(r[i][j]==2)||(r[i][j]==3)){gotoxy(i,j);zolty();cout << black;szary();};
 			}
-
 	}
 
 	void gameover()
@@ -2170,9 +2121,7 @@ public:
 				if (sciana[i][j]==2) iloscpotworow++;
 				if (sciana[i][j]==3) iloscpotworow++;
 				if (sciana[i][j]==7) iloscskrzynek++;
-
 			}
-
 			zdobyteZloto=0;
 			zdobyteDoswiadczenie=0;
 			zabitepotwory=0;
@@ -2214,7 +2163,6 @@ public:
 						cout << " ";
 					}
 				}
-
 				if (GetAsyncKeyState(VK_UP))
 				{
 					wktora = 3;
@@ -2356,4 +2304,3 @@ int main()
 	Gra rozgrywka;
 	return 0; 
 }
-
