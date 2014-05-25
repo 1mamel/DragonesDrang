@@ -127,7 +127,6 @@ public:
 	int rodzajPotwora,potdmgmax,potdmgmin,hpPotwora,potgold,typAtaku;
 	bool czyZasiegowy;
 	int crit;
-	int czyPrzedmiotPosiadany;
 	int wartoscPrzedmiotu;
 	int obrona;
 	int tempexp;
@@ -1261,45 +1260,45 @@ public:
 
 	void items(int id) 
 	{
-		if(id==1){nazwaitemu = "Skorzany kaptur"; obrona = 1; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 120;}
-		if(id==2){nazwaitemu = "Kolczy czepiec"; obrona = 2; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 220;}
-		if(id==3){nazwaitemu = "Zelazny helm"; obrona = 4; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 420;}
-		if(id==4){nazwaitemu = "Stalowy helm"; obrona = 6; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 620;}
-		if(id==5){nazwaitemu = "Szklany helm"; obrona = 8; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 860;}
-		if(id==6){nazwaitemu = "Krasnoludzki szturmak"; obrona = 11; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 1200;}
-		if(id==20){nazwaitemu = "Skorzana zbroja"; obrona = 5; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 500;}
-		if(id==21){nazwaitemu = "Kolczuga"; obrona = 7; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 620;}
-		if(id==22){nazwaitemu = "Zelazna zbroja"; obrona = 9; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 840;}
-		if(id==23){nazwaitemu = "Stalowa zbroja"; obrona = 11; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 1200;}
-		if(id==24){nazwaitemu = "Szklana zbroja"; obrona = 13; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 1500;}
-		if(id==25){nazwaitemu = "Krasnoludzka zbroja"; obrona = 15; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 2000;}
-		if(id==40){nazwaitemu = "Skorzane buty"; obrona = 2; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 240;}
-		if(id==41){nazwaitemu = "Kolcze buty"; obrona = 3; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 370;}
-		if(id==42){nazwaitemu = "Zelazne buty"; obrona = 4; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 500;}
-		if(id==43){nazwaitemu = "Stalowe buty"; obrona = 6; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 715;}
-		if(id==44){nazwaitemu = "Szklane buty"; obrona = 8; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 900;}
-		if(id==45){nazwaitemu = "Krasnoludzkie buty"; obrona = 11; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 1200;}
-		if(id==60){nazwaitemu = "Skorzane spodnie"; obrona = 3; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 300;}
-		if(id==61){nazwaitemu = "Kolcze spodnie"; obrona = 5; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 450;}
-		if(id==62){nazwaitemu = "Zelazne nagolenniki"; obrona = 7; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 600;}
-		if(id==63){nazwaitemu = "Stalowe nagolenniki"; obrona = 9; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 700;}
-		if(id==64){nazwaitemu = "Szklane nagolenniki"; obrona = 11; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 700;}
-		if(id==65){nazwaitemu = "Krasnoludzkie nagolenniki"; obrona = 14; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 1600;}
-		if(id==80){nazwaitemu = "Skorzane rekawice"; obrona = 1; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 100;}
-		if(id==81){nazwaitemu = "Kolcze rekawice"; obrona = 2; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 200;}
-		if(id==82){nazwaitemu = "Zelazne rekawice"; obrona = 3; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 340;}
-		if(id==83){nazwaitemu = "Stalowe rekawice"; obrona = 4; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 550;}
-		if(id==84){nazwaitemu = "Szklane rekawice"; obrona = 6; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 800;}
-		if(id==85){nazwaitemu = "Krasnoludzkie rekawice"; obrona = 8; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 1100;}
-		if(id==100){nazwaitemu = "Zardzewialy zelazny sztylet"; obrona = 2; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 100;}
-		if(id==101){nazwaitemu = "Zelazny sztylet"; obrona = 5; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 400;}
-		if(id==102){nazwaitemu = "Stalowy sztylet"; obrona = 10; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 800;}
-		if(id==103){nazwaitemu = "Zelazny krotki miecz"; obrona = 15; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 1600;}
-		if(id==104){nazwaitemu = "Walerianski krotki miecz"; obrona = 20; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 2500;}
-		if(id==105){nazwaitemu = "Stalowy krotki miecz"; obrona = 25; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 3200;}
+		if(id==1){nazwaitemu = "Skorzany kaptur"; obrona = 1;  wartoscPrzedmiotu = 120;}
+		if(id==2){nazwaitemu = "Kolczy czepiec"; obrona = 2;  wartoscPrzedmiotu = 220;}
+		if(id==3){nazwaitemu = "Zelazny helm"; obrona = 4;  wartoscPrzedmiotu = 420;}
+		if(id==4){nazwaitemu = "Stalowy helm"; obrona = 6;  wartoscPrzedmiotu = 620;}
+		if(id==5){nazwaitemu = "Szklany helm"; obrona = 8;  wartoscPrzedmiotu = 860;}
+		if(id==6){nazwaitemu = "Krasnoludzki szturmak"; obrona = 11;  wartoscPrzedmiotu = 1200;}
+		if(id==20){nazwaitemu = "Skorzana zbroja"; obrona = 5;  wartoscPrzedmiotu = 500;}
+		if(id==21){nazwaitemu = "Kolczuga"; obrona = 7;  wartoscPrzedmiotu = 620;}
+		if(id==22){nazwaitemu = "Zelazna zbroja"; obrona = 9;  wartoscPrzedmiotu = 840;}
+		if(id==23){nazwaitemu = "Stalowa zbroja"; obrona = 11;  wartoscPrzedmiotu = 1200;}
+		if(id==24){nazwaitemu = "Szklana zbroja"; obrona = 13;  wartoscPrzedmiotu = 1500;}
+		if(id==25){nazwaitemu = "Krasnoludzka zbroja"; obrona = 15;  wartoscPrzedmiotu = 2000;}
+		if(id==40){nazwaitemu = "Skorzane buty"; obrona = 2;  wartoscPrzedmiotu = 240;}
+		if(id==41){nazwaitemu = "Kolcze buty"; obrona = 3;  wartoscPrzedmiotu = 370;}
+		if(id==42){nazwaitemu = "Zelazne buty"; obrona = 4;  wartoscPrzedmiotu = 500;}
+		if(id==43){nazwaitemu = "Stalowe buty"; obrona = 6;  wartoscPrzedmiotu = 715;}
+		if(id==44){nazwaitemu = "Szklane buty"; obrona = 8;  wartoscPrzedmiotu = 900;}
+		if(id==45){nazwaitemu = "Krasnoludzkie buty"; obrona = 11;  wartoscPrzedmiotu = 1200;}
+		if(id==60){nazwaitemu = "Skorzane spodnie"; obrona = 3;  wartoscPrzedmiotu = 300;}
+		if(id==61){nazwaitemu = "Kolcze spodnie"; obrona = 5;  wartoscPrzedmiotu = 450;}
+		if(id==62){nazwaitemu = "Zelazne nagolenniki"; obrona = 7;  wartoscPrzedmiotu = 600;}
+		if(id==63){nazwaitemu = "Stalowe nagolenniki"; obrona = 9;  wartoscPrzedmiotu = 700;}
+		if(id==64){nazwaitemu = "Szklane nagolenniki"; obrona = 11;  wartoscPrzedmiotu = 700;}
+		if(id==65){nazwaitemu = "Krasnoludzkie nagolenniki"; obrona = 14;  wartoscPrzedmiotu = 1600;}
+		if(id==80){nazwaitemu = "Skorzane rekawice"; obrona = 1;  wartoscPrzedmiotu = 100;}
+		if(id==81){nazwaitemu = "Kolcze rekawice"; obrona = 2;  wartoscPrzedmiotu = 200;}
+		if(id==82){nazwaitemu = "Zelazne rekawice"; obrona = 3;  wartoscPrzedmiotu = 340;}
+		if(id==83){nazwaitemu = "Stalowe rekawice"; obrona = 4;  wartoscPrzedmiotu = 550;}
+		if(id==84){nazwaitemu = "Szklane rekawice"; obrona = 6;  wartoscPrzedmiotu = 800;}
+		if(id==85){nazwaitemu = "Krasnoludzkie rekawice"; obrona = 8;  wartoscPrzedmiotu = 1100;}
+		if(id==100){nazwaitemu = "Zardzewialy zelazny sztylet"; obrona = 2;  wartoscPrzedmiotu = 100;}
+		if(id==101){nazwaitemu = "Zelazny sztylet"; obrona = 5;  wartoscPrzedmiotu = 400;}
+		if(id==102){nazwaitemu = "Stalowy sztylet"; obrona = 10;  wartoscPrzedmiotu = 800;}
+		if(id==103){nazwaitemu = "Zelazny krotki miecz"; obrona = 15;  wartoscPrzedmiotu = 1600;}
+		if(id==104){nazwaitemu = "Walerianski krotki miecz"; obrona = 20;  wartoscPrzedmiotu = 2500;}
+		if(id==105){nazwaitemu = "Stalowy krotki miecz"; obrona = 25;  wartoscPrzedmiotu = 3200;}
 	}
 
-	void pokazitem()
+	void pokazitem(int czyPrzedmiotPosiadany)
 	{
 		cout << nazwaitemu << "|| "<<obrona<< " || Wartosc: " << wartoscPrzedmiotu;
 		if (czyPrzedmiotPosiadany == 1) cout << " (Posiadasz)\n";
@@ -1311,8 +1310,8 @@ public:
 		string ciagZnakow;
 		items(idItemu);
 		ciagZnakow = nazwaitemu +string(" # ") + to_string(obrona) + string(" # Wartosc: ") + to_string (wartoscPrzedmiotu);
-		if (czyPrzedmiotPosiadany == 1) ciagZnakow= ciagZnakow + " (Posiadasz)";
-		if (czyPrzedmiotPosiadany == 2 ) ciagZnakow= ciagZnakow + " (Nosisz)";
+		if (postac.posiadanePrzedmioty[idItemu] == 1) ciagZnakow= ciagZnakow + " (Posiadasz)";
+		if (postac.posiadanePrzedmioty[idItemu] == 2 ) ciagZnakow= ciagZnakow + " (Nosisz)";
 		return ciagZnakow;
 	}
 
@@ -1332,7 +1331,7 @@ public:
 				if (i>59 && i<80 && bylo4==0) {bialy();cout << "\nSpodnie:\n";szary(); bylo4 =1;}
 				if (i>79 && i<100 && bylo5==0) {bialy();cout << "\nRekawice:\n";szary(); bylo5 =1;}
 				if (i>99 && i<200 && bylo6==0) {bialy();cout << "\nBronie:\n";szary(); bylo6 =1;}
-				pokazitem();
+				pokazitem(postac.posiadanePrzedmioty[i]);
 				ilezlota = ilezlota+ wartoscPrzedmiotu;
 			}
 		}
@@ -1497,9 +1496,9 @@ public:
 	int klasa(int id)
 	{
 	if(id==1){nazwaklasy = "Rycerz"; }         //za kazdy lvl dodatkowe 2 obrona
-	if(id==2){nazwaklasy = "Czarodziej"; obrona = 2; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 220;} //za kazdy lvl dodatkowa mana
-	if(id==3){nazwaklasy = "Lotrzyk"; obrona = 4; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 420;}    //za kazdy lvl dodatkowy kryt
-	if(id==4){nazwaklasy = "Barbarzynca"; obrona = 6; czyPrzedmiotPosiadany = postac.posiadanePrzedmioty[id]; wartoscPrzedmiotu = 620;}//za kazdy lvl dodatkowy dmg(?)
+	if(id==2){nazwaklasy = "Czarodziej"; obrona = 2;  wartoscPrzedmiotu = 220;} //za kazdy lvl dodatkowa mana
+	if(id==3){nazwaklasy = "Lotrzyk"; obrona = 4;  wartoscPrzedmiotu = 420;}    //za kazdy lvl dodatkowy kryt
+	if(id==4){nazwaklasy = "Barbarzynca"; obrona = 6;  wartoscPrzedmiotu = 620;}//za kazdy lvl dodatkowy dmg(?)
 	}*/
 
 	void gotoxy( int column, int line )
