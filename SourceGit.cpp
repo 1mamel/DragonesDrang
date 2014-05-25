@@ -130,7 +130,6 @@ public:
 	int wartoscPrzedmiotu;
 	int obrona;
 	int izrecznosc;
-	int ibudowa;
 	int iinteligencja;
 	int isila;
 	int tempexp;
@@ -288,17 +287,6 @@ public:
 				dinteligencja=dinteligencja+iinteligencja; 
 		}
 		return dinteligencja;
-	}
-
-	int zliczbudowe()
-	{
-		int dbudowa=0;
-		for (int i=1;i<200;i++){
-			items(i);
-			if (postac.posiadanePrzedmioty[i]==2)
-				dbudowa=dbudowa+ibudowa; 
-		}
-		return dbudowa;
 	}
 
 	void ramka(int ileDodatkowo = 0)
@@ -1058,7 +1046,7 @@ public:
 
 	void pokaz()
 	{
-		crit=int(sqrt(postac.zrecznosc+zliczzrecznosc())*4);
+		crit=int(sqrt(postac.zrecznosc)*4+zliczzrecznosc());
 		gotoxy(0,0);bialy();cout << doswiadczenie;szary();cout << " - ";bialy(); cout << postac.doswiadczenie<<"/"<<postac.maksymalneDoswiadczenie;szary();cout << "(";bialy();cout << postac.poziom;szary();cout<<")";
 		gotoxy(0,1);czerwony();cout << zycie;szary();cout << " - " ;czerwony();cout << postac.hp;szary();cout << "/";czerwony();cout <<postac.maxhp;
 		gotoxy(0,2);niebieski();cout << krzyz;szary();cout << " - " ;niebieski();cout << postac.mp;szary();cout<<"/";niebieski();cout<<postac.maxmp;
@@ -1090,10 +1078,10 @@ public:
 			wylaczMuzyke();
 			Sleep(100);
 			mciSendString("play sounds/levelUP.wav ",NULL,1,NULL);
-			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1),"hp: " + to_string(postac.maxhp) + string("->") + to_string(postac.maxhp+(postac.budowa+zliczbudowe())*1.2) + string("   mp: " )+ to_string(postac.maxmp) + string("->") + to_string(postac.maxmp*1.4));
+			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1),"hp: " + to_string(postac.maxhp) + string("->") + to_string(postac.maxhp+postac.budowa*1.2) + string("   mp: " )+ to_string(postac.maxmp) + string("->") + to_string(postac.maxmp*1.4));
 			postac.doswiadczenie = postac.doswiadczenie-postac.maksymalneDoswiadczenie;
 			postac.maksymalneDoswiadczenie=int(postac.maksymalneDoswiadczenie*1.4);
-			postac.maxhp=int(postac.maxhp+(postac.budowa+zliczbudowe())*1.2);
+			postac.maxhp=int(postac.maxhp+postac.budowa+*1.2);
 			postac.maxmp=int(postac.maxmp*1.4);
 			postac.mp=postac.maxmp;
 			postac.hp=postac.maxhp;
@@ -1249,7 +1237,7 @@ public:
 	void staty()
 	{
 		system("cls");
-		cout << "Poziom: " << postac.poziom <<"\nDoswiadczenie: "<< postac.doswiadczenie << "/" << postac.maksymalneDoswiadczenie<< "\nHP: " << postac.hp << "/" << postac.maxhp<< "\nMP: " << postac.mp << "/" << postac.maxmp<< "\n\nSila: "<<postac.sila<<" + "<<zliczsile()<<"\nZrecznosc: "<<postac.zrecznosc <<" + "<<zliczzrecznosc()<<"\nBudowa: " <<postac.budowa<<" + "<<zliczbudowe() << "\nInteligencja: " << postac.inteligencja<<" + "<<zliczinteligencje()<<endl<<endl;
+		cout << "Poziom: " << postac.poziom <<"\nDoswiadczenie: "<< postac.doswiadczenie << "/" << postac.maksymalneDoswiadczenie<< "\nHP: " << postac.hp << "/" << postac.maxhp<< "\nMP: " << postac.mp << "/" << postac.maxmp<< "\n\nSila: "<<postac.sila<<" + "<<zliczsile()<<"\nZrecznosc: "<<postac.zrecznosc <<" + "<<zliczzrecznosc()<<"\nBudowa: " <<postac.budowa << "\nInteligencja: " << postac.inteligencja<<" + "<<zliczinteligencje()<<endl<<endl;
 		cout << "Szansa na krytyczny cios: " << crit << "%\n\n";
 		cout << "Sila wplywa na ilosc zadawanych obrazen\nZrecznosc wplywa na szanse krytycznego trafienia\nBudowa wplywa na ilosc maksymalnego hp po zdobyciu poziomu\nInteligencja wplywa na moc czarow\n\n";
 		system("PAUSE");    
