@@ -1297,42 +1297,42 @@ public:
 
 	void items(int id) 
 	{
-		if(id==1){nazwaitemu = "Skorzany kaptur"; obrona = 1; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 120;}
-		if(id==2){nazwaitemu = "Kolczy czepiec"; obrona = 2; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 220;}
-		if(id==3){nazwaitemu = "Zelazny helm"; obrona = 4; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 420;}
-		if(id==4){nazwaitemu = "Stalowy helm"; obrona = 6; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 620;}
-		if(id==5){nazwaitemu = "Szklany helm"; obrona = 8; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 860;}
-		if(id==6){nazwaitemu = "Krasnoludzki szturmak"; obrona = 11; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 1200;}
-		if(id==20){nazwaitemu = "Skorzana zbroja"; obrona = 5; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 500;}
-		if(id==21){nazwaitemu = "Kolczuga"; obrona = 7; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 620;}
-		if(id==22){nazwaitemu = "Zelazna zbroja"; obrona = 9; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 840;}
-		if(id==23){nazwaitemu = "Stalowa zbroja"; obrona = 11; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 1200;}
-		if(id==24){nazwaitemu = "Szklana zbroja"; obrona = 13; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 1500;}
-		if(id==25){nazwaitemu = "Krasnoludzka zbroja"; obrona = 15; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 2000;}
-		if(id==40){nazwaitemu = "Skorzane buty"; obrona = 2; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 240;}
-		if(id==41){nazwaitemu = "Kolcze buty"; obrona = 3; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 370;}
-		if(id==42){nazwaitemu = "Zelazne buty"; obrona = 4; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 500;}
-		if(id==43){nazwaitemu = "Stalowe buty"; obrona = 6; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 715;}
-		if(id==44){nazwaitemu = "Szklane buty"; obrona = 8; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 900;}
-		if(id==45){nazwaitemu = "Krasnoludzkie buty"; obrona = 11; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 1200;}
-		if(id==60){nazwaitemu = "Skorzane spodnie"; obrona = 3; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 300;}
-		if(id==61){nazwaitemu = "Kolcze spodnie"; obrona = 5; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 450;}
-		if(id==62){nazwaitemu = "Zelazne nagolenniki"; obrona = 7; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 600;}
-		if(id==63){nazwaitemu = "Stalowe nagolenniki"; obrona = 9; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 700;}
-		if(id==64){nazwaitemu = "Szklane nagolenniki"; obrona = 11; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 700;}
-		if(id==65){nazwaitemu = "Krasnoludzkie nagolenniki"; obrona = 14; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 1600;}
-		if(id==80){nazwaitemu = "Skorzane rekawice"; obrona = 1; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 100;}
-		if(id==81){nazwaitemu = "Kolcze rekawice"; obrona = 2; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 200;}
-		if(id==82){nazwaitemu = "Zelazne rekawice"; obrona = 3; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 340;}
-		if(id==83){nazwaitemu = "Stalowe rekawice"; obrona = 4; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 550;}
-		if(id==84){nazwaitemu = "Szklane rekawice"; obrona = 6; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 800;}
-		if(id==85){nazwaitemu = "Krasnoludzkie rekawice"; obrona = 8; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 1100;}
-		if(id==100){nazwaitemu = "Zardzewialy zelazny sztylet"; obrona = 2; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 100;}
-		if(id==101){nazwaitemu = "Zelazny sztylet"; obrona = 5; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 400;}
-		if(id==102){nazwaitemu = "Stalowy sztylet"; obrona = 10; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 800;}
-		if(id==103){nazwaitemu = "Zelazny krotki miecz"; obrona = 15; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 1600;}
-		if(id==104){nazwaitemu = "Walerianski krotki miecz"; obrona = 20; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 2500;}
-		if(id==105){nazwaitemu = "Stalowy krotki miecz"; obrona = 25; izrecznosc=0; iinteligencja=0; ibudowa=0; isila=0; wartoscPrzedmiotu = 3200;}
+		if(id==1){nazwaitemu = "Skorzany kaptur"; obrona = 1; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 120;}
+		if(id==2){nazwaitemu = "Kolczy czepiec"; obrona = 2; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 220;}
+		if(id==3){nazwaitemu = "Zelazny helm"; obrona = 4; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 420;}
+		if(id==4){nazwaitemu = "Stalowy helm"; obrona = 6; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 620;}
+		if(id==5){nazwaitemu = "Szklany helm"; obrona = 8; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 860;}
+		if(id==6){nazwaitemu = "Krasnoludzki szturmak"; obrona = 11; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 1200;}
+		if(id==20){nazwaitemu = "Skorzana zbroja"; obrona = 5; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 500;}
+		if(id==21){nazwaitemu = "Kolczuga"; obrona = 7; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 620;}
+		if(id==22){nazwaitemu = "Zelazna zbroja"; obrona = 9; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 840;}
+		if(id==23){nazwaitemu = "Stalowa zbroja"; obrona = 11; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 1200;}
+		if(id==24){nazwaitemu = "Szklana zbroja"; obrona = 13; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 1500;}
+		if(id==25){nazwaitemu = "Krasnoludzka zbroja"; obrona = 15; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 2000;}
+		if(id==40){nazwaitemu = "Skorzane buty"; obrona = 2; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 240;}
+		if(id==41){nazwaitemu = "Kolcze buty"; obrona = 3; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 370;}
+		if(id==42){nazwaitemu = "Zelazne buty"; obrona = 4; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 500;}
+		if(id==43){nazwaitemu = "Stalowe buty"; obrona = 6; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 715;}
+		if(id==44){nazwaitemu = "Szklane buty"; obrona = 8; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 900;}
+		if(id==45){nazwaitemu = "Krasnoludzkie buty"; obrona = 11; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 1200;}
+		if(id==60){nazwaitemu = "Skorzane spodnie"; obrona = 3; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 300;}
+		if(id==61){nazwaitemu = "Kolcze spodnie"; obrona = 5; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 450;}
+		if(id==62){nazwaitemu = "Zelazne nagolenniki"; obrona = 7; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 600;}
+		if(id==63){nazwaitemu = "Stalowe nagolenniki"; obrona = 9; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 700;}
+		if(id==64){nazwaitemu = "Szklane nagolenniki"; obrona = 11; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 700;}
+		if(id==65){nazwaitemu = "Krasnoludzkie nagolenniki"; obrona = 14; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 1600;}
+		if(id==80){nazwaitemu = "Skorzane rekawice"; obrona = 1; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 100;}
+		if(id==81){nazwaitemu = "Kolcze rekawice"; obrona = 2; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 200;}
+		if(id==82){nazwaitemu = "Zelazne rekawice"; obrona = 3; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 340;}
+		if(id==83){nazwaitemu = "Stalowe rekawice"; obrona = 4; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 550;}
+		if(id==84){nazwaitemu = "Szklane rekawice"; obrona = 6; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 800;}
+		if(id==85){nazwaitemu = "Krasnoludzkie rekawice"; obrona = 8; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 1100;}
+		if(id==100){nazwaitemu = "Zardzewialy zelazny sztylet"; obrona = 2; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 100;}
+		if(id==101){nazwaitemu = "Zelazny sztylet"; obrona = 5; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 400;}
+		if(id==102){nazwaitemu = "Stalowy sztylet"; obrona = 10; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 800;}
+		if(id==103){nazwaitemu = "Zelazny krotki miecz"; obrona = 15; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 1600;}
+		if(id==104){nazwaitemu = "Walerianski krotki miecz"; obrona = 20; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 2500;}
+		if(id==105){nazwaitemu = "Stalowy krotki miecz"; obrona = 25; izrecznosc=0; iinteligencja=0;   isila=0; wartoscPrzedmiotu = 3200;}
 	}
 
 	void pokazitem(int czyPrzedmiotPosiadany)
