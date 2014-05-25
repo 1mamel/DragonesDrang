@@ -135,6 +135,8 @@ public:
 	bool wykonanoRuch;
 	char jaka;
 	unsigned int gdzie;
+	bool stanDefensywny;
+	int	przyspieszenieGraczaTura;
 	string potw;
 	int x;
 	int respawnX;
@@ -431,7 +433,7 @@ public:
 		gotoxy(19,21);
 		system("pause");  
 		system("CLS");
-	};
+	}
 
 	void usewejscie()
 	{
@@ -453,7 +455,7 @@ public:
 		gotoxy(19,21);
 		system("pause");  
 		system("CLS");
-	};
+	}
 
 	void wylaczMuzyke()
 	{
@@ -505,26 +507,36 @@ public:
 		else if (wybor == 8)
 			ekwipunek();
 	}
+
 	void odswiezEkranWalki(bool podczasRuchu = false)
 	{
-		gotoxy(3,15); cout << " ";
+		zmienKolor(8);
+		gotoxy(5,14);
+		for (int i = 0; i < 71; i++) cout << pozioma;
+		gotoxy(5,17);
+		for (int i = 0; i < 71; i++) cout << pozioma;
+		gotoxy(4,15); cout << pionowa;
 		for (int i = 0; i < 71; i++)
 		{
-			if (i>=50)zmienKolor(12);
+			if (i>=50)zmienKolor(4);
 			cout << char(219);
-			szary();
 		}
-		cout << "    ";
-		gotoxy(3,16);  cout << " ";
+		zmienKolor(8);
+		cout << pionowa;
+		gotoxy(4,16);  cout << pionowa;
 		for (int i = 0; i < 71; i++)
 		{
-			if (i>=50)zmienKolor(12);
+			if (i>=50)zmienKolor(4);
 			cout << char(219);
-			szary();
 		}
-		cout << "    ";
-		gotoxy(4+timerGracza,15); cout << prawo;
-		gotoxy(4+timerPotwora,16); cout << white;
+		zmienKolor(8);
+		cout << pionowa;
+		if (timerGracza >=50) zmienKolor(64+15);
+		else zmienKolor(128+15);
+		gotoxy(5+timerGracza,15); cout << prawo; szary();
+		if (timerPotwora >=50) zmienKolor(64+15);
+		else zmienKolor(128+15);
+		gotoxy(5+timerPotwora,16); cout << white; szary();
 		gotoxy(30,3);
 		cout << "     ";
 		gotoxy(30,3);
@@ -535,7 +547,10 @@ public:
 		gotoxy(45,3);cout << "     ";gotoxy(45,3);czerwony();cout << hpPotwora;szary();cout << "/";czerwony();cout << maksymalneHpPotwora;szary();
 		if (podczasRuchu == false)
 		{
+			gotoxy(33,9); cout << "    ";
+			gotoxy(33,9); if (przyspieszenieGraczaTura > 0)cout << char(175);
 			gotoxy(33,10);cout << prawo;
+			if (stanDefensywny == true) cout << char(233);
 			if (rodzajPotwora == 2) czerwony(); //TODO: dokonczyc
 			gotoxy(47,10);cout << white;
 			szary();
@@ -565,6 +580,7 @@ public:
 			Sleep(50);
 		}  
 	}
+
 	void odejdzOdWroga()
 	{
 		for (int i = 0; i<13;i++)
@@ -575,6 +591,7 @@ public:
 		}
 		gotoxy(33,10);cout << prawo;
 	}
+
 	void wyswietlNadWrogiem(int zmianaWartosci,int czyKrytyk, int jakiKolor)
 	{
 		zmienKolor(jakiKolor);
@@ -602,6 +619,7 @@ public:
 		gotoxy(32,6);cout << "                   ";
 		szary();
 	}
+
 	void odtworzLosowyDzwiek(string listaDzwiekow)
 	{
 		for (int i = 0; i < 30; i++)
@@ -627,6 +645,7 @@ public:
 		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
 
 	}
+
 	void poslijPocisk(char jakiZnaczek, int jakiKolor)
 	{
 		for (int i = 1; i<13;i++)
@@ -639,6 +658,7 @@ public:
 		}  
 		gotoxy(34+12,10); cout << " ";
 	}
+
 	void poslijPociskWGracza(char jakiZnaczek, int jakiKolor)
 	{
 		for (int i = 1; i<13;i++)
@@ -651,6 +671,7 @@ public:
 		}  
 		gotoxy(47-13,10);cout << " ";
 	}
+
 	void podejscieWroga()
 	{
 		for(int i=0;i<13;i++)
@@ -670,6 +691,7 @@ public:
 			Sleep(50);
 		}
 	}
+
 	void atakNormalnyGracza()
 	{
 		odswiezEkranWalki();
@@ -683,6 +705,9 @@ public:
 		else
 			czyTrafienieKrytyczne = 0;
 		hpPotwora= hpPotwora-dmg;
+		ktoryRuch = 0;
+		if (timerPotwora>=50) timerPotwora -= 35;
+		timerGracza = 0;
 		odswiezEkranWalki(true);
 		if (czyTrafienieKrytyczne==1)
 			odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|");
@@ -694,6 +719,7 @@ public:
 
 	void uzycieCzaru()
 	{
+		ktoryRuch = 0;
 		if (wybor == 1)//uleczenie
 		{
 			postac.hp= postac.hp + int(postac.inteligencja*1.5) ;
@@ -716,6 +742,8 @@ public:
 			}
 			else
 				czyTrafienieKrytyczne = 0;
+			timerGracza = 0;
+			if (timerPotwora>=50) timerPotwora -= 35;
 			hpPotwora= hpPotwora-dmg;
 			odswiezEkranWalki(true);
 			if (czyTrafienieKrytyczne==1)
@@ -723,6 +751,13 @@ public:
 			else
 				odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");//TODO: zmienic na odglosy czarow
 			wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
+		}
+		else if (wybor == 3)//przyspieszenie
+		{
+			przyspieszenieGraczaTura = 3;
+			timerGracza = 0;
+			odtworzLosowyDzwiek("przyspieszenie.mp3|");
+			odswiezEkranWalki();
 		}
 	}
 
@@ -735,31 +770,88 @@ public:
 			return false;
 		}
 		wykonanoRuch = true;
-		ktoryRuch = 2;
+		ktoryRuch = 3;
 		return true;
 	}
 
-	void ruchGracza()
+	void ruchPotwora()
+	{
+		if (hpPotwora >0){
+			int pdmg;
+			odswiezEkranWalki();
+			pdmg = potdmgmin+(rand()%7) -zliczdef();
+			if (pdmg<0) pdmg = 0;
+			if (stanDefensywny == true) pdmg = int(pdmg/2);
+			postac.hp=postac.hp-pdmg;
+			if (czyZasiegowy == false)
+				podejscieWroga();
+			else
+				poslijPociskWGracza(5,12);
+			odswiezEkranWalki(true);
+			odtworzLosowyDzwiek("punch1.mp3|punch2.mp3|punch3.mp3|punch4.mp3|punch5.mp3|punch6.mp3|");
+			wyswietlNadGraczem(pdmg,0,12);
+			if (czyZasiegowy == false)
+				odejscieWroga();
+		}
+	}
+
+	void sprawdzCzyPotworZyje()
+	{
+		if (hpPotwora < 1)
+		{
+			for (int i=0;i<5;i++)
+			{
+				gotoxy(47,10);
+				cout << " ";
+				Sleep(100);
+				gotoxy(47,10);
+				cout << white;
+				Sleep(100);
+			}
+			gotoxy(47,10);
+			cout << " ";
+			ramkaInformacji("Wygrales! " + potw + string(" nie zyje!"));
+			int potexp = int(maksymalneHpPotwora+0.5*(rand()%20));
+			ramkaInformacji("Otrzymujesz " + to_string(potexp) + string(" punktow doswiadczenia!"),"Otrzymales " + to_string (potgold) + string(" sztuk zlota"));
+			zdobyteDoswiadczenie=zdobyteDoswiadczenie+potexp;
+			postac.doswiadczenie=postac.doswiadczenie+potexp;
+			potgold = potgold+(rand()%20);
+			zabitepotwory++;
+			postac.zloto=postac.zloto+potgold;
+			zdobyteZloto=zdobyteZloto+potgold;
+		}
+	}
+
+	void wyborRuchuGracza()
 	{
 		while (wykonanoRuch == false)
 		{
 			gotoxy(10,30);
 			cout << "Twoj ruch?";
-			menuWyboru(10,31,"Atakuj|Magia|Pas|",false);
+			menuWyboru(10,31,"Atak|Obrona|Magia|Pas|",false);
 			if (wybor == 1){
 				wykonanoRuch = true;
 				ktoryRuch = 1;
 			}
 			else if (wybor == 2)
 			{
-				ktoryRuch = 2;
-				ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(int(postac.inteligencja*1.5)) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Powrot|"));
+				stanDefensywny = true;
+				wykonanoRuch = true;
+				ktoryRuch = 0;
+				timerGracza = 0;
+				odswiezEkranWalki();
+				odtworzLosowyDzwiek("shield.wav|");
+			}
+			else if (wybor == 3)
+			{
+				ktoryRuch = 3;
+				ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(int(postac.inteligencja*1.5)) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Przyspieszenie - 5 many|Powrot|"));
 				system("cls");
 				odswiezEkranWalki();
-				if (wybor == 1 || wybor == 2)
+				if (wybor == 1 || wybor == 2 || wybor == 3)
 					sprawdzMane(5);
 			}
-			else if (wybor == 3)//uzycie potionow jest natychmiastowe
+			else if (wybor == 4)//uzycie potionow jest natychmiastowe
 			{
 				ramkaWyboru("Zawartosc pasa:",(string("Mikstura zdrowia: ") + to_string(postac.hppot) + string("|Mikstura many: ") + to_string(postac.mppot) + string("|Powrot|")));
 				if (wybor == 1){
@@ -802,51 +894,6 @@ public:
 			cout << "           ";
 		}
 	}
-	void ruchPotwora()
-	{
-		if (hpPotwora >0){
-			int pdmg;
-			odswiezEkranWalki();
-			pdmg = potdmgmin+(rand()%7) -zliczdef();
-			if (pdmg<0) pdmg = 0;
-			postac.hp=postac.hp-pdmg;
-			if (czyZasiegowy == false)
-				podejscieWroga();
-			else
-				poslijPociskWGracza(5,12);
-			odswiezEkranWalki(true);
-			odtworzLosowyDzwiek("punch1.mp3|punch2.mp3|punch3.mp3|punch4.mp3|punch5.mp3|punch6.mp3|");
-			wyswietlNadGraczem(pdmg,0,12);
-			if (czyZasiegowy == false)
-				odejscieWroga();
-		}
-	}
-	void sprawdzCzyPotworZyje()
-	{
-		if (hpPotwora < 1)
-		{
-			for (int i=0;i<5;i++)
-			{
-				gotoxy(47,10);
-				cout << " ";
-				Sleep(100);
-				gotoxy(47,10);
-				cout << white;
-				Sleep(100);
-			}
-			gotoxy(47,10);
-			cout << " ";
-			ramkaInformacji("Wygrales! " + potw + string(" nie zyje!"));
-			int potexp = int(maksymalneHpPotwora+0.5*(rand()%20));
-			ramkaInformacji("Otrzymujesz " + to_string(potexp) + string(" punktow doswiadczenia!"),"Otrzymales " + to_string (potgold) + string(" sztuk zlota"));
-			zdobyteDoswiadczenie=zdobyteDoswiadczenie+potexp;
-			postac.doswiadczenie=postac.doswiadczenie+potexp;
-			potgold = potgold+(rand()%20);
-			zabitepotwory++;
-			postac.zloto=postac.zloto+potgold;
-			zdobyteZloto=zdobyteZloto+potgold;
-		}
-	}
 
 	void walka(bool czyPotworZaatakowal)
 	{
@@ -862,6 +909,7 @@ public:
 			timerPotwora = 50;
 		else
 			timerGracza = 50;
+		przyspieszenieGraczaTura = 0;
 		odswiezEkranWalki();
 		szybkoscGracza = 2;
 		ktoryRuch = 0;
@@ -873,23 +921,16 @@ public:
 			if (timerGracza >= 50)
 			{
 				if (ktoryRuch == 0)
-					ruchGracza(); //RUCH GRACZA
+					wyborRuchuGracza(); //RUCH GRACZA
 				if (timerGracza >= 70)
 				{
+					if (przyspieszenieGraczaTura>0)
+						przyspieszenieGraczaTura--;
+					stanDefensywny = false;
 					if (ktoryRuch == 1)
-					{
 						atakNormalnyGracza();
-						ktoryRuch = 0;
-						if (timerPotwora>=50) timerPotwora -= 35;
-						timerGracza = 0;
-					}
-					else if (ktoryRuch == 2)
-					{
+					else if (ktoryRuch == 3)
 						uzycieCzaru();
-						ktoryRuch = 0;
-						if (timerPotwora>=50) timerPotwora -= 35;
-						timerGracza = 0;
-					}
 				}
 			}
 			if (timerPotwora >= 50)
@@ -905,9 +946,7 @@ public:
 				}
 			}
 			else
-			{
 				szybkoscPotwora=2;
-			}
 			if (postac.hp<1)
 			{
 				gameover();
@@ -919,10 +958,13 @@ public:
 			if (timerPotwora>70)
 				timerPotwora = 70;
 			timerGracza+=szybkoscGracza;
+			if (stanDefensywny == true)
+				timerGracza+=1;
+			if (przyspieszenieGraczaTura > 0)
+				timerGracza+=1;
 			if (timerGracza>70)
 				timerGracza = 70;
 		}
-
 		while (postac.doswiadczenie>postac.maksymalneDoswiadczenie)       
 			postac.poziom=postac.poziom+ lvlup();
 		wylaczMuzyke();
@@ -1420,23 +1462,23 @@ public:
 	void zmienKolor(int jakiKolor)
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), jakiKolor);
-			//0   BLACK
-			//1   BLUE
-			//2   GREEN
-			//3   CYAN
-			//4   RED
-			//5   MAGENTA
-			//6   BROWN
-			//7   LIGHTGRAY
-			//8   DARKGRAY
-			//9   LIGHTBLUE
-			//10  LIGHTGREEN
-			//11  LIGHTCYAN
-			//12  LIGHTRED
-			//13  LIGHTMAGENTA
-			//14  YELLOW
-			//15  WHITE
-			//ustawianie tla = dodac ilosc szesnastek do koloru
+		//0   BLACK
+		//1   BLUE
+		//2   GREEN
+		//3   CYAN
+		//4   RED
+		//5   MAGENTA
+		//6   BROWN
+		//7   LIGHTGRAY
+		//8   DARKGRAY
+		//9   LIGHTBLUE
+		//10  LIGHTGREEN
+		//11  LIGHTCYAN
+		//12  LIGHTRED
+		//13  LIGHTMAGENTA
+		//14  YELLOW
+		//15  WHITE
+		//ustawianie tla = dodac ilosc szesnastek do koloru
 	}
 	void zolty()
 	{
