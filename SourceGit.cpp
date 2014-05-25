@@ -522,7 +522,7 @@ public:
 		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Alchemik|Zobacz statystyki postaci|Zapisz stan gry|Opcje|Lista Posiadanych przedmiotow|");
 		if (wybor == 1)
 		{
-			ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Krypta Pacmana (chaos)|Sancre Tor (trudny)|Poziom6 (-)|Leze smoka (BOSS)|Powrot|");
+			ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Krypta Pacmana (chaos)|Sancre Tor (trudny)|Opuszczona wioska (trudny)|Leze smoka (BOSS)|Powrot|");
 			if (wybor !=8)
 				level(wybor);
 			else 
@@ -1372,7 +1372,7 @@ public:
 	{
 		string ciagZnakow;
 		items(idItemu);
-		if(obrona>0)
+		if(obrona>atak)
 			ciagZnakow = nazwaitemu +string(" # ") + to_string(obrona) + string(" # Wartosc: ") + to_string (wartoscPrzedmiotu);
 		else
 			ciagZnakow = nazwaitemu +string(" # ") + to_string(atak) + string(" # Wartosc: ") + to_string (wartoscPrzedmiotu);
