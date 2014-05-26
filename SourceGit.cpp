@@ -63,7 +63,7 @@ public:
 		doswiadczenie = 0;
 		punktyDoRozdania=0;
 		maksymalneDoswiadczenie = 100; 
-		zloto = 0;
+		zloto = 213320;
 		hp = 100;
 		mp = 10;
 		maxhp=100;
@@ -1487,24 +1487,27 @@ public:
 			ramkaWyboru("Co chcialbys zrobic z " + nazwaitemu + string("?"),"Kupic za " + to_string(int(wartoscPrzedmiotu)) + string(" sztuk zlota|Powrot...|"));
 			if (wybor == 1)
 			{
-				if (postac.zloto > wartoscPrzedmiotu-1){
+				mciSendString("play sounds/goldd.wav ",NULL,1,NULL);
+				if (postac.zloto > wartoscPrzedmiotu-1)
+				{
 					postac.posiadanePrzedmioty[ktoryPrzedmiot]=1; 
+					ramkaInformacji("Kupiles " + nazwaitemu +string(" za ") + to_string(int(wartoscPrzedmiotu)) +string(" sztuk zlota."));
 					ramkaWyboru("Czy chcesz ubrac przedmiot " + nazwaitemu + string("?"),"Tak|Nie|");
 					if(wybor==1)
+					{
 						if (ktoryPrzedmiot<20)for (int i=1;i<20;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 						if (ktoryPrzedmiot>19 && ktoryPrzedmiot<40)for (int i=20;i<40;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 						if (ktoryPrzedmiot>39 && ktoryPrzedmiot<60)for (int i=40;i<60;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						if (ktoryPrzedmiot>59 && ktoryPrzedmiot<80) for (int i=60;i<80;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>59 && ktoryPrzedmiot<80)for (int i=60;i<80;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 						if (ktoryPrzedmiot>79 && ktoryPrzedmiot<100)for (int i=80;i<100;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 						if (ktoryPrzedmiot>99 && ktoryPrzedmiot<120)for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+																	for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 						if (ktoryPrzedmiot>119 && ktoryPrzedmiot<140)for (int i=120;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 						if (ktoryPrzedmiot>139 && ktoryPrzedmiot<200)for (int i=100;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 						postac.posiadanePrzedmioty[ktoryPrzedmiot]=2; 
 						postac.zloto = postac.zloto-wartoscPrzedmiotu;
-						mciSendString("play sounds/goldd.wav ",NULL,1,NULL);
-						ramkaInformacji("Kupiles " + nazwaitemu +string(" za ") + to_string(int(wartoscPrzedmiotu)) +string(" sztuk zlota."));
-
+						mciSendString("play sounds/cloth.wav ",NULL,1,NULL);
+					}
 				}
 				else
 				{
