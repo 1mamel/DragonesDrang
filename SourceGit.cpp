@@ -292,17 +292,18 @@ public:
 
 	void ramka(int ileDodatkowo = 0)
 	{
-		ileDodatkowo = 5; // porzucamy to bo nie umiemy matematyki
-		gotoxy(17,13-ileDodatkowo/2); cout << lewy_gorny; for (int i = 0; i<45;i++) cout << pozioma; cout << prawy_gorny;
+		if (ileDodatkowo%2 == -1) ileDodatkowo++; //nauczylismy sie liczyc :D
+		gotoxy(16,13-ileDodatkowo/2); cout << lewy_gorny; for (int i = 0; i<47;i++) cout << pozioma; cout << prawy_gorny;
 		for (int i = 0; i<10+ileDodatkowo;i++){
-			gotoxy(17,14+i-ileDodatkowo/2); cout << pionowa; for (int j = 0; j<45;j++) cout << " "; cout << pionowa;
+			gotoxy(16,14+i-ileDodatkowo/2); cout << pionowa; for (int j = 0; j<47;j++) cout << " "; cout << pionowa;
 		}
-		gotoxy(17,24+ileDodatkowo/2); cout << lewy_dolny; for (int i = 0; i<45;i++) cout << pozioma; cout << prawy_dolny;   
+		gotoxy(16,24+ileDodatkowo/2); cout << lewy_dolny; for (int i = 0; i<47;i++) cout << pozioma; cout << prawy_dolny;   
 	}
 
-	void ramkaWyboru(string pytanie, string dluzszyTekst, string pytanie2 ="")
+	void ramkaWyboru(string pytanie, string dluzszyTekst)
 	{
 		int i = 0;
+		int j = 0;
 		string tempDluzszyTekst = dluzszyTekst;
 		while(true)
 		{
@@ -316,24 +317,64 @@ public:
 			tempDluzszyTekst = tempDluzszyTekst.substr(tempDluzszyTekst.find('|') + 1);
 			i++;
 		}
-		i=i-7;
+		for (int i = 0; i < 30; i++)
+			tablicaTekstu[i] = "puste";
+		string::size_type pos;
+		while(true)
+		{
+			if (pytanie.length() > 50)
+				pos = pytanie.find(' ',40);
+			else
+			{
+				tablicaTekstu[j] = pytanie;
+				break;
+			}
+			tablicaTekstu[j] = pytanie.substr(0, pos);
+				pytanie = pytanie.substr(pos);
+			j++;
+		}
+		int z = (int(i+j))/2 +1;
+		i=i+j-7;
 		ramka(i);
-		gotoxy(39-(pytanie.length())/2 +1,14-i/2);
-		cout << pytanie;
-		gotoxy(39-(pytanie2.length())/2 +1,15-i/2);
-		cout << pytanie2;
-		menuWyboru(39,16-i/2,dluzszyTekst);
+		for (int g = 0; g < 30; g++){
+			if (tablicaTekstu[g]== "puste")
+				break;
+			gotoxy(39-(tablicaTekstu[g].length())/2 +1,18+g-z);
+			cout << tablicaTekstu[g];
+		}
+		menuWyboru(39,20+j-z,dluzszyTekst);
 	}
 
-	void ramkaInformacji(string informacja, string informacja2 = "")
+	void ramkaInformacji(string informacja)
 	{
 		FlushConsoleInputBuffer(hInput);    
-		ramka();
-		gotoxy(39-(informacja.length())/2 +1,15);
-		cout << informacja;
-		gotoxy(39-(informacja2.length())/2 +1,16);
-		cout << informacja2;
-		gotoxy(19,20);
+		int j = 0;
+		for (int i = 0; i < 30; i++)
+			tablicaTekstu[i] = "puste";
+		string::size_type pos;
+		while(true)
+		{
+			if (informacja.length() > 50)
+				pos = informacja.find(' ',40);
+			else
+			{
+				tablicaTekstu[j] = informacja;
+				break;
+			}
+			tablicaTekstu[j] = informacja.substr(0, pos);
+				informacja = informacja.substr(pos);
+			j++;
+		}
+		ramka(j-7);
+
+		for (int g = 0; g < 30; g++){
+			if (tablicaTekstu[g]== "puste")
+				break;
+			gotoxy(39-(tablicaTekstu[g].length())/2 +1,18+g +j/2);
+			cout << tablicaTekstu[g];
+		}
+		
+		gotoxy(19,20+j+j/2 -1);
 		cout << "Nacisnij dowolny klawisz by kontynuowac...";
 		_getch();
 	}
@@ -435,7 +476,7 @@ public:
 				if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
 				uzylhp = 1;
 				postac.hppot=postac.hppot-1;
-				ramkaInformacji("Uleczyles sie za 50 hp,",string("Posiadasz teraz ") + to_string(postac.hp) + string("hp."));
+				ramkaInformacji("Uleczyles sie za 50 hp," + string("Posiadasz teraz ") + to_string(postac.hp) + string("hp."));
 			}
 		}
 		if (wybor == 2){
@@ -444,7 +485,7 @@ public:
 			else{
 				postac.mp=postac.mp+5;
 				if (postac.mp>postac.maxmp) postac.mp = postac.maxmp;
-				ramkaInformacji("Ilosc aktualnie posiadanych punktow many","wzrosla do " + to_string(postac.mp));
+				ramkaInformacji("Ilosc aktualnie posiadanych punktow many wzrosla do " + to_string(postac.mp));
 				uzylmp=1;
 				postac.mppot=postac.mppot-1;
 			}
@@ -519,7 +560,7 @@ public:
 		system("cls");
 		pokaz();
 		mciSendString("play sounds/miasto.mp3 ",NULL,1,NULL);
-		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Alchemik|Zobacz statystyki postaci|Zapisz stan gry|Opcje|Lista Posiadanych przedmiotow|");
+		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Pas|Karczma|Kowal i ekwipunek|Alchemik|Zobacz statystyki postaci|Zapisz stan gry|Opcje|Lista Posiadanych przedmiotow|");
 		if (wybor == 1)
 		{
 			ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Krypta Pacmana (chaos)|Sancre Tor (trudny)|Opuszczona wioska (trudny)|Leze smoka (BOSS)|Powrot|");
@@ -530,18 +571,20 @@ public:
 			labirynt();
 		}
 		else if (wybor == 2)
-			karczma();
+			pas();
 		else if (wybor == 3)
-			kowal();
+			karczma();
 		else if (wybor == 4)
+			kowal();
+		else if (wybor == 5)
 			alchemik();
-		else if (wybor ==5 )
-			staty();
 		else if (wybor == 6)
-			save();
+			staty();
 		else if (wybor == 7)
-			opcje();
+			save();
 		else if (wybor == 8)
+			opcje();
+		else if (wybor == 9)
 			ekwipunek();
 	}
 
@@ -605,7 +648,7 @@ public:
 		else if (rodzajPotwora==2) tempTekst2 += "normalnego.";
 		else if (rodzajPotwora==3) tempTekst2 += "mocnego.";
 		else if (rodzajPotwora==4) tempTekst2 += "Legendarnego!";
-		ramkaInformacji(tempTekst1,tempTekst2);
+		ramkaInformacji(tempTekst1 + tempTekst2);
 	}
 
 	void podejdzDoWroga()
@@ -763,7 +806,7 @@ public:
 			if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
 			postac.mp=postac.mp-5;
 			mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
-			wyswietlNadGraczem(-50,0,2);
+			wyswietlNadGraczem(-int((postac.inteligencja+zliczInteligencje())*1.5),0,2);
 		}
 		else if (wybor == 2)//ognisty podmuch
 		{
@@ -849,7 +892,7 @@ public:
 			cout << " ";
 			ramkaInformacji("Wygrales! " + potw + string(" nie zyje!"));
 			int potexp = int(maksymalneHpPotwora+0.5*(rand()%20));
-			ramkaInformacji("Otrzymujesz " + to_string(potexp) + string(" punktow doswiadczenia!"),"Otrzymales " + to_string (potgold) + string(" sztuk zlota"));
+			ramkaInformacji("Otrzymujesz " + to_string(potexp) + string(" punktow doswiadczenia! Otrzymales ") + to_string (potgold) + string(" sztuk zlota"));
 			zdobyteDoswiadczenie=zdobyteDoswiadczenie+potexp;
 			postac.doswiadczenie=postac.doswiadczenie+potexp;
 			potgold = potgold+(rand()%20);
@@ -1079,7 +1122,7 @@ public:
 			wylaczMuzyke();
 			Sleep(100);
 			mciSendString("play sounds/levelUP.wav ",NULL,1,NULL);
-			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1),"hp: " + to_string(postac.maxhp) + string("->") + to_string(postac.maxhp+postac.budowa*1.2) + string("   mp: " )+ to_string(postac.maxmp) + string("->") + to_string(postac.maxmp*1.4));
+			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1) + "hp: " + to_string(postac.maxhp) + string("->") + to_string(postac.maxhp+postac.budowa*1.2) + string("   mp: " )+ to_string(postac.maxmp) + string("->") + to_string(postac.maxmp*1.4));
 			postac.doswiadczenie = postac.doswiadczenie-postac.maksymalneDoswiadczenie;
 			postac.maksymalneDoswiadczenie=int(postac.maksymalneDoswiadczenie*1.4);
 			postac.maxhp=int(postac.maxhp+postac.budowa*1.2);
@@ -1144,7 +1187,7 @@ public:
 				return;
 			}
 			if (ilosc==0) {
-				ramkaInformacji("Czyli nic nie wybrales... ","Dlaczego zawracasz niepotrzebnie dupe?");
+				ramkaInformacji("Czyli nic nie wybrales... Dlaczego zawracasz niepotrzebnie dupe?");
 				return;
 			}
 			if (wybor == 1)
@@ -1156,7 +1199,7 @@ public:
 					mciSendString("play sounds/potion.wav ",NULL,1,NULL);
 					postac.zloto = postac.zloto -(250*ilosc); 
 					postac.hppot = postac.hppot+ilosc; 
-					ramkaInformacji("Kupiles " +to_string(ilosc) + string(" mikstur zdrowia za sume ") + to_string(250*ilosc) + string("sztuk zlota."),"Posiadasz teraz " +to_string(postac.hppot) + string(" mikstur zdrowia i ")+ to_string(postac.zloto) + string(" sztuk zlota")); 
+					ramkaInformacji("Kupiles " +to_string(ilosc) + string(" mikstur zdrowia za sume ") + to_string(250*ilosc) + string("sztuk zlota.") + "Posiadasz teraz " +to_string(postac.hppot) + string(" mikstur zdrowia i ")+ to_string(postac.zloto) + string(" sztuk zlota")); 
 				}
 				return;
 			}
@@ -1169,7 +1212,7 @@ public:
 					mciSendString("play sounds/potion.wav ",NULL,1,NULL);
 					postac.zloto = postac.zloto -(200*ilosc); 
 					postac.mppot = postac.mppot+ilosc; 
-					ramkaInformacji("Kupiles " +to_string(ilosc) + string(" mikstur many za sume ") + to_string(200*ilosc) + string("sztuk zlota."),"Posiadasz teraz " +to_string(postac.mppot) + string(" mikstur many i ")+ to_string(postac.zloto) + string(" sztuk zlota")); 
+					ramkaInformacji("Kupiles " +to_string(ilosc) + string(" mikstur many za sume ") + to_string(200*ilosc) + string("sztuk zlota.") +"Posiadasz teraz " +to_string(postac.mppot) + string(" mikstur many i ")+ to_string(postac.zloto) + string(" sztuk zlota")); 
 				}
 				return;
 			}
@@ -1192,7 +1235,7 @@ public:
 				{
 					postac.zloto=postac.zloto-100; 
 					if ((rand() % 10)<3) 
-						ramkaInformacji("Niestety po ledwo przespanej nocy nie","czujesz by sen ci w czymkolwiek pomogl");
+						ramkaInformacji("Niestety po ledwo przespanej nocy nie czujesz by sen ci w czymkolwiek pomogl");
 					else 
 					{
 						postac.hp = postac.maxhp; 
@@ -1222,13 +1265,13 @@ public:
 					if ((rand() % 10)<5)
 					{
 						postac.doswiadczenie=int(postac.doswiadczenie+0.1*postac.maksymalneDoswiadczenie); 
-						ramkaInformacji("Po wyspanej nocy czujesz sie jak bog!","Zdobywasz " + to_string(postac.maksymalneDoswiadczenie*0.1) + string(" punktow doswiadczenia"));   
+						ramkaInformacji("Po wyspanej nocy czujesz sie jak bog! Zdobywasz " + to_string(postac.maksymalneDoswiadczenie*0.1) + string(" punktow doswiadczenia"));   
 					}
 					else 
-						ramkaInformacji("Po wyspanej nocy w niebianskich warunkach","czujesz sie niezwykle orzezwiony."); 
+						ramkaInformacji("Po wyspanej nocy w niebianskich warunkach czujesz sie niezwykle orzezwiony."); 
 				} 
 				else 
-					ramkaInformacji("Za wysokie progi na twoje nogi biedaku...","prosze wyjdz i nie wracaj");
+					ramkaInformacji("Za wysokie progi na twoje nogi biedaku... Prosze wyjdz i nie wracaj");
 			}
 
 		} 
@@ -1300,51 +1343,51 @@ public:
 	void items(int id) 
 	{
 		if(id==1){nazwaitemu = "Skorzany kaptur"; obrona = 1; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 120;}
-		if(id==2){nazwaitemu = "Kolczy czepiec"; obrona = 2; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 220;}
-		if(id==3){nazwaitemu = "Zelazny helm"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 420;}
-		if(id==4){nazwaitemu = "Stalowy helm"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=0; iSila=4; wartoscPrzedmiotu = 620;}
-		if(id==5){nazwaitemu = "Szklany helm"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=8; iSila=0; wartoscPrzedmiotu = 860;}
-		if(id==6){nazwaitemu = "Krasnoludzki szturmak"; obrona = 11; atak=0; iZrecznosc=3; iInteligencja=0; iSila=7; wartoscPrzedmiotu = 1200;}
-		if(id==20){nazwaitemu = "Skorzana zbroja"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 500;}
-		if(id==21){nazwaitemu = "Kolczuga"; obrona = 7; atak=0; iZrecznosc=2; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 620;}
-		if(id==22){nazwaitemu = "Zelazna zbroja"; obrona = 9; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 840;}
-		if(id==23){nazwaitemu = "Stalowa zbroja"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=0; iSila=7; wartoscPrzedmiotu = 1200;}
-		if(id==24){nazwaitemu = "Szklana zbroja"; obrona = 13; atak=0; iZrecznosc=0; iInteligencja=12; iSila=0; wartoscPrzedmiotu = 1500;}
-		if(id==25){nazwaitemu = "Krasnoludzka zbroja"; obrona = 15; atak=0; iZrecznosc=0; iInteligencja=0; iSila=10; wartoscPrzedmiotu = 2000;}
-		if(id==40){nazwaitemu = "Skorzane buty"; obrona = 2; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 240;}
-		if(id==41){nazwaitemu = "Kolcze buty"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 370;}
-		if(id==42){nazwaitemu = "Zelazne buty"; obrona = 4; atak=0; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 500;}
-		if(id==43){nazwaitemu = "Stalowe buty"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=0; iSila=4; wartoscPrzedmiotu = 715;}
-		if(id==44){nazwaitemu = "Szklane buty"; obrona = 8; atak=0; iZrecznosc=0; iInteligencja=3; iSila=0; wartoscPrzedmiotu = 900;}
-		if(id==45){nazwaitemu = "Krasnoludzkie buty"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1200;}
-		if(id==60){nazwaitemu = "Skorzane spodnie"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 300;}
-		if(id==61){nazwaitemu = "Kolcze spodnie"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 450;}
-		if(id==62){nazwaitemu = "Zelazne nagolenniki"; obrona = 7; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 600;}
-		if(id==63){nazwaitemu = "Stalowe nagolenniki"; obrona = 9; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 700;}
-		if(id==64){nazwaitemu = "Szklane nagolenniki"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=2; iSila=0; wartoscPrzedmiotu = 700;}
-		if(id==65){nazwaitemu = "Krasnoludzkie nagolenniki"; obrona = 14; atak=0; iZrecznosc=0; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 1600;}
-		if(id==80){nazwaitemu = "Skorzane rekawice"; obrona = 1; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 100;}
-		if(id==81){nazwaitemu = "Kolcze rekawice"; obrona = 2; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 200;}
-		if(id==82){nazwaitemu = "Zelazne rekawice"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=1; wartoscPrzedmiotu = 340;}
-		if(id==83){nazwaitemu = "Stalowe rekawice"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=9; iSila=0; wartoscPrzedmiotu = 550;}
-		if(id==84){nazwaitemu = "Szklane rekawice"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=4; iSila=0; wartoscPrzedmiotu = 800;}
-		if(id==85){nazwaitemu = "Krasnoludzkie rekawice"; obrona = 8; atak=0; iZrecznosc=0; iInteligencja=0; iSila=5; wartoscPrzedmiotu = 1100;}
-		if(id==100){nazwaitemu = "Zbite deski"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
-		if(id==101){nazwaitemu = "Drewniana tarcza"; obrona = 10; atak=0; iZrecznosc=0; iInteligencja=0; iSila=1; wartoscPrzedmiotu = 800;}
-		if(id==102){nazwaitemu = "Zelazna tarcza"; obrona = 15; atak=0; iZrecznosc=1; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 1600;}
-		if(id==103){nazwaitemu = "Walerianska tarcza"; obrona = 20; atak=0; iZrecznosc=2; iInteligencja=2; iSila=2; wartoscPrzedmiotu = 2500;}
-		if(id==104){nazwaitemu = "Tarcza z lusek smoka"; obrona = 25; atak=0; iZrecznosc=4; iInteligencja=5; iSila=0; wartoscPrzedmiotu = 3200;}
-		if(id==120){nazwaitemu = "Zardzewialy zelazny sztylet"; obrona = 2; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 100;}
-		if(id==121){nazwaitemu = "Zelazny sztylet"; obrona = 0; atak=5; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
-		if(id==122){nazwaitemu = "Stalowy sztylet"; obrona = 0; atak=10; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 800;}
-		if(id==123){nazwaitemu = "Zelazny krotki miecz"; obrona = 0; atak=15; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1600;}
-		if(id==124){nazwaitemu = "Walerianski krotki miecz"; obrona = 0; atak=20; iZrecznosc=5; iInteligencja=2; iSila=1; wartoscPrzedmiotu = 2500;}
-		if(id==125){nazwaitemu = "Stalowy krotki miecz"; obrona = 0; atak=25; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3200;}
-		if(id==140){nazwaitemu = "Zelazny dlugi miecz"; obrona = 0; atak=5; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
-		if(id==141){nazwaitemu = "Stalowy dlugi miecz"; obrona = 0; atak=10; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 800;}
-		if(id==142){nazwaitemu = "Zelazny topor"; obrona = 0; atak=15; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1600;}
-		if(id==143){nazwaitemu = "Walerianski mlot bojowy"; obrona = 0; atak=20; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 2500;}
-		if(id==144){nazwaitemu = "Stalowy wielki miecz dwureczny"; obrona = 2; atak=25; iZrecznosc=3; iInteligencja=6; iSila=5; wartoscPrzedmiotu = 3200;}
+		else if(id==2){nazwaitemu = "Kolczy czepiec"; obrona = 2; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 220;}
+		else if(id==3){nazwaitemu = "Zelazny helm"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 420;}
+		else if(id==4){nazwaitemu = "Stalowy helm"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=0; iSila=4; wartoscPrzedmiotu = 620;}
+		else if(id==5){nazwaitemu = "Szklany helm"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=8; iSila=0; wartoscPrzedmiotu = 860;}
+		else if(id==6){nazwaitemu = "Krasnoludzki szturmak"; obrona = 11; atak=0; iZrecznosc=3; iInteligencja=0; iSila=7; wartoscPrzedmiotu = 1200;}
+		else if(id==20){nazwaitemu = "Skorzana zbroja"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 500;}
+		else if(id==21){nazwaitemu = "Kolczuga"; obrona = 7; atak=0; iZrecznosc=2; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 620;}
+		else if(id==22){nazwaitemu = "Zelazna zbroja"; obrona = 9; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 840;}
+		else if(id==23){nazwaitemu = "Stalowa zbroja"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=0; iSila=7; wartoscPrzedmiotu = 1200;}
+		else if(id==24){nazwaitemu = "Szklana zbroja"; obrona = 13; atak=0; iZrecznosc=0; iInteligencja=12; iSila=0; wartoscPrzedmiotu = 1500;}
+		else if(id==25){nazwaitemu = "Krasnoludzka zbroja"; obrona = 15; atak=0; iZrecznosc=0; iInteligencja=0; iSila=10; wartoscPrzedmiotu = 2000;}
+		else if(id==40){nazwaitemu = "Skorzane buty"; obrona = 2; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 240;}
+		else if(id==41){nazwaitemu = "Kolcze buty"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 370;}
+		else if(id==42){nazwaitemu = "Zelazne buty"; obrona = 4; atak=0; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 500;}
+		else if(id==43){nazwaitemu = "Stalowe buty"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=0; iSila=4; wartoscPrzedmiotu = 715;}
+		else if(id==44){nazwaitemu = "Szklane buty"; obrona = 8; atak=0; iZrecznosc=0; iInteligencja=3; iSila=0; wartoscPrzedmiotu = 900;}
+		else if(id==45){nazwaitemu = "Krasnoludzkie buty"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1200;}
+		else if(id==60){nazwaitemu = "Skorzane spodnie"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 300;}
+		else if(id==61){nazwaitemu = "Kolcze spodnie"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 450;}
+		else if(id==62){nazwaitemu = "Zelazne nagolenniki"; obrona = 7; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 600;}
+		else if(id==63){nazwaitemu = "Stalowe nagolenniki"; obrona = 9; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 700;}
+		else if(id==64){nazwaitemu = "Szklane nagolenniki"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=2; iSila=0; wartoscPrzedmiotu = 700;}
+		else if(id==65){nazwaitemu = "Krasnoludzkie nagolenniki"; obrona = 14; atak=0; iZrecznosc=0; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 1600;}
+		else if(id==80){nazwaitemu = "Skorzane rekawice"; obrona = 1; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 100;}
+		else if(id==81){nazwaitemu = "Kolcze rekawice"; obrona = 2; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 200;}
+		else if(id==82){nazwaitemu = "Zelazne rekawice"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=1; wartoscPrzedmiotu = 340;}
+		else if(id==83){nazwaitemu = "Stalowe rekawice"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=9; iSila=0; wartoscPrzedmiotu = 550;}
+		else if(id==84){nazwaitemu = "Szklane rekawice"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=4; iSila=0; wartoscPrzedmiotu = 800;}
+		else if(id==85){nazwaitemu = "Krasnoludzkie rekawice"; obrona = 8; atak=0; iZrecznosc=0; iInteligencja=0; iSila=5; wartoscPrzedmiotu = 1100;}
+		else if(id==100){nazwaitemu = "Zbite deski"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
+		else if(id==101){nazwaitemu = "Drewniana tarcza"; obrona = 10; atak=0; iZrecznosc=0; iInteligencja=0; iSila=1; wartoscPrzedmiotu = 800;}
+		else if(id==102){nazwaitemu = "Zelazna tarcza"; obrona = 15; atak=0; iZrecznosc=1; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 1600;}
+		else if(id==103){nazwaitemu = "Walerianska tarcza"; obrona = 20; atak=0; iZrecznosc=2; iInteligencja=2; iSila=2; wartoscPrzedmiotu = 2500;}
+		else if(id==104){nazwaitemu = "Tarcza z lusek smoka"; obrona = 25; atak=0; iZrecznosc=4; iInteligencja=5; iSila=0; wartoscPrzedmiotu = 3200;}
+		else if(id==120){nazwaitemu = "Zardzewialy zelazny sztylet"; obrona = 2; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 100;}
+		else if(id==121){nazwaitemu = "Zelazny sztylet"; obrona = 0; atak=5; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
+		else if(id==122){nazwaitemu = "Stalowy sztylet"; obrona = 0; atak=10; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 800;}
+		else if(id==123){nazwaitemu = "Zelazny krotki miecz"; obrona = 0; atak=15; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1600;}
+		else if(id==124){nazwaitemu = "Walerianski krotki miecz"; obrona = 0; atak=20; iZrecznosc=5; iInteligencja=2; iSila=1; wartoscPrzedmiotu = 2500;}
+		else if(id==125){nazwaitemu = "Stalowy krotki miecz"; obrona = 0; atak=25; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3200;}
+		else if(id==140){nazwaitemu = "Zelazny dlugi miecz"; obrona = 0; atak=5; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
+		else if(id==141){nazwaitemu = "Stalowy dlugi miecz"; obrona = 0; atak=10; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 800;}
+		else if(id==142){nazwaitemu = "Zelazny topor"; obrona = 0; atak=15; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1600;}
+		else if(id==143){nazwaitemu = "Walerianski mlot bojowy"; obrona = 0; atak=20; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 2500;}
+		else if(id==144){nazwaitemu = "Stalowy wielki miecz dwureczny"; obrona = 2; atak=25; iZrecznosc=3; iInteligencja=6; iSila=5; wartoscPrzedmiotu = 3200;}
 	}
 
 	void pokazitem(int czyPrzedmiotPosiadany)
@@ -1448,19 +1491,19 @@ public:
 					postac.posiadanePrzedmioty[ktoryPrzedmiot]=1; 
 					ramkaWyboru("Czy chcesz ubrac przedmiot " + nazwaitemu + string("?"),"Tak|Nie|");
 					if(wybor==1)
-				if (ktoryPrzedmiot<20)for (int i=1;i<20;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>19 && ktoryPrzedmiot<40)for (int i=20;i<40;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>39 && ktoryPrzedmiot<60)for (int i=40;i<60;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>59 && ktoryPrzedmiot<80) for (int i=60;i<80;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>79 && ktoryPrzedmiot<100)for (int i=80;i<100;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>99 && ktoryPrzedmiot<120)for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-															for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>119 && ktoryPrzedmiot<140)for (int i=120;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>139 && ktoryPrzedmiot<200)for (int i=100;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				postac.posiadanePrzedmioty[ktoryPrzedmiot]=2; 
-					postac.zloto = postac.zloto-wartoscPrzedmiotu;
-					mciSendString("play sounds/goldd.wav ",NULL,1,NULL);
-					ramkaInformacji("Kupiles " + nazwaitemu +string(" za ") + to_string(int(wartoscPrzedmiotu)) +string(" sztuk zlota."));
+						if (ktoryPrzedmiot<20)for (int i=1;i<20;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>19 && ktoryPrzedmiot<40)for (int i=20;i<40;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>39 && ktoryPrzedmiot<60)for (int i=40;i<60;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>59 && ktoryPrzedmiot<80) for (int i=60;i<80;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>79 && ktoryPrzedmiot<100)for (int i=80;i<100;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>99 && ktoryPrzedmiot<120)for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>119 && ktoryPrzedmiot<140)for (int i=120;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>139 && ktoryPrzedmiot<200)for (int i=100;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						postac.posiadanePrzedmioty[ktoryPrzedmiot]=2; 
+						postac.zloto = postac.zloto-wartoscPrzedmiotu;
+						mciSendString("play sounds/goldd.wav ",NULL,1,NULL);
+						ramkaInformacji("Kupiles " + nazwaitemu +string(" za ") + to_string(int(wartoscPrzedmiotu)) +string(" sztuk zlota."));
 
 				}
 				else
@@ -1506,7 +1549,7 @@ public:
 				typ = 139;
 			if (wybor == 9) 
 			{
-				ramkaInformacji("Kowal: \"Bywaj!...\"","Wyszedles...");
+				ramkaInformacji("Wyszedles...");
 				return;
 			}
 			int tempInt = 1;
@@ -1699,7 +1742,7 @@ public:
 		if (wktora==2){gotoxy(x+1,y);sciana[x+1][y]= 0; cout << " ";}
 		if (wktora==3){gotoxy(x,y-1);sciana[x][y-1]= 0; cout << " ";}
 		if (wktora==4){gotoxy(x,y+1);sciana[x][y+1]= 0; cout << " ";}
-		ramkaInformacji("Otrzymales " + to_string(ilosczlota) + string(" szt zlota."), "Posiadasz teraz " + to_string(postac.zloto) + string(" szt zlota."));
+		ramkaInformacji("Otrzymales " + to_string(ilosczlota) + string(" szt zlota.") +". Posiadasz teraz " + to_string(postac.zloto) + string(" szt zlota."));
 		system("cls");
 		wygrana = 1;
 	};
@@ -2146,7 +2189,7 @@ public:
 			int p=0;
 			SetConsoleTitle( "Menu glowne");
 			mciSendString("play sounds/intro.MID ",NULL,1,NULL);
-			postac.posiadanePrzedmioty[100] = 2;
+			postac.posiadanePrzedmioty[120] = 2;
 			system("cls");
 			logo();
 			for (int i=0;i<81;i++)
@@ -2154,12 +2197,12 @@ public:
 				{   
 					if (sciana[i][j]==0){gotoxy(i,j);cout << " ";};
 					if (sciana[i][j]==1){gotoxy(i,j);cout << scianka;};
-					if (sciana[i][j]==2) {gotoxy(i,j);cout << white;};
+					if (sciana[i][j]==2){gotoxy(i,j);cout << white;};
 					if (sciana[i][j]==3){gotoxy(i,j);czerwony();cout << white;szary();};
-					if (sciana[i][j]==4) {gotoxy(i,j);cout << wyjscie;};
-					if (sciana[i][j]==5) {gotoxy(i,j);cout << wejscie;};
+					if (sciana[i][j]==4){gotoxy(i,j);cout << wyjscie;};
+					if (sciana[i][j]==5){gotoxy(i,j);cout << wejscie;};
 					if (sciana[i][j]==6){gotoxy(i,j);cout << skrzynka;};
-					if (sciana[i][j]==7) {gotoxy(i,j);cout << drzwi;};
+					if (sciana[i][j]==7){gotoxy(i,j);cout << drzwi;};
 					if (sciana[i][j]==8){gotoxy(i,j);cout << black;};
 					if (sciana[i][j]==9){gotoxy(i,j);zolty();cout << black;szary();};
 				}
@@ -2176,7 +2219,7 @@ public:
 						plik.open(sciezka,ios::in |ios::out);
 						if(plik.is_open())
 						{
-							ramkaWyboru("Czy napewno chcialbys nadpisac ","Tak|Nie|","swoja poprzednia gre?");
+							ramkaWyboru("Czy napewno chcialbys nadpisac swoja poprzednia gre?","Tak|Nie|");
 							if (wybor == 1)
 							{
 								p=1;
@@ -2186,7 +2229,7 @@ public:
 								for (int i=1;i<200;i++)
 									plik << endl << postac.posiadanePrzedmioty[i];
 								plik.close();
-								ramkaInformacji("Nadpisalem gre gracza:",string(nick));
+								ramkaInformacji("Nadpisalem gre gracza:" +string(nick));
 							}
 							else
 								p=0;
@@ -2200,7 +2243,7 @@ public:
 								plik << endl << postac.posiadanePrzedmioty[i];
 							plik.close();
 							p=1;
-							ramkaInformacji("Stworzylem nowy plik postaci pod nazwa:",string(nick));
+							ramkaInformacji("Stworzylem nowy plik postaci pod nazwa:" +string(nick));
 						}
 					}
 					mciSendString("stop sounds/intro.MID ",NULL,1,NULL);
@@ -2259,7 +2302,7 @@ public:
 	{
 		wylaczMuzyke();
 		mciSendString("play sounds/death.mp3 ",NULL,1,NULL);
-		ramkaInformacji("Twoja postac nie zyje.","Przegrales");
+		ramkaInformacji("Twoja postac nie zyje. Przegrales");
 	}
 
 	void sprawdzAkcjeIUzyj(int numerAkcji)
@@ -2417,7 +2460,9 @@ Gra::Gra()
 	while (true){
 		//while (true) // while do szybkich testow
 		//{
-		//				odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");
+		//  string dlugistring;
+		//for (int i = 0; i < 100; i++) dlugistring += (to_string(i) + string(" "));
+		//	ramkaWyboru(dlugistring,"tak|nie|");
 		//	cin.get();
 		//}
 		glowne();
