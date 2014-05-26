@@ -52,6 +52,8 @@ public:
 	int wybranyPoziom;
 	int maxmp;
 	int posiadanePrzedmioty[200];
+	int posiadaneCzary[100];
+
 	void resetujWartosci()
 	{
 		opoznienieTekstu=1000;
@@ -63,7 +65,7 @@ public:
 		doswiadczenie = 0;
 		punktyDoRozdania=0;
 		maksymalneDoswiadczenie = 100; 
-		zloto = 0;
+		zloto = 1000;
 		hp = 100;
 		mp = 10;
 		maxhp=100;
@@ -73,6 +75,8 @@ public:
 		maxmp=10;
 		for (int i = 0; i<201;i++){
 			posiadanePrzedmioty[i] = 0;}
+		for (int j = 0; j<101;j++){
+			posiadaneCzary[j] = 0;}
 	}
 	szablonPostaci();
 };
@@ -97,6 +101,8 @@ szablonPostaci::szablonPostaci()
 	maxmp=10;
 	for (int i = 0; i<201;i++){
 		posiadanePrzedmioty[i] = 0;}
+	for (int j = 0; j<101;j++){
+		posiadaneCzary[j] = 0;}
 }
 
 class Gra 
@@ -120,19 +126,25 @@ public:
 	int wyszedlem;
 	int zdobyteDoswiadczenie;
 	int szybkoscPotwora,szybkoscGracza;
+	int rodzajAnimacji;
 	string nazwaitemu;
+	string nazwaCzaru;
 	ofstream plik;
 	ifstream zplik;
 	HANDLE hInput, hOutput;
 	int rodzajPotwora,potdmgmax,potdmgmin,hpPotwora,potgold,typAtaku;
+	int p1,p2,p3,p4;
 	bool czyZasiegowy;
 	int crit;
 	int wartoscPrzedmiotu;
+	int wartoscCzaru;
 	int obrona;
 	int atak;
 	int iZrecznosc;
 	int iInteligencja;
 	int iSila;
+	int kosztMany;
+	int przelicznik;
 	int tempexp;
 	int litera;
 	bool wykonanoRuch;
@@ -552,7 +564,6 @@ public:
 		mciSendString("stop sounds/alchemik.wav ",NULL,1,NULL);
 		mciSendString("stop sounds/kowal.wav ",NULL,1,NULL);
 		mciSendString("stop sounds/ruins.wav ",NULL,1,NULL);
-		
 		tempexp=postac.doswiadczenie;
 		for (int i = 0; i<41;i++){
 			for (int j = 0; j<81;j++){
@@ -561,18 +572,20 @@ public:
 		system("cls");
 		pokaz();
 		mciSendString("play sounds/miasto.mp3 ",NULL,1,NULL);
-		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Alchemik|Zobacz statystyki postaci|Zapisz stan gry|Opcje|Lista Posiadanych przedmiotow|");
+		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Mag|Alchemik|Zobacz statystyki postaci|Lista Posiadanych przedmiotow|Sakiewka|Zapisz stan gry|Opcje|");
 		switch (wybor)
 		{
 		case 1:	ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Krypta Pacmana (chaos)|Sancre Tor (trudny)|Poziom6 (-)|Leze smoka (BOSS)|Powrot|");
 			if (wybor !=8) level(wybor); else return;labirynt(); break;
 		case 2: karczma(); break;
 		case 3: kowal(); break;
-		case 4: alchemik(); break;
-		case 5: staty(); break;
-		case 6: save(); break;
-		case 7: opcje(); break;
-		case 8: ekwipunek(); break;
+		case 4: mag(); break;
+		case 5: alchemik(); break;
+		case 6: staty(); break;
+		case 7: ekwipunek(); break;
+		case 8: mikstury(); break;
+		case 9: opcje(); break;
+		case 10: save(); break;
 		}
 	}
 
@@ -845,68 +858,16 @@ public:
 	void uzycieCzaru()
 	{
 		ktoryRuch = 0;
-		if (wybor == 1)//uleczenie
+		for(int i=1;i<=100;i++)
 		{
-			postac.hp= postac.hp + int((postac.inteligencja+zliczInteligencje())*1.5) ;
-			if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
-			postac.mp=postac.mp-5;
-			mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
-			wyswietlNadGraczem(-int((postac.inteligencja+zliczInteligencje())*1.5),0,2);
-		}
-		else if (wybor == 2)//ognisty podmuch
-		{
-			postac.mp-=5;
-			czyTrafienieKrytyczne = 0;
-			dmg = int((rand() % 7)*0.1*postac.inteligencja + (postac.inteligencja+zliczInteligencje())*2);
-			odswiezEkranWalki();
-			poslijPocisk(12,12);
-			if ( ((rand() % 99)+1)< crit)
+			magic(i);
+			if(postac.posiadaneCzary[i]==1)
 			{
-				czyTrafienieKrytyczne = 1;
-				dmg=int(dmg*1.5);
+				if(i<=49)
+					czarOfensywny(i);
+				else
+					czarDefensywny(i);
 			}
-			else
-				czyTrafienieKrytyczne = 0;
-			timerGracza = 0;
-			if (timerPotwora>=50) timerPotwora -= 35;
-			hpPotwora= hpPotwora-dmg;
-			odswiezEkranWalki(true);
-			if (czyTrafienieKrytyczne==1)
-				odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|"); //TODO: zmienic na odglosy czarow
-			else
-				odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");//TODO: zmienic na odglosy czarow
-			wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
-		}
-		else if (wybor == 3)//przyspieszenie
-		{
-			przyspieszenieGraczaTura = 3;
-			timerGracza = 0;
-			odtworzLosowyDzwiek("przyspieszenie.mp3|");
-			odswiezEkranWalki();
-		}
-		else if (wybor ==4)//blyskawica
-		{
-			postac.mp-=5;
-			czyTrafienieKrytyczne = 0;
-			dmg = int((rand() % 7)*0.1*postac.inteligencja + (postac.inteligencja+zliczInteligencje())*2);
-			odswiezEkranWalki();
-			if (czyTrafienieKrytyczne==1)
-				odtworzLosowyDzwiek("thunder1.wav|"); 
-			else
-				odtworzLosowyDzwiek("thunder1.wav|thunder2.wav|thunder3.wav|");
-			poslijPociskDlugiWybuchowy(126,158,14,12);
-			if ( ((rand() % 99)+1)< crit)
-			{
-				czyTrafienieKrytyczne = 1;
-				dmg=int(dmg*1.5);
-			}
-			else
-				czyTrafienieKrytyczne = 0;
-			timerGracza = 0;
-			if (timerPotwora>=50) timerPotwora -= 35;
-			hpPotwora= hpPotwora-dmg;
-			odswiezEkranWalki(true);
-			wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
 		}
 	}
 
@@ -994,11 +955,17 @@ public:
 			else if (wybor == 3)
 			{
 				ktoryRuch = 3;
-				ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(int((postac.inteligencja+zliczInteligencje())*1.5)) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Przyspieszenie - 5 many|Blyskawica - 5 many|Powrot|"));
+				string tmp="";
+				for (int i = 1; i <= 100; i++)
+				{
+					magic(i);
+					if(postac.posiadaneCzary[i]==1)
+						tmp+=nazwaCzaru + "|";
+				}
+				ramkaWyboru("Spellbook:", tmp);
 				system("cls");
 				odswiezEkranWalki();
-				if (wybor == 1 || wybor == 2 || wybor == 3 || wybor == 4)
-					sprawdzMane(5);
+				sprawdzMane(kosztMany);
 			}
 			else if (wybor == 4)//uzycie potionow jest natychmiastowe
 			{
@@ -1368,6 +1335,8 @@ public:
 		plik << nick << endl << postac.poziom << endl << postac.doswiadczenie << endl << postac.maksymalneDoswiadczenie  << endl << postac.hp << endl << postac.maxhp << endl << postac.mp << endl << postac.maxmp << endl << postac.sila << endl << postac.inteligencja << endl << postac.zrecznosc << endl << postac.budowa  << endl << postac.zloto << endl << postac.hppot << endl << postac.mppot << endl << postac.opoznienieTekstu<< endl<<autozapis;
 		for (int i=1;i<200;i++)
 			plik << endl << postac.posiadanePrzedmioty[i];
+		for (int j=1;j<100;j++)
+			plik << endl << postac.posiadaneCzary[j];
 		plik.close();
 		ramkaInformacji("Pomyslnie zapisano stan gry.");
 	}
@@ -1465,6 +1434,68 @@ public:
 		else if(id==145){nazwaitemu = "Demoniczny miecz zaglady"; obrona = 3; atak=30; iZrecznosc=4; iInteligencja=3; iSila=4; wartoscPrzedmiotu =5210;}
 	}
 
+	void magic(int id)
+	{
+		if(id==1){nazwaCzaru = "Ognisty Podmuch"; kosztMany = 8; wartoscCzaru = 100; przelicznik=1.2; rodzajAnimacji=1; p1=12; p2=12; p3=0; p4=0;}
+		else if(id==2){nazwaCzaru = "Swietlisty Grom"; kosztMany = 12; wartoscCzaru = 500; przelicznik=2; rodzajAnimacji=3; p1=126; p2=158; p3=14; p4=12;}
+		else if(id==50){nazwaCzaru = "Przyspieszenie"; kosztMany = 0; wartoscCzaru = 200; przelicznik=0; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0;}
+		else if(id==51){nazwaCzaru = "Lekkie Uzdrowienie"; kosztMany = 5; wartoscCzaru = 100; przelicznik=1.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0;}
+	}
+
+	void czarDefensywny(int idCzaru)
+	{
+		magic(idCzaru);
+		if(przelicznik!=0)
+		{
+			postac.mp-=kosztMany;
+			postac.hp+=int((postac.inteligencja+zliczInteligencje())*przelicznik);
+			if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
+			mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
+			wyswietlNadGraczem(-int((postac.inteligencja+zliczInteligencje())*przelicznik),0,2);
+			timerGracza = 0;
+			if (timerPotwora>=50) timerPotwora -= 35;
+			odswiezEkranWalki();
+		}
+		else
+		{
+			przyspieszenieGraczaTura = 3;
+			timerGracza = 0;
+			odtworzLosowyDzwiek("przyspieszenie.mp3|");
+			odswiezEkranWalki();
+		}
+	}
+
+	void czarOfensywny(int idCzaru)
+	{
+		magic(idCzaru);
+		postac.mp-=kosztMany;
+		czyTrafienieKrytyczne = 0;
+		dmg = int((rand() % 7)*0.1*postac.inteligencja + (postac.inteligencja+zliczInteligencje())*przelicznik);
+		odswiezEkranWalki();
+		if (czyTrafienieKrytyczne==1)
+			odtworzLosowyDzwiek("thunder1.wav|"); 
+		else
+			odtworzLosowyDzwiek("thunder1.wav|thunder2.wav|thunder3.wav|");
+		if(rodzajAnimacji==1)
+			poslijPocisk(p1,p2);
+		else if(rodzajAnimacji==2)
+			poslijPociskDlugi(p1,p2);
+		else if(rodzajAnimacji==3)
+			poslijPociskDlugiWybuchowy(p1,p2,p3,p4);
+		if ( ((rand() % 99)+1)< crit)
+		{
+			czyTrafienieKrytyczne = 1;
+			dmg=int(dmg*1.5);
+		}
+		else
+			czyTrafienieKrytyczne = 0;
+		timerGracza = 0;
+		if (timerPotwora>=50) timerPotwora -= 35;
+		hpPotwora= hpPotwora-dmg;
+		odswiezEkranWalki(true);
+		wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
+	}
+
 	void pokazitem(int czyPrzedmiotPosiadany)
 	{
 		cout << nazwaitemu << " || Wartosc: " << wartoscPrzedmiotu;
@@ -1496,6 +1527,15 @@ public:
 			ciagZnakow = nazwaitemu +string(" # ") + to_string(atak) + string(" # Wartosc: ") + to_string (wartoscPrzedmiotu);
 		if (postac.posiadanePrzedmioty[idItemu] == 1) ciagZnakow= ciagZnakow + " (Posiadasz)";
 		if (postac.posiadanePrzedmioty[idItemu] == 2 ) ciagZnakow= ciagZnakow + " (Nosisz)";
+		return ciagZnakow;
+	}
+
+	string wyswietlCzar(int idCzaru)
+	{
+		string ciagZnakow;
+		magic(idCzaru);
+		ciagZnakow = nazwaCzaru + string(" # Wartosc: ") + to_string (wartoscCzaru);
+		if (postac.posiadaneCzary[idCzaru] == 1) ciagZnakow= ciagZnakow + " (Posiadasz)";
 		return ciagZnakow;
 	}
 
@@ -1604,6 +1644,34 @@ public:
 		}
 	}
 
+	void wyborCzaru(int ktoryCzar)
+	{     
+		magic(ktoryCzar);
+		system("cls");
+		if (postac.posiadaneCzary[ktoryCzar] ==1)
+		{
+			ramkaInformacji("Ju¿ posiadasz ten czar.");
+		}
+		else
+		{
+			ramkaWyboru("Co chcialbys zrobic z " + nazwaCzaru + string("?"),"Kupic za " + to_string(int(wartoscCzaru)) + string(" sztuk zlota|Powrot...|"));
+			if (wybor == 1)
+			{
+				if (postac.zloto >= wartoscCzaru){
+					mciSendString("play sounds/goldd.wav ",NULL,1,NULL);
+					postac.posiadaneCzary[ktoryCzar]=1; 
+					ramkaInformacji("Kupiles " + nazwaCzaru +string(" za ") + to_string(int(wartoscCzaru)) +string(" sztuk zlota."));
+					postac.zloto = postac.zloto-wartoscCzaru;
+				}
+				else
+				{
+					ramkaInformacji("Nie posiadasz " + to_string(wartoscCzaru) + string(" sztuk zlota."));
+					return;
+				}
+			}
+		}
+	}
+
 	//Helm od 1
 	//Zbroja od 20
 	//Buty od 40
@@ -1623,14 +1691,14 @@ public:
 			switch (wybor)
 			{
 			case 1: typ = 0; break;
-				case 2:typ = 19;break;
-				case 3:typ = 39;break;
-				case 4:typ = 59;break;
-				case 5:typ = 79;break;
-				case 6:typ = 99;break;
-				case 7:typ = 119;break;
-				case 8:typ = 139;break;
-				case 9:ramkaInformacji("Wyszedles...");return;break;
+			case 2:typ = 19;break;
+			case 3:typ = 39;break;
+			case 4:typ = 59;break;
+			case 5:typ = 79;break;
+			case 6:typ = 99;break;
+			case 7:typ = 119;break;
+			case 8:typ = 139;break;
+			case 9:ramkaInformacji("Wyszedles...");return;break;
 			}
 			int tempInt = 1;
 			tempTekst2 = "";
@@ -1648,6 +1716,48 @@ public:
 			ramkaWyboru("Co wybierasz?", tempTekst2);
 			if (wybor != tempInt)
 				wybory(wybor+typ);
+			system("cls");
+			pokaz();
+		}
+		wylaczMuzyke();
+	}
+
+	void mag()
+	{
+		wylaczMuzyke();
+		Sleep(100);
+		int typ;
+		mciSendString("play sounds/alchemik.wav ",NULL,1,NULL);
+		while(true)
+		{
+			ramkaWyboru("Witaj mlodziencze. Jaka magia Cie interesuje?","Ofensywna|Defensywna|Powrot|");
+			switch (wybor)
+			{
+			case 1:
+				typ=0;
+				break;
+			case 2:
+				typ=49;
+				break;
+			case 3:
+				ramkaInformacji("Zegnaj...");return;break;
+			}
+			int tempInt = 1;
+			tempTekst2 = "";
+			tempTekst1 = "lol";
+			while (true) 
+			{
+				if (tempTekst1 != wyswietlCzar(tempInt+typ))
+					tempTekst2 += wyswietlCzar(tempInt+typ) + string("|");
+				else
+					break;
+				tempTekst1 = wyswietlCzar(tempInt+typ);
+				tempInt++;
+			}
+			tempTekst2 +=  string("Powrot...|");
+			ramkaWyboru("Co wybierasz?", tempTekst2);
+			if (wybor != tempInt)
+				wyborCzaru(wybor+typ);
 			system("cls");
 			pokaz();
 		}
@@ -1748,15 +1858,6 @@ public:
 	{
 		ifstream wczytajpoziom;
 		wczytajpoziom.open("poziomy/logo.txt",ios::in);
-		for (int i=0;i<40;i++)
-			for (int j=0;j<81;j++){
-				wczytajpoziom >>sciana[j][i];}
-			wczytajpoziom.close();
-	}
-	void logoMenu()
-	{
-		ifstream wczytajpoziom;
-		wczytajpoziom.open("poziomy/menu.txt",ios::in);
 		for (int i=0;i<40;i++)
 			for (int j=0;j<81;j++){
 				wczytajpoziom >>sciana[j][i];}
@@ -2279,6 +2380,7 @@ public:
 			SetConsoleTitle( "Menu glowne");
 			mciSendString("play sounds/intro.MID ",NULL,1,NULL);
 			postac.posiadanePrzedmioty[120] = 2;
+			postac.posiadaneCzary[51] = 1;
 			system("cls");
 			logo();
 			for (int i=0;i<81;i++)
@@ -2317,6 +2419,8 @@ public:
 								plik << nick << endl << postac.poziom << endl << postac.doswiadczenie << endl << postac.maksymalneDoswiadczenie << endl << postac.hp << endl << postac.maxhp << endl << postac.mp << endl << postac.maxmp << endl << postac.sila << endl << postac.inteligencja << endl << postac.zrecznosc << endl << postac.budowa  << endl << postac.zloto << endl << postac.hppot << endl << postac.mppot << endl << postac.opoznienieTekstu << endl << autozapis;
 								for (int i=1;i<200;i++)
 									plik << endl << postac.posiadanePrzedmioty[i];
+								for (int j=1;j<100;j++)
+									plik << endl << postac.posiadaneCzary[j];
 								plik.close();
 								ramkaInformacji("Nadpisalem gre gracza:" +string(nick));
 							}
@@ -2330,6 +2434,8 @@ public:
 							plik << nick << endl << postac.poziom << endl << postac.doswiadczenie << endl << postac.maksymalneDoswiadczenie  << endl << postac.hp << endl << postac.maxhp << endl << postac.mp << endl << postac.maxmp << endl << postac.sila << endl << postac.inteligencja << endl << postac.zrecznosc << endl << postac.budowa  << endl << postac.zloto << endl << postac.hppot << endl << postac.mppot << endl << postac.opoznienieTekstu << endl << autozapis;
 							for (int i=1;i<200;i++)
 								plik << endl << postac.posiadanePrzedmioty[i];
+							for (int j=1;j<100;j++)
+								plik << endl << postac.posiadaneCzary[j];
 							plik.close();
 							p=1;
 							ramkaInformacji("Stworzylem nowy plik postaci pod nazwa:" +string(nick));
@@ -2347,6 +2453,8 @@ public:
 					zplik>>nick >>postac.poziom >>postac.doswiadczenie >>postac.maksymalneDoswiadczenie  >>postac.hp >>postac.maxhp >>postac.mp >>postac.maxmp >>postac.sila >>postac.inteligencja >>postac.zrecznosc >>postac.budowa  >>postac.zloto >>postac.hppot >>postac.mppot >>postac.opoznienieTekstu>>autozapis;
 					for (int i=1;i<200;i++)
 						zplik>>postac.posiadanePrzedmioty[i];
+					for (int j=1;j<100;j++)
+						zplik>>postac.posiadaneCzary[j];
 					opusc = 0;
 					zplik.close();
 					mciSendString("stop sounds/intro.MID ",NULL,1,NULL);
