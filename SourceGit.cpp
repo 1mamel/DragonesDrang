@@ -552,6 +552,7 @@ public:
 		mciSendString("stop sounds/alchemik.wav ",NULL,1,NULL);
 		mciSendString("stop sounds/kowal.wav ",NULL,1,NULL);
 		mciSendString("stop sounds/ruins.wav ",NULL,1,NULL);
+		
 		tempexp=postac.doswiadczenie;
 		for (int i = 0; i<41;i++){
 			for (int j = 0; j<81;j++){
@@ -890,9 +891,9 @@ public:
 			dmg = int((rand() % 7)*0.1*postac.inteligencja + (postac.inteligencja+zliczInteligencje())*2);
 			odswiezEkranWalki();
 			if (czyTrafienieKrytyczne==1)
-				odtworzLosowyDzwiek("thunder.wav|"); 
+				odtworzLosowyDzwiek("thunder1.wav|"); 
 			else
-				odtworzLosowyDzwiek("thunder.wav|");
+				odtworzLosowyDzwiek("thunder1.wav|thunder2.wav|thunder3.wav|");
 			poslijPociskDlugiWybuchowy(126,158,14,12);
 			if ( ((rand() % 99)+1)< crit)
 			{
@@ -1747,6 +1748,15 @@ public:
 	{
 		ifstream wczytajpoziom;
 		wczytajpoziom.open("poziomy/logo.txt",ios::in);
+		for (int i=0;i<40;i++)
+			for (int j=0;j<81;j++){
+				wczytajpoziom >>sciana[j][i];}
+			wczytajpoziom.close();
+	}
+	void logoMenu()
+	{
+		ifstream wczytajpoziom;
+		wczytajpoziom.open("poziomy/menu.txt",ios::in);
 		for (int i=0;i<40;i++)
 			for (int j=0;j<81;j++){
 				wczytajpoziom >>sciana[j][i];}
