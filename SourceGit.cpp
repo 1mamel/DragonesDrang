@@ -620,7 +620,7 @@ public:
 		gotoxy(30,3);
 		cout << "     ";
 		gotoxy(30,3);
-		czerwony();cout<< postac.hp;szary();cout << "/";czerwony();cout << postac.maxhp;szary();
+		czerwony();cout<< postac.hp;szary();cout << "/";czerwony();cout << postac.maxhp;szary(); cout<< " ";
 		gotoxy(31,4);cout << "     ";
 		gotoxy(31,4);
 		niebieski();cout << postac.mp ;szary();cout << "/" ;niebieski();cout << postac.maxmp;szary();
@@ -724,6 +724,63 @@ public:
 		tempTekst1 = "play sounds/" + tablicaTekstu[losowaLiczba] + string(" ");
 		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
 
+	}
+
+	void poslijPociskDlugi(char jakiZnaczek, int jakiKolor)
+	{
+		for (int i = 1; i<13;i++)
+		{
+			zmienKolor(jakiKolor);
+			gotoxy(33+i,10);cout << " ";
+			gotoxy(34+i,10);cout << jakiZnaczek;
+			gotoxy(35+i,10);cout << jakiZnaczek;
+			gotoxy(36+i,10);cout << jakiZnaczek;
+			Sleep(50);
+			szary();
+		}  
+		gotoxy(34+12,10); cout << "   ";
+	}
+
+	void poslijPociskDlugiWybuchowy(char jakiZnaczek, char jakiZnaczek2, int jakiKolor, int kolorWybuchu)
+	{
+		for (int i = 1; i<11;i++)
+		{
+			zmienKolor(jakiKolor);
+			gotoxy(33+i,10);cout << " ";
+			gotoxy(34+i,10);cout << jakiZnaczek;
+			gotoxy(35+i,10);cout << jakiZnaczek;
+			gotoxy(36+i,10);cout << jakiZnaczek;
+			Sleep(50);
+			szary();
+		}  
+		gotoxy(34+10,10); cout << "   ";
+		zmienKolor(kolorWybuchu);
+		gotoxy(48,9);cout<<jakiZnaczek2;
+		gotoxy(46,11);cout<<jakiZnaczek2;
+		gotoxy(46,9);cout<<jakiZnaczek2;
+		gotoxy(48,11);cout<<jakiZnaczek2;
+		Sleep(150);
+		gotoxy(49,8);cout<<jakiZnaczek2;
+		gotoxy(47,12);cout<<jakiZnaczek2;
+		gotoxy(47,8);cout<<jakiZnaczek2;
+		gotoxy(49,12);cout<<jakiZnaczek2;
+		gotoxy(45,8);cout<<jakiZnaczek2;
+		gotoxy(45,12);cout<<jakiZnaczek2;
+		gotoxy(49,10);cout<<jakiZnaczek2;
+		gotoxy(45,10);cout<<jakiZnaczek2;
+		Sleep(150);
+		gotoxy(48,9);cout<<" ";
+		gotoxy(46,11);cout<<" ";
+		gotoxy(46,9);cout<<" ";
+		gotoxy(48,11);cout<<" ";
+		gotoxy(49,8);cout<<" ";
+		gotoxy(47,12);cout<<" ";
+		gotoxy(47,8);cout<<" ";
+		gotoxy(49,12);cout<<" ";
+		gotoxy(45,8);cout<<" ";
+		gotoxy(45,12);cout<<" ";
+		gotoxy(49,10);cout<<" ";
+		gotoxy(45,10);cout<<" ";
 	}
 
 	void poslijPocisk(char jakiZnaczek, int jakiKolor)
@@ -839,6 +896,30 @@ public:
 			odtworzLosowyDzwiek("przyspieszenie.mp3|");
 			odswiezEkranWalki();
 		}
+		else if (wybor ==4)//blyskawica
+		{
+			postac.mp-=5;
+			czyTrafienieKrytyczne = 0;
+			dmg = int((rand() % 7)*0.1*postac.inteligencja + (postac.inteligencja+zliczInteligencje())*2);
+			odswiezEkranWalki();
+			if (czyTrafienieKrytyczne==1)
+				odtworzLosowyDzwiek("thunder.wav|"); 
+			else
+				odtworzLosowyDzwiek("thunder.wav|");
+			poslijPociskDlugiWybuchowy(126,158,14,12);
+			if ( ((rand() % 99)+1)< crit)
+			{
+				czyTrafienieKrytyczne = 1;
+				dmg=int(dmg*1.5);
+			}
+			else
+				czyTrafienieKrytyczne = 0;
+			timerGracza = 0;
+			if (timerPotwora>=50) timerPotwora -= 35;
+			hpPotwora= hpPotwora-dmg;
+			odswiezEkranWalki(true);
+			wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
+		}
 	}
 
 	bool sprawdzMane(int ileMany){
@@ -925,10 +1006,10 @@ public:
 			else if (wybor == 3)
 			{
 				ktoryRuch = 3;
-				ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(int((postac.inteligencja+zliczInteligencje())*1.5)) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Przyspieszenie - 5 many|Powrot|"));
+				ramkaWyboru("Spellbook:", "Uzdrowienie za " + to_string(int((postac.inteligencja+zliczInteligencje())*1.5)) +string(" hp - 5 many|Ognisty Podmuch - 5 many|Przyspieszenie - 5 many|Blyskawica - 5 many|Powrot|"));
 				system("cls");
 				odswiezEkranWalki();
-				if (wybor == 1 || wybor == 2 || wybor == 3)
+				if (wybor == 1 || wybor == 2 || wybor == 3 || wybor == 4)
 					sprawdzMane(5);
 			}
 			else if (wybor == 4)//uzycie potionow jest natychmiastowe
@@ -965,6 +1046,11 @@ public:
 						wykonanoRuch = true;
 						wyswietlNadGraczem(-10,0,9);
 					}
+				}
+				else
+				{
+					system("cls");
+					odswiezEkranWalki();
 				}
 			}
 		}
@@ -1570,7 +1656,7 @@ public:
 			int tempInt = 1;
 			tempTekst2 = "";
 			tempTekst1 = "lol";
-			while (true) //Wypisuje last item z typu 2 raz gdy sie go posiada albo nosi... Mozna miec X tych samych itemów. Mom pomys³y ale najpierw konsultacja :D
+			while (true) 
 			{
 				if (tempTekst1 != wyswietlItem(tempInt+typ))
 					tempTekst2 += wyswietlItem(tempInt+typ) + string("|");
