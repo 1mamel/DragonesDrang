@@ -65,7 +65,7 @@ public:
 		doswiadczenie = 0;
 		punktyDoRozdania=0;
 		maksymalneDoswiadczenie = 100; 
-		zloto = 1000;
+		zloto = 1;
 		hp = 100;
 		mp = 10;
 		maxhp=100;
@@ -134,6 +134,7 @@ public:
 	HANDLE hInput, hOutput;
 	int rodzajPotwora,potdmgmax,potdmgmin,hpPotwora,potgold,typAtaku;
 	int p1,p2,p3,p4;
+	int rodzajMagii;
 	bool czyZasiegowy;
 	int crit;
 	int wartoscPrzedmiotu;
@@ -144,9 +145,10 @@ public:
 	int iInteligencja;
 	int iSila;
 	int kosztMany;
-	int przelicznik;
+	double przelicznik;
 	int tempexp;
 	int litera;
+	int uzytyCzar;
 	bool wykonanoRuch;
 	char jaka;
 	unsigned int gdzie;
@@ -250,7 +252,7 @@ public:
 	int zliczDef()
 	{
 		int defik=0;
-		for (int i=1;i<120;i++){
+		for (int i=1;i<200;i++){
 			items(i);
 			if (postac.posiadanePrzedmioty[i]==2)
 				defik=defik + obrona; 
@@ -261,7 +263,7 @@ public:
 	int zliczDmg()
 	{
 		int damag=0;
-		for (int i=120;i<200;i++){
+		for (int i=1;i<200;i++){
 			items(i);
 			if (postac.posiadanePrzedmioty[i]==2)
 				damag=atak;
@@ -858,23 +860,18 @@ public:
 	void uzycieCzaru()
 	{
 		ktoryRuch = 0;
-		for(int i=1;i<=100;i++)
-		{
-			magic(i);
-			if(postac.posiadaneCzary[i]==1)
-			{
-				if(i<=49)
-					czarOfensywny(i);
-				else
-					czarDefensywny(i);
-			}
-		}
+
+		if (rodzajMagii == 1)
+			czarOfensywny();
+		else
+			czarDefensywny();
+		return;
 	}
 
 	bool sprawdzMane(int ileMany){
 		if(postac.mp < ileMany)
 		{
-			ramkaInformacji("Niestety masz za malo punktow many");
+			ramkaInformacji("Niestety masz za malo punktow many. Ilosc many wymagana dla " + nazwaCzaru + " wynosi: " + to_string(ileMany));
 			system("cls");
 			odswiezEkranWalki();
 			return false;
@@ -963,6 +960,16 @@ public:
 						tmp+=nazwaCzaru + "|";
 				}
 				ramkaWyboru("Spellbook:", tmp);
+				odswiezEkranWalki();
+				for (int i = 1; i <= 100; i++)
+				{
+					magic(i);
+					if (tablicaTekstu[wybor-1] == nazwaCzaru)
+					{
+						uzytyCzar = i;
+						break;
+					}
+				}
 				system("cls");
 				odswiezEkranWalki();
 				sprawdzMane(kosztMany);
@@ -1432,20 +1439,21 @@ public:
 		else if(id==143){nazwaitemu = "Walerianski mlot bojowy"; obrona = 0; atak=23; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3150;}
 		else if(id==144){nazwaitemu = "Stalowy wielki miecz dwureczny"; obrona = 0; atak=28; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3520;}
 		else if(id==145){nazwaitemu = "Demoniczny miecz zaglady"; obrona = 3; atak=30; iZrecznosc=4; iInteligencja=3; iSila=4; wartoscPrzedmiotu =5210;}
+		else if(id==146){nazwaitemu = "Miecz ostatnie Dranga"; obrona = -10; atak=50; iZrecznosc=0; iInteligencja=0; iSila=10; wartoscPrzedmiotu =10210;}
+
 	}
 
 	void magic(int id)
 	{
-		if(id==1){nazwaCzaru = "Ognisty Podmuch"; kosztMany = 8; wartoscCzaru = 100; przelicznik=1.2; rodzajAnimacji=1; p1=12; p2=12; p3=0; p4=0;}
-		else if(id==2){nazwaCzaru = "Swietlisty Grom"; kosztMany = 12; wartoscCzaru = 500; przelicznik=2; rodzajAnimacji=3; p1=126; p2=158; p3=14; p4=12;}
-		else if(id==50){nazwaCzaru = "Przyspieszenie"; kosztMany = 0; wartoscCzaru = 200; przelicznik=0; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0;}
-		else if(id==51){nazwaCzaru = "Lekkie Uzdrowienie"; kosztMany = 5; wartoscCzaru = 100; przelicznik=1.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0;}
+		if(id==1){nazwaCzaru = "Ognisty Podmuch"; kosztMany = 8; wartoscCzaru = 100; przelicznik=1.2; rodzajAnimacji=1; p1=12; p2=12; p3=0; p4=0; rodzajMagii = 1; }
+		else if(id==2){nazwaCzaru = "Swietlisty Grom"; kosztMany = 12; wartoscCzaru = 500; przelicznik=2; rodzajAnimacji=3; p1=126; p2=158; p3=14; p4=12; rodzajMagii = 1;}
+		else if(id==50){nazwaCzaru = "Przyspieszenie"; kosztMany = 5; wartoscCzaru = 200; przelicznik=0; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2;}
+		else if(id==51){nazwaCzaru = "Lekkie Uzdrowienie"; kosztMany = 5; wartoscCzaru = 100; przelicznik=1.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2;}
 	}
 
-	void czarDefensywny(int idCzaru)
+	void czarDefensywny()
 	{
-		magic(idCzaru);
-		if(przelicznik!=0)
+		if(uzytyCzar == 51)
 		{
 			postac.mp-=kosztMany;
 			postac.hp+=int((postac.inteligencja+zliczInteligencje())*przelicznik);
@@ -1456,7 +1464,7 @@ public:
 			if (timerPotwora>=50) timerPotwora -= 35;
 			odswiezEkranWalki();
 		}
-		else
+		else if (uzytyCzar == 50)
 		{
 			przyspieszenieGraczaTura = 3;
 			timerGracza = 0;
@@ -1465,9 +1473,8 @@ public:
 		}
 	}
 
-	void czarOfensywny(int idCzaru)
+	void czarOfensywny()
 	{
-		magic(idCzaru);
 		postac.mp-=kosztMany;
 		czyTrafienieKrytyczne = 0;
 		dmg = int((rand() % 7)*0.1*postac.inteligencja + (postac.inteligencja+zliczInteligencje())*przelicznik);
@@ -1503,11 +1510,11 @@ public:
 		if (czyPrzedmiotPosiadany  == 2 ) cout <<" (Nosisz)\n";
 		if (czyPrzedmiotPosiadany == 0 ) cout << endl;
 		cout<< "\t";
-		if(obrona>0 && atak>0)
+		if(obrona!=0 && atak!=0)
 			cout << "Obrona: "<<obrona <<" || Atak: "<<atak;
-		else if(obrona>0)
+		else if(obrona!=0)
 			cout << "Obrona: "<<obrona;
-		else if(atak>0)
+		else if(atak!=0)
 			cout << "Atak: " <<atak;
 		if(iSila>0)
 			cout << " || Sila: " <<iSila;
@@ -1690,7 +1697,7 @@ public:
 			ramkaWyboru("Co chcialbys zobaczyc?","Helmy|Zbroje|Buty|Spodnie|Rekawice|Tarcze|Bron jednoreczna|Bron dwureczna|Powrot...|");
 			switch (wybor)
 			{
-			case 1: typ = 0; break;
+			case 1:typ = 0; break;
 			case 2:typ = 19;break;
 			case 3:typ = 39;break;
 			case 4:typ = 59;break;
@@ -1705,11 +1712,12 @@ public:
 			tempTekst1 = "lol";
 			while (true) 
 			{
-				if (tempTekst1 != wyswietlItem(tempInt+typ))
+				wyswietlItem(tempInt+typ);
+				if (tempTekst1 != nazwaitemu)
 					tempTekst2 += wyswietlItem(tempInt+typ) + string("|");
 				else
 					break;
-				tempTekst1 = wyswietlItem(tempInt+typ);
+				tempTekst1 = nazwaitemu;
 				tempInt++;
 			}
 			tempTekst2 +=  string("Powrot...|");
@@ -1747,11 +1755,12 @@ public:
 			tempTekst1 = "lol";
 			while (true) 
 			{
-				if (tempTekst1 != wyswietlCzar(tempInt+typ))
+				wyswietlCzar(tempInt+typ);
+				if (tempTekst1 != nazwaCzaru)
 					tempTekst2 += wyswietlCzar(tempInt+typ) + string("|");
 				else
 					break;
-				tempTekst1 = wyswietlCzar(tempInt+typ);
+				tempTekst1 = nazwaCzaru;
 				tempInt++;
 			}
 			tempTekst2 +=  string("Powrot...|");
