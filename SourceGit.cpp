@@ -63,7 +63,7 @@ public:
 		doswiadczenie = 0;
 		punktyDoRozdania=0;
 		maksymalneDoswiadczenie = 100; 
-		zloto = 213320;
+		zloto = 0;
 		hp = 100;
 		mp = 10;
 		maxhp=100;
@@ -330,7 +330,7 @@ public:
 				break;
 			}
 			tablicaTekstu[j] = pytanie.substr(0, pos);
-				pytanie = pytanie.substr(pos);
+			pytanie = pytanie.substr(pos);
 			j++;
 		}
 		int z = (int(i+j))/2 +1;
@@ -362,7 +362,7 @@ public:
 				break;
 			}
 			tablicaTekstu[j] = informacja.substr(0, pos);
-				informacja = informacja.substr(pos);
+			informacja = informacja.substr(pos);
 			j++;
 		}
 		ramka(j-7);
@@ -373,7 +373,7 @@ public:
 			gotoxy(39-(tablicaTekstu[g].length())/2 +1,18+g +j/2);
 			cout << tablicaTekstu[g];
 		}
-		
+
 		gotoxy(19,20+j+j/2 -1);
 		cout << "Nacisnij dowolny klawisz by kontynuowac...";
 		_getch();
@@ -1273,7 +1273,6 @@ public:
 				else 
 					ramkaInformacji("Za wysokie progi na twoje nogi biedaku... Prosze wyjdz i nie wracaj");
 			}
-
 		} 
 		wylaczMuzyke();
 	}
@@ -1342,52 +1341,54 @@ public:
 
 	void items(int id) 
 	{
+		//1def=120g, 1dmg=140g, 1agi=110g, 1int=130g, 1str=140g TODO:Nowe itemy.
 		if(id==1){nazwaitemu = "Skorzany kaptur"; obrona = 1; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 120;}
-		else if(id==2){nazwaitemu = "Kolczy czepiec"; obrona = 2; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 220;}
-		else if(id==3){nazwaitemu = "Zelazny helm"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 420;}
-		else if(id==4){nazwaitemu = "Stalowy helm"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=0; iSila=4; wartoscPrzedmiotu = 620;}
-		else if(id==5){nazwaitemu = "Szklany helm"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=8; iSila=0; wartoscPrzedmiotu = 860;}
-		else if(id==6){nazwaitemu = "Krasnoludzki szturmak"; obrona = 11; atak=0; iZrecznosc=3; iInteligencja=0; iSila=7; wartoscPrzedmiotu = 1200;}
-		else if(id==20){nazwaitemu = "Skorzana zbroja"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 500;}
-		else if(id==21){nazwaitemu = "Kolczuga"; obrona = 7; atak=0; iZrecznosc=2; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 620;}
-		else if(id==22){nazwaitemu = "Zelazna zbroja"; obrona = 9; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 840;}
-		else if(id==23){nazwaitemu = "Stalowa zbroja"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=0; iSila=7; wartoscPrzedmiotu = 1200;}
-		else if(id==24){nazwaitemu = "Szklana zbroja"; obrona = 13; atak=0; iZrecznosc=0; iInteligencja=12; iSila=0; wartoscPrzedmiotu = 1500;}
-		else if(id==25){nazwaitemu = "Krasnoludzka zbroja"; obrona = 15; atak=0; iZrecznosc=0; iInteligencja=0; iSila=10; wartoscPrzedmiotu = 2000;}
+		else if(id==2){nazwaitemu = "Kolczy czepiec"; obrona = 2; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 350;}
+		else if(id==3){nazwaitemu = "Zelazny helm"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 600;}
+		else if(id==4){nazwaitemu = "Stalowy helm"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=2; wartoscPrzedmiotu = 880;}
+		else if(id==5){nazwaitemu = "Szklany helm"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=5; iSila=0; wartoscPrzedmiotu = 1130;}
+		else if(id==6){nazwaitemu = "Krasnoludzki szturmak"; obrona = 8; atak=0; iZrecznosc=3; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 1710;}
+		else if(id==20){nazwaitemu = "Skorzana zbroja"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 600;}
+		else if(id==21){nazwaitemu = "Kolczuga"; obrona = 7; atak=0; iZrecznosc=2; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1060;}
+		else if(id==22){nazwaitemu = "Zelazna zbroja"; obrona = 10; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1200;}
+		else if(id==23){nazwaitemu = "Stalowa zbroja"; obrona = 9; atak=0; iZrecznosc=0; iInteligencja=0; iSila=4; wartoscPrzedmiotu = 1640;}
+		else if(id==24){nazwaitemu = "Szklana zbroja"; obrona = 8; atak=0; iZrecznosc=0; iInteligencja=6; iSila=0; wartoscPrzedmiotu = 1740;}
+		else if(id==25){nazwaitemu = "Krasnoludzka zbroja"; obrona = 12; atak=0; iZrecznosc=3; iInteligencja=0; iSila=5; wartoscPrzedmiotu = 2470;}
 		else if(id==40){nazwaitemu = "Skorzane buty"; obrona = 2; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 240;}
-		else if(id==41){nazwaitemu = "Kolcze buty"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 370;}
-		else if(id==42){nazwaitemu = "Zelazne buty"; obrona = 4; atak=0; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 500;}
-		else if(id==43){nazwaitemu = "Stalowe buty"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=0; iSila=4; wartoscPrzedmiotu = 715;}
-		else if(id==44){nazwaitemu = "Szklane buty"; obrona = 8; atak=0; iZrecznosc=0; iInteligencja=3; iSila=0; wartoscPrzedmiotu = 900;}
-		else if(id==45){nazwaitemu = "Krasnoludzkie buty"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1200;}
-		else if(id==60){nazwaitemu = "Skorzane spodnie"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 300;}
-		else if(id==61){nazwaitemu = "Kolcze spodnie"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 450;}
-		else if(id==62){nazwaitemu = "Zelazne nagolenniki"; obrona = 7; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 600;}
-		else if(id==63){nazwaitemu = "Stalowe nagolenniki"; obrona = 9; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 700;}
-		else if(id==64){nazwaitemu = "Szklane nagolenniki"; obrona = 11; atak=0; iZrecznosc=0; iInteligencja=2; iSila=0; wartoscPrzedmiotu = 700;}
-		else if(id==65){nazwaitemu = "Krasnoludzkie nagolenniki"; obrona = 14; atak=0; iZrecznosc=0; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 1600;}
-		else if(id==80){nazwaitemu = "Skorzane rekawice"; obrona = 1; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 100;}
-		else if(id==81){nazwaitemu = "Kolcze rekawice"; obrona = 2; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 200;}
-		else if(id==82){nazwaitemu = "Zelazne rekawice"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=1; wartoscPrzedmiotu = 340;}
-		else if(id==83){nazwaitemu = "Stalowe rekawice"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=9; iSila=0; wartoscPrzedmiotu = 550;}
-		else if(id==84){nazwaitemu = "Szklane rekawice"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=4; iSila=0; wartoscPrzedmiotu = 800;}
-		else if(id==85){nazwaitemu = "Krasnoludzkie rekawice"; obrona = 8; atak=0; iZrecznosc=0; iInteligencja=0; iSila=5; wartoscPrzedmiotu = 1100;}
-		else if(id==100){nazwaitemu = "Zbite deski"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
-		else if(id==101){nazwaitemu = "Drewniana tarcza"; obrona = 10; atak=0; iZrecznosc=0; iInteligencja=0; iSila=1; wartoscPrzedmiotu = 800;}
-		else if(id==102){nazwaitemu = "Zelazna tarcza"; obrona = 15; atak=0; iZrecznosc=1; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 1600;}
-		else if(id==103){nazwaitemu = "Walerianska tarcza"; obrona = 20; atak=0; iZrecznosc=2; iInteligencja=2; iSila=2; wartoscPrzedmiotu = 2500;}
-		else if(id==104){nazwaitemu = "Tarcza z lusek smoka"; obrona = 25; atak=0; iZrecznosc=4; iInteligencja=5; iSila=0; wartoscPrzedmiotu = 3200;}
-		else if(id==120){nazwaitemu = "Zardzewialy zelazny sztylet"; obrona = 2; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 100;}
-		else if(id==121){nazwaitemu = "Zelazny sztylet"; obrona = 0; atak=5; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
-		else if(id==122){nazwaitemu = "Stalowy sztylet"; obrona = 0; atak=10; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 800;}
-		else if(id==123){nazwaitemu = "Zelazny krotki miecz"; obrona = 0; atak=15; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1600;}
-		else if(id==124){nazwaitemu = "Walerianski krotki miecz"; obrona = 0; atak=20; iZrecznosc=5; iInteligencja=2; iSila=1; wartoscPrzedmiotu = 2500;}
-		else if(id==125){nazwaitemu = "Stalowy krotki miecz"; obrona = 0; atak=25; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3200;}
-		else if(id==140){nazwaitemu = "Zelazny dlugi miecz"; obrona = 0; atak=5; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 400;}
-		else if(id==141){nazwaitemu = "Stalowy dlugi miecz"; obrona = 0; atak=10; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 800;}
-		else if(id==142){nazwaitemu = "Zelazny topor"; obrona = 0; atak=15; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1600;}
-		else if(id==143){nazwaitemu = "Walerianski mlot bojowy"; obrona = 0; atak=20; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 2500;}
-		else if(id==144){nazwaitemu = "Stalowy wielki miecz dwureczny"; obrona = 2; atak=25; iZrecznosc=3; iInteligencja=6; iSila=5; wartoscPrzedmiotu = 3200;}
+		else if(id==41){nazwaitemu = "Kolcze buty"; obrona = 3; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 470;}
+		else if(id==42){nazwaitemu = "Zelazne buty"; obrona = 6; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 720;}
+		else if(id==43){nazwaitemu = "Stalowe buty"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=0; iSila=4; wartoscPrzedmiotu = 1040;}
+		else if(id==44){nazwaitemu = "Szklane buty"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=5; iSila=0; wartoscPrzedmiotu = 1130;}
+		else if(id==45){nazwaitemu = "Krasnoludzkie buty"; obrona = 10; atak=0; iZrecznosc=1; iInteligencja=0; iSila=2; wartoscPrzedmiotu = 1590;}
+		else if(id==60){nazwaitemu = "Skorzane spodnie"; obrona = 3; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 360;}
+		else if(id==61){nazwaitemu = "Kolcze spodnie"; obrona = 4; atak=0; iZrecznosc=2; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 700;}
+		else if(id==62){nazwaitemu = "Zelazne nagolenniki"; obrona = 9; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1080;}
+		else if(id==63){nazwaitemu = "Stalowe nagolenniki"; obrona = 7; atak=0; iZrecznosc=0; iInteligencja=0; iSila=5; wartoscPrzedmiotu = 1540;}
+		else if(id==64){nazwaitemu = "Szklane nagolenniki"; obrona = 7; atak=0; iZrecznosc=0; iInteligencja=8; iSila=0; wartoscPrzedmiotu = 1880;}
+		else if(id==65){nazwaitemu = "Krasnoludzkie nagolenniki"; obrona = 12; atak=0; iZrecznosc=2; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 2080;}
+		else if(id==80){nazwaitemu = "Skorzane rekawice"; obrona = 1; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 120;}
+		else if(id==81){nazwaitemu = "Kolcze rekawice"; obrona = 1; atak=0; iZrecznosc=1; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 230;}
+		else if(id==82){nazwaitemu = "Zelazne rekawice"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 600;}
+		else if(id==83){nazwaitemu = "Stalowe rekawice"; obrona = 4; atak=0; iZrecznosc=0; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 900;}
+		else if(id==84){nazwaitemu = "Szklane rekawice"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=4; iSila=0; wartoscPrzedmiotu = 1120;}
+		else if(id==85){nazwaitemu = "Krasnoludzkie rekawice"; obrona = 7; atak=0; iZrecznosc=1; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 1370;}
+		else if(id==100){nazwaitemu = "Zbite deski"; obrona = 5; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 600;}
+		else if(id==101){nazwaitemu = "Drewniana tarcza"; obrona = 10; atak=0; iZrecznosc=0; iInteligencja=0; iSila=1; wartoscPrzedmiotu = 1200;}
+		else if(id==102){nazwaitemu = "Zelazna tarcza"; obrona = 15; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1800;}
+		else if(id==103){nazwaitemu = "Walerianska tarcza"; obrona = 20; atak=0; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 2400;}
+		else if(id==104){nazwaitemu = "Tarcza z lusek smoka"; obrona = 20; atak=0; iZrecznosc=0; iInteligencja=5; iSila=0; wartoscPrzedmiotu = 3050;}
+		else if(id==120){nazwaitemu = "Zardzewialy zelazny sztylet"; obrona = 0; atak=2; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 280;}
+		else if(id==121){nazwaitemu = "Zelazny sztylet"; obrona = 0; atak=5; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 700;}
+		else if(id==122){nazwaitemu = "Stalowy sztylet"; obrona = 0; atak=7; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 940;}
+		else if(id==123){nazwaitemu = "Zelazny krotki miecz"; obrona = 0; atak=10; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1200;}
+		else if(id==124){nazwaitemu = "Walerianski krotki miecz"; obrona = 0; atak=11; iZrecznosc=2; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1540;}
+		else if(id==125){nazwaitemu = "Stalowy krotki miecz"; obrona = 0; atak=15; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1800;}
+		else if(id==140){nazwaitemu = "Zelazny dlugi miecz"; obrona = 0; atak=16; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 1920;}
+		else if(id==141){nazwaitemu = "Stalowy dlugi miecz"; obrona = 0; atak=20; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 2400;}
+		else if(id==142){nazwaitemu = "Zelazny topor"; obrona = 0; atak=20; iZrecznosc=0; iInteligencja=0; iSila=3; wartoscPrzedmiotu = 2820;}
+		else if(id==143){nazwaitemu = "Walerianski mlot bojowy"; obrona = 0; atak=23; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3150;}
+		else if(id==144){nazwaitemu = "Stalowy wielki miecz dwureczny"; obrona = 0; atak=28; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3520;}
+		else if(id==145){nazwaitemu = "Demoniczny miecz zaglady"; obrona = 3; atak=30; iZrecznosc=4; iInteligencja=3; iSila=4; wartoscPrzedmiotu =5210;}
 	}
 
 	void pokazitem(int czyPrzedmiotPosiadany)
@@ -1434,14 +1435,14 @@ public:
 			items(i);
 			if (postac.posiadanePrzedmioty[i]==1 || postac.posiadanePrzedmioty[i]==2)
 			{
-				if (i>0 && i<20 && bylo1==0) {bialy();cout << "\nHelmy:\n";szary(); bylo1=1;}
-				if (i>19 && i<40 && bylo2==0) {bialy();cout << "\nZbroje:\n";szary(); bylo2 =1;}
-				if (i>39 && i<60 && bylo3==0) {bialy();cout << "\nButy:\n";szary(); bylo3 =1;}
-				if (i>59 && i<80 && bylo4==0) {bialy();cout << "\nSpodnie:\n";szary(); bylo4 =1;}
-				if (i>79 && i<100 && bylo5==0) {bialy();cout << "\nRekawice:\n";szary(); bylo5 =1;}
-				if (i>99 && i<120 && bylo6==0) {bialy();cout << "\nTarcze:\n";szary(); bylo6 =1;}
-				if (i>120 && i<140 && bylo7==0) {bialy();cout << "\nBronie jednoreczne:\n";szary(); bylo7 =1;}
-				if (i>140 && i<200 && bylo8==0) {bialy();cout << "\nBronie dwureczne:\n";szary(); bylo8 =1;}
+				if (i>=0 && i<20 && bylo1==0) {bialy();cout << "\nHelmy:\n";szary(); bylo1=1;}
+				if (i>=20 && i<40 && bylo2==0) {bialy();cout << "\nZbroje:\n";szary(); bylo2 =1;}
+				if (i>=40 && i<60 && bylo3==0) {bialy();cout << "\nButy:\n";szary(); bylo3 =1;}
+				if (i>=60 && i<80 && bylo4==0) {bialy();cout << "\nSpodnie:\n";szary(); bylo4 =1;}
+				if (i>=80 && i<100 && bylo5==0) {bialy();cout << "\nRekawice:\n";szary(); bylo5 =1;}
+				if (i>=100 && i<120 && bylo6==0) {bialy();cout << "\nTarcze:\n";szary(); bylo6 =1;}
+				if (i>=120 && i<140 && bylo7==0) {bialy();cout << "\nBronie jednoreczne:\n";szary(); bylo7 =1;}
+				if (i>=140 && i<200 && bylo8==0) {bialy();cout << "\nBronie dwureczne:\n";szary(); bylo8 =1;}
 				pokazitem(postac.posiadanePrzedmioty[i]);
 				ilezlota = ilezlota+ wartoscPrzedmiotu;
 			}
@@ -1450,7 +1451,6 @@ public:
 		cout << endl << endl;
 		system("pause");
 	}
-
 
 	void wybory(int ktoryPrzedmiot)
 	{     
@@ -1470,13 +1470,20 @@ public:
 			{
 				mciSendString("play sounds/cloth.wav ",NULL,1,NULL);
 				if (ktoryPrzedmiot<20)for (int i=1;i<20;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>19 && ktoryPrzedmiot<40)for (int i=20;i<40;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>39 && ktoryPrzedmiot<60)for (int i=40;i<60;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>59 && ktoryPrzedmiot<80) for (int i=60;i<80;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>79 && ktoryPrzedmiot<100)for (int i=80;i<100;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>99 && ktoryPrzedmiot<120)for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>119 && ktoryPrzedmiot<140)for (int i=100;i<140;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-				if (ktoryPrzedmiot>139 && ktoryPrzedmiot<200)for (int i=100;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+				if (ktoryPrzedmiot>=20 && ktoryPrzedmiot<40)for (int i=20;i<40;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+				if (ktoryPrzedmiot>=40 && ktoryPrzedmiot<60)for (int i=40;i<60;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+				if (ktoryPrzedmiot>=60 && ktoryPrzedmiot<80) for (int i=60;i<80;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+				if (ktoryPrzedmiot>=80 && ktoryPrzedmiot<100)for (int i=80;i<100;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+				if (ktoryPrzedmiot>=100 && ktoryPrzedmiot<120){
+					for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+					for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}}
+				if (ktoryPrzedmiot>=120 && ktoryPrzedmiot<140){
+					for (int i=120;i<140;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+					for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}}
+				if (ktoryPrzedmiot>=140 && ktoryPrzedmiot<200){
+					for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+					for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+					for (int i=120;i<140;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}}
 				postac.posiadanePrzedmioty[ktoryPrzedmiot]=2;
 			}
 			else
@@ -1488,24 +1495,29 @@ public:
 			if (wybor == 1)
 			{
 				mciSendString("play sounds/goldd.wav ",NULL,1,NULL);
-				if (postac.zloto > wartoscPrzedmiotu-1)
-				{
+				if (postac.zloto >= wartoscPrzedmiotu){
 					postac.posiadanePrzedmioty[ktoryPrzedmiot]=1; 
 					ramkaInformacji("Kupiles " + nazwaitemu +string(" za ") + to_string(int(wartoscPrzedmiotu)) +string(" sztuk zlota."));
+					postac.zloto = postac.zloto-wartoscPrzedmiotu;
 					ramkaWyboru("Czy chcesz ubrac przedmiot " + nazwaitemu + string("?"),"Tak|Nie|");
 					if(wybor==1)
 					{
 						if (ktoryPrzedmiot<20)for (int i=1;i<20;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						if (ktoryPrzedmiot>19 && ktoryPrzedmiot<40)for (int i=20;i<40;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						if (ktoryPrzedmiot>39 && ktoryPrzedmiot<60)for (int i=40;i<60;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						if (ktoryPrzedmiot>59 && ktoryPrzedmiot<80)for (int i=60;i<80;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						if (ktoryPrzedmiot>79 && ktoryPrzedmiot<100)for (int i=80;i<100;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						if (ktoryPrzedmiot>99 && ktoryPrzedmiot<120)for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-																	for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						if (ktoryPrzedmiot>119 && ktoryPrzedmiot<140)for (int i=120;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
-						if (ktoryPrzedmiot>139 && ktoryPrzedmiot<200)for (int i=100;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>=20 && ktoryPrzedmiot<40)for (int i=20;i<40;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>=40 && ktoryPrzedmiot<60)for (int i=40;i<60;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>=60 && ktoryPrzedmiot<80) for (int i=60;i<80;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>=80 && ktoryPrzedmiot<100)for (int i=80;i<100;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+						if (ktoryPrzedmiot>=100 && ktoryPrzedmiot<120){
+							for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+							for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}}
+						if (ktoryPrzedmiot>=120 && ktoryPrzedmiot<140){
+							for (int i=120;i<140;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+							for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}}
+						if (ktoryPrzedmiot>=140 && ktoryPrzedmiot<200){
+							for (int i=140;i<200;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+							for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
+							for (int i=120;i<140;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}}
 						postac.posiadanePrzedmioty[ktoryPrzedmiot]=2; 
-						postac.zloto = postac.zloto-wartoscPrzedmiotu;
 						mciSendString("play sounds/cloth.wav ",NULL,1,NULL);
 					}
 				}
@@ -1558,7 +1570,7 @@ public:
 			int tempInt = 1;
 			tempTekst2 = "";
 			tempTekst1 = "lol";
-			while (true)
+			while (true) //Wypisuje last item z typu 2 raz gdy sie go posiada albo nosi... Mozna miec X tych samych itemów. Mom pomys³y ale najpierw konsultacja :D
 			{
 				if (tempTekst1 != wyswietlItem(tempInt+typ))
 					tempTekst2 += wyswietlItem(tempInt+typ) + string("|");
