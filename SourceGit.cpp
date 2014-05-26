@@ -462,11 +462,11 @@ public:
 	gotoxy(81,39);cout << prawy_dolny;
 	}*/
 
-	void pas()
+	void mikstury()
 	{
 		uzylmp=0;
 		uzylhp=0;
-		ramkaWyboru("Zawartosc pasa:",(string("Mikstura zdrowia: ") + to_string(postac.hppot) + string("|Mikstura many: ") + to_string(postac.mppot) + string("|Powrot|")));
+		ramkaWyboru("Zawartosc sakiewki:",(string("Mikstura zdrowia: ") + to_string(postac.hppot) + string("|Mikstura many: ") + to_string(postac.mppot) + string("|Powrot|")));
 		if (wybor == 1){
 			if (postac.hppot <1) 
 				ramkaInformacji("Masz za malo mikstur zdrowia:");
@@ -560,32 +560,19 @@ public:
 		system("cls");
 		pokaz();
 		mciSendString("play sounds/miasto.mp3 ",NULL,1,NULL);
-		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Pas|Karczma|Kowal i ekwipunek|Alchemik|Zobacz statystyki postaci|Zapisz stan gry|Opcje|Lista Posiadanych przedmiotow|");
-		if (wybor == 1)
+		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Alchemik|Zobacz statystyki postaci|Zapisz stan gry|Opcje|Lista Posiadanych przedmiotow|");
+		switch (wybor)
 		{
-			ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Krypta Pacmana (chaos)|Sancre Tor (trudny)|Opuszczona wioska (trudny)|Leze smoka (BOSS)|Powrot|");
-			if (wybor !=8)
-				level(wybor);
-			else 
-				return;
-			labirynt();
+		case 1:	ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Krypta Pacmana (chaos)|Sancre Tor (trudny)|Poziom6 (-)|Leze smoka (BOSS)|Powrot|");
+			if (wybor !=8) level(wybor); else return;labirynt(); break;
+		case 2: karczma(); break;
+		case 3: kowal(); break;
+		case 4: alchemik(); break;
+		case 5: staty(); break;
+		case 6: save(); break;
+		case 7: opcje(); break;
+		case 8: ekwipunek(); break;
 		}
-		else if (wybor == 2)
-			pas();
-		else if (wybor == 3)
-			karczma();
-		else if (wybor == 4)
-			kowal();
-		else if (wybor == 5)
-			alchemik();
-		else if (wybor == 6)
-			staty();
-		else if (wybor == 7)
-			save();
-		else if (wybor == 8)
-			opcje();
-		else if (wybor == 9)
-			ekwipunek();
 	}
 
 	void odswiezEkranWalki(bool podczasRuchu = false)
@@ -989,7 +976,7 @@ public:
 		{
 			gotoxy(10,30);
 			cout << "Twoj ruch?";
-			menuWyboru(10,31,"Atak|Obrona|Magia|Pas|",false);
+			menuWyboru(10,31,"Atak|Obrona|Magia|Mikstury|",false);
 			if (wybor == 1){
 				wykonanoRuch = true;
 				ktoryRuch = 1;
@@ -1014,7 +1001,7 @@ public:
 			}
 			else if (wybor == 4)//uzycie potionow jest natychmiastowe
 			{
-				ramkaWyboru("Zawartosc pasa:",(string("Mikstura zdrowia: ") + to_string(postac.hppot) + string("|Mikstura many: ") + to_string(postac.mppot) + string("|Powrot|")));
+				ramkaWyboru("Zawartosc sakiewki:",(string("Mikstura zdrowia: ") + to_string(postac.hppot) + string("|Mikstura many: ") + to_string(postac.mppot) + string("|Powrot|")));
 				if (wybor == 1){
 					if (postac.hppot <1) 
 						ramkaInformacji("Masz za malo mikstur zdrowia:");
@@ -1632,26 +1619,17 @@ public:
 		while(true)
 		{
 			ramkaWyboru("Co chcialbys zobaczyc?","Helmy|Zbroje|Buty|Spodnie|Rekawice|Tarcze|Bron jednoreczna|Bron dwureczna|Powrot...|");
-			if (wybor == 1)
-				typ = 0;
-			else if (wybor == 2)
-				typ = 19;
-			else if (wybor == 3)
-				typ = 39;
-			else if (wybor == 4)
-				typ = 59;
-			else if (wybor == 5)
-				typ = 79;
-			else if (wybor == 6)
-				typ = 99;
-			else if (wybor == 7)
-				typ = 119;
-			else if (wybor == 8)
-				typ = 139;
-			if (wybor == 9) 
+			switch (wybor)
 			{
-				ramkaInformacji("Wyszedles...");
-				return;
+			case 1: typ = 0; break;
+				case 2:typ = 19;break;
+				case 3:typ = 39;break;
+				case 4:typ = 59;break;
+				case 5:typ = 79;break;
+				case 6:typ = 99;break;
+				case 7:typ = 119;break;
+				case 8:typ = 139;break;
+				case 9:ramkaInformacji("Wyszedles...");return;break;
 			}
 			int tempInt = 1;
 			tempTekst2 = "";
@@ -2511,7 +2489,7 @@ public:
 				}
 				if (GetAsyncKeyState('Z'))
 				{
-					pas();
+					mikstury();
 					system("CLS");
 					reset();
 				}
@@ -2524,7 +2502,7 @@ public:
 				pokaz();
 				szary();
 				gotoxy(0,39);
-				cout << "Klawisze: x - akcja, z - pas, strzalki - chodzenie";
+				cout << "Klawisze: x - akcja, z - sakiewka, strzalki - chodzenie";
 				gotoxy(0,40);
 				cout << skrzynka << " - skrzynia, "<< white << " - potwor, "; 
 				czerwony();
