@@ -127,6 +127,7 @@ public:
 	int wyszedlem;
 	int zdobyteDoswiadczenie;
 	double szybkoscPotwora,szybkoscGracza;
+	int punkty;
 	int rodzajAnimacji;
 	string nazwaitemu;
 	string nazwaCzaru;
@@ -1407,7 +1408,7 @@ public:
 		wylaczMuzyke();
 		Sleep(100);
 		mciSendString("play sounds/tawerna.wav ",NULL,1,NULL);
-		ramkaWyboru("Witaj w mej karczmie, co podac?","Wynajmij pokoj...|Wlasnie wychodzilem...|");
+		ramkaWyboru("Witaj w mej karczmie, co podac?","Wynajmij pokoj...|Zagraj w Kosci...|Wlasnie wychodzilem...|");
 		if (wybor == 1)
 		{
 			ramkaWyboru("Wybierz pokoj:","Obskurny - 100szt zlota|Czysty - 500szt zlota|Eksklusywny - 1500szt zlota|Powrot...|");
@@ -1456,7 +1457,431 @@ public:
 					ramkaInformacji("Za wysokie progi na twoje nogi biedaku... Prosze wyjdz i nie wracaj");
 			}
 		} 
+		else if(wybor==2)
+			kosci();
 		wylaczMuzyke();
+	}
+
+	void kosci()
+	{
+		wylaczMuzyke();
+		Sleep(100);
+		int stawka=0;
+		int rundy=1;
+		int punktyGracza=0;
+		int punktyKomputera=0;
+		int tablica[5];
+		int tablica2[5];
+		bool tablicaKolejegoLosowania[]={0,0,0,0,0};
+		mciSendString("play sounds/tawerna.wav ",NULL,1,NULL);
+		ramkaWyboru("Witaj hazardzisto, chcesz zagrac?","Gram...|Jak sie gra?|Nie chce tracic pieniedzy...|");
+		if(wybor==1)
+		{
+			int przycisk=0;
+			ramka();
+			gotoxy(30,18);
+			cout << "Ile stawiasz?: ";
+			cin >> stawka;
+			if (stawka>postac.zloto) 
+				ramkaInformacji("Nie masz przy sobie " + to_string(stawka) + string(" sztuk zlota"));
+			else
+			{
+				while(przycisk!=13)
+				{
+					ramka();
+					gotoxy(20,16);
+					cout << "Ile rund chcialbys rozegrac? (maksimum 10): " ;
+					gotoxy(38,18);
+					cout <<"< " << rundy << " >";
+					przycisk=_getch();
+					if (przycisk!=13)
+						przycisk=_getch();
+					if (przycisk==75) 
+					{
+						rundy-=1; 
+						if (rundy==-1) rundy=0;
+					}
+					if (przycisk==77) 
+						rundy+=1;
+					if (rundy==11) rundy=10;
+				}
+				ramkaInformacji("A wiec zaczynamy!");
+				Sleep(250);
+				while(rundy>0)
+				{
+					system ("cls");
+					pokaz();
+					gotoxy(32,6);
+					cout <<"Pozostalo " <<rundy <<" rund";
+					gotoxy(9,15);
+					cout <<"Gracz";
+					gotoxy(5,17);
+					cout <<"Ilosc punktow";
+					gotoxy(10,19);
+					cout <<punktyGracza;
+					gotoxy(68,15);
+					cout <<"Przeciwnik";
+					gotoxy(67,17);
+					cout <<"Ilosc punktow";
+					gotoxy(72,19);
+					cout <<punktyKomputera;
+					tablica[0]=rand() % 6+1;
+					tablica[1]=rand() % 6+1;
+					tablica[2]=rand() % 6+1;
+					tablica[3]=rand() % 6+1;
+					tablica[4]=rand() % 6+1;
+					gotoxy(33,30);
+					cout <<tablica[0] <<"  " <<tablica[1] <<"  " <<tablica[2] <<"  " <<tablica[3] <<"  " <<tablica[4];
+					int knefel=0;
+					int x=33;
+					int i=0;
+					gotoxy(2,40);
+					cout<<"x - zaznaczanie karty przeznaczonej do ponownego rzutu, ENTER - zatwierdzenie";
+					gotoxy(33,30);
+					czerwony();
+					cout<<tablica[0];
+					szary();
+					while(knefel!=13)
+					{
+						knefel=_getch();
+						if (knefel!=13)
+							knefel=_getch();
+						if (knefel==75) 
+						{
+							if(x>34)
+							{
+								gotoxy(x,30);
+								szary();
+								cout<<tablica[i];
+								gotoxy(x-3,30);
+								czerwony();
+								cout<<tablica[i-1];
+								szary();
+								x=x-3;
+								i--;
+							}
+							else
+							{
+								gotoxy(33,30);
+								czerwony();
+								cout<<tablica[0];
+								szary();
+							}
+						}
+						if (knefel==77) 
+						{
+							if(x<44)
+							{
+								gotoxy(x,30);
+								szary();
+								cout<<tablica[i];
+								gotoxy(x+3,30);
+								czerwony();
+								cout<<tablica[i+1];
+								szary();
+								x=x+3;
+								i++;
+							}
+							else
+							{
+								gotoxy(45,30);
+								czerwony();
+								cout<<tablica[4];
+								szary();
+							}
+						}
+						if(knefel==120)
+						{
+							if(tablicaKolejegoLosowania[i]==0)
+							{
+								tablicaKolejegoLosowania[i]=1;
+								gotoxy(x,29);
+								czerwony();
+								cout<<"*";
+								szary();
+							}
+							else
+							{
+								tablicaKolejegoLosowania[i]=0;
+								gotoxy(x,29);
+								szary();
+								cout<<" ";
+							}
+						}
+					}
+					if(tablicaKolejegoLosowania[0]==1)
+						tablica[0]=rand() % 6+1;
+					if(tablicaKolejegoLosowania[1]==1)
+						tablica[1]=rand() % 6+1;
+					if(tablicaKolejegoLosowania[2]==1)
+						tablica[2]=rand() % 6+1;
+					if(tablicaKolejegoLosowania[3]==1)
+						tablica[3]=rand() % 6+1;
+					if(tablicaKolejegoLosowania[4]==1)
+						tablica[4]=rand() % 6+1;
+					gotoxy(33,29);
+					cout <<"               ";
+					gotoxy(33,30);
+					cout <<tablica[0] <<"  " <<tablica[1] <<"  " <<tablica[2] <<"  " <<tablica[3] <<"  " <<tablica[4];
+					kosciSprawdzaniePunktow(tablica,1);
+					int pktGracz;
+					pktGracz=punkty;
+					Sleep(1000);
+					tablica2[0]=rand() % 6+1;
+					tablica2[1]=rand() % 6+1;
+					tablica2[2]=rand() % 6+1;
+					tablica2[3]=rand() % 6+1;
+					tablica2[4]=rand() % 6+1;
+					gotoxy(33,32);
+					cout <<tablica2[0] <<"  " <<tablica2[1] <<"  " <<tablica2[2] <<"  " <<tablica2[3] <<"  " <<tablica2[4];
+					Sleep(500);
+					kosciSprawdzaniePunktow(tablica2,2);
+					if(pktGracz>punkty)
+						punktyGracza++;
+					else
+						punktyKomputera++;
+					rundy--;
+					Sleep(2000);
+					if(rundy==0)
+					{
+						gotoxy(10,19);
+						cout<<"                 ";
+						gotoxy(10,19);
+						cout <<punktyGracza;
+						gotoxy(72,19);
+						cout<<"                 ";
+						gotoxy(72,19);
+						cout <<punktyKomputera;
+					}
+					if(punktyGracza>punktyKomputera)
+					{
+						ramka();
+						gotoxy(38,16);
+						cout << "Gratulacje" ;
+						gotoxy(34,18);
+						cout <<"Wygrales " << stawka*2 << " zlota!";
+						postac.zloto+=stawka;
+					}
+					else
+					{
+						ramka();
+						gotoxy(38,16);
+						cout << "Niestety" ;
+						gotoxy(32,18);
+						cout <<"Przegrales " << stawka << " sztuk zlota!";
+						postac.zloto-=stawka;
+					}
+					ramkaWyboru("Co chcialbys teraz zrobic","Zagrac jeszcze raz!|Powrot...|");
+					if(wybor==1)
+					{
+						system("cls");
+						pokaz();
+						kosci();
+					}
+					else
+					{
+						system("cls");
+						pokaz();
+						karczma();
+					}
+				}
+			}
+		}
+		else if(wybor==2)
+		{
+			gotoxy(2,40);
+			cout<<"ENTER - dalej";
+			ramka();
+			gotoxy(22,15);
+			cout<<"Gra polega na rzucie 5 koscmi do gry.";
+			gotoxy(22,17);
+			cout<<"Po pierwszym rzucie mozemy wybrac";
+			gotoxy(22,19);
+			cout<<"nieodpowiadajace nam wyniki i rzucic"; 
+			gotoxy(22,21);
+			cout<<"jeszcze raz.";
+			cin.get();
+			gotoxy(2,40);
+			cout<<"ENTER - dalej";
+			ramka();
+			gotoxy(22,15);
+			cout<<"Ilosc punktow jest zalezna";
+			gotoxy(22,17);
+			cout<<"od kosci jakie bedziemy posiadac";
+			gotoxy(22,19);
+			cout<<"po dwoch rzutach."; 
+			gotoxy(22,21);
+			cout<<"Kombinacje od najlepszej...";
+			cin.get();
+			gotoxy(2,40);
+			cout<<"ENTER - zakoncz";
+			ramka();
+			gotoxy(22,15);
+			cout<<"-5 takich samych kosci";
+			gotoxy(22,16);
+			cout<<"-4 takie same kosci";
+			gotoxy(22,17);
+			cout<<"-para i trojka"; 
+			gotoxy(22,18);
+			cout<<"-kosci od 2 do 6";
+			gotoxy(22,19);
+			cout<<"-kosci od 1 do 5";
+			gotoxy(22,20);
+			cout<<"-trojka";
+			gotoxy(22,21);
+			cout<<"-dwie pary";
+			gotoxy(22,22);
+			cout<<"-para";
+			gotoxy(22,23);
+			cout<<"-najwyzsza karta";
+			cin.get();
+			system("cls");
+			pokaz();
+			kosci();
+		}
+		else
+		{
+			system("cls");
+			pokaz();
+			karczma();
+		}
+		wylaczMuzyke();
+	}
+
+	void kosciSprawdzaniePunktow(int tablica[], int kto)
+	{
+		punkty=0;
+		int tablicaPunktow[]={0,0,0,0,0,0};
+		for (int i = 0; i < 6; i++)
+		{
+			if(tablica[i]==1)
+				tablicaPunktow[0]++;
+			if(tablica[i]==2)
+				tablicaPunktow[1]++;
+			if(tablica[i]==3)
+				tablicaPunktow[2]++;
+			if(tablica[i]==4)
+				tablicaPunktow[3]++;
+			if(tablica[i]==5)
+				tablicaPunktow[4]++;
+			if(tablica[i]==6)
+				tablicaPunktow[5]++;
+		}
+		int ileRazy2=0;
+		for (int i = 0; i < 6; i++)
+		{
+			if(tablicaPunktow[i]==2)
+				ileRazy2++;
+		}
+		int trojka=0;
+		for (int i = 0; i < 6; i++)
+		{
+			if(tablicaPunktow[i]==3)
+				trojka=1;
+		}
+		int czworka=0;
+		for (int i = 0; i < 6; i++)
+		{
+			if(tablicaPunktow[i]==4)
+				czworka=1;
+		}
+		if(tablica[5]==1 && (tablica[1]==0||tablica[2]==0||tablica[3]==0||tablica[4]==0) && ileRazy2==0 && trojka==0 && czworka==0) punkty=6;
+		if(ileRazy2==1)
+		{
+			if(tablicaPunktow[0]==2) punkty=7;
+			if(tablicaPunktow[1]==2) punkty=8;
+			if(tablicaPunktow[2]==2) punkty=9;
+			if(tablicaPunktow[3]==2) punkty=10;
+			if(tablicaPunktow[4]==2) punkty=11;
+			if(tablicaPunktow[5]==2) punkty=12;
+		}
+		if(ileRazy2==2)
+		{
+			if(tablicaPunktow[0]==2 && tablicaPunktow[1]==2) punkty=13;
+			if(tablicaPunktow[0]==2 && tablicaPunktow[2]==2) punkty=14;
+			if(tablicaPunktow[0]==2 && tablicaPunktow[3]==2) punkty=15;
+			if(tablicaPunktow[1]==2 && tablicaPunktow[2]==2) punkty=16;
+			if(tablicaPunktow[0]==2 && tablicaPunktow[4]==2) punkty=17;
+			if(tablicaPunktow[1]==2 && tablicaPunktow[3]==2) punkty=18;
+			if(tablicaPunktow[0]==2 && tablicaPunktow[5]==2) punkty=19;
+			if(tablicaPunktow[1]==2 && tablicaPunktow[4]==2) punkty=20;
+			if(tablicaPunktow[2]==2 && tablicaPunktow[3]==2) punkty=21;
+			if(tablicaPunktow[1]==2 && tablicaPunktow[5]==2) punkty=22;
+			if(tablicaPunktow[2]==2 && tablicaPunktow[4]==2) punkty=23;
+			if(tablicaPunktow[2]==2 && tablicaPunktow[5]==2) punkty=24;
+			if(tablicaPunktow[3]==2 && tablicaPunktow[4]==2) punkty=25;
+			if(tablicaPunktow[3]==2 && tablicaPunktow[5]==2) punkty=26;
+			if(tablicaPunktow[4]==2 && tablicaPunktow[5]==2) punkty=27;
+		}
+		if(trojka==1 && ileRazy2==0)
+		{
+			if(tablicaPunktow[0]==3) punkty=28;
+			if(tablicaPunktow[1]==3) punkty=29;
+			if(tablicaPunktow[2]==3) punkty=30;
+			if(tablicaPunktow[3]==3) punkty=31;
+			if(tablicaPunktow[4]==3) punkty=32;
+			if(tablicaPunktow[5]==3) punkty=33;
+		}
+		if(tablicaPunktow[0]==1 && tablicaPunktow[1]==1 && tablicaPunktow[2]==1 && tablicaPunktow[3]==1 && tablicaPunktow[4]==1 && tablicaPunktow[5]==1) punkty=34;
+		if(tablicaPunktow[1]==1 && tablicaPunktow[2]==1 && tablicaPunktow[3]==1 && tablicaPunktow[4]==1 && tablicaPunktow[5]==1 && tablicaPunktow[6]==1) punkty=35;
+		if(trojka==1 && ileRazy2==1)
+		{
+			if(tablicaPunktow[0]==3 && tablicaPunktow[1]==2) punkty=36;
+			if(tablicaPunktow[0]==3 && tablicaPunktow[2]==2) punkty=37;
+			if(tablicaPunktow[0]==3 && tablicaPunktow[3]==2) punkty=38;
+			if(tablicaPunktow[0]==3 && tablicaPunktow[4]==2) punkty=39;
+			if(tablicaPunktow[0]==3 && tablicaPunktow[5]==2) punkty=40;
+			if(tablicaPunktow[1]==3 && tablicaPunktow[0]==2) punkty=41;
+			if(tablicaPunktow[1]==3 && tablicaPunktow[2]==2) punkty=42;
+			if(tablicaPunktow[1]==3 && tablicaPunktow[3]==2) punkty=43;
+			if(tablicaPunktow[1]==3 && tablicaPunktow[4]==2) punkty=44;
+			if(tablicaPunktow[1]==3 && tablicaPunktow[5]==2) punkty=45;
+			if(tablicaPunktow[2]==3 && tablicaPunktow[0]==2) punkty=46;
+			if(tablicaPunktow[2]==3 && tablicaPunktow[1]==2) punkty=47;
+			if(tablicaPunktow[2]==3 && tablicaPunktow[3]==2) punkty=48;
+			if(tablicaPunktow[2]==3 && tablicaPunktow[4]==2) punkty=49;
+			if(tablicaPunktow[2]==3 && tablicaPunktow[5]==2) punkty=50;
+			if(tablicaPunktow[3]==3 && tablicaPunktow[0]==2) punkty=51;
+			if(tablicaPunktow[3]==3 && tablicaPunktow[1]==2) punkty=52;
+			if(tablicaPunktow[3]==3 && tablicaPunktow[2]==2) punkty=53;
+			if(tablicaPunktow[3]==3 && tablicaPunktow[4]==2) punkty=54;
+			if(tablicaPunktow[3]==3 && tablicaPunktow[5]==2) punkty=55;
+			if(tablicaPunktow[4]==3 && tablicaPunktow[0]==2) punkty=56;
+			if(tablicaPunktow[4]==3 && tablicaPunktow[1]==2) punkty=57;
+			if(tablicaPunktow[4]==3 && tablicaPunktow[2]==2) punkty=58;
+			if(tablicaPunktow[4]==3 && tablicaPunktow[3]==2) punkty=59;
+			if(tablicaPunktow[4]==3 && tablicaPunktow[5]==2) punkty=60;
+			if(tablicaPunktow[5]==3 && tablicaPunktow[0]==2) punkty=61;
+			if(tablicaPunktow[5]==3 && tablicaPunktow[1]==2) punkty=62;
+			if(tablicaPunktow[5]==3 && tablicaPunktow[2]==2) punkty=63;
+			if(tablicaPunktow[5]==3 && tablicaPunktow[3]==2) punkty=64;
+			if(tablicaPunktow[5]==3 && tablicaPunktow[4]==2) punkty=65;
+		}
+		if(czworka==1)
+		{
+			if(tablicaPunktow[0]==4) punkty=66;
+			if(tablicaPunktow[1]==4) punkty=67;
+			if(tablicaPunktow[2]==4) punkty=68;
+			if(tablicaPunktow[3]==4) punkty=69;
+			if(tablicaPunktow[4]==4) punkty=70;
+			if(tablicaPunktow[5]==4) punkty=71;
+		}
+		if(tablicaPunktow[0]==5) punkty=72;
+		if(tablicaPunktow[1]==5) punkty=73;
+		if(tablicaPunktow[2]==5) punkty=74;
+		if(tablicaPunktow[3]==5) punkty=75;
+		if(tablicaPunktow[4]==5) punkty=76;
+		if(tablicaPunktow[5]==5) punkty=77;
+		if(kto==1)
+		{
+			gotoxy(32,15);
+			cout<<"Zdobyte punkty: " <<punkty;
+		}
+		else
+		{
+			gotoxy(32,18);
+			cout<<"Punkty przeciwnika: " <<punkty;
+		}
 	}
 
 	void staty()
