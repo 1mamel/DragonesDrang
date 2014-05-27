@@ -80,6 +80,7 @@ public:
 	}
 	szablonPostaci();
 };
+
 szablonPostaci::szablonPostaci()
 {
 	opoznienieTekstu=1000;
@@ -577,7 +578,7 @@ public:
 		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Mag|Alchemik|Zobacz statystyki postaci|Lista Posiadanych przedmiotow|Sakiewka|Zapisz stan gry|Opcje|");
 		switch (wybor)
 		{
-		case 1:	ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Krypta Pacmana (chaos)|Sancre Tor (trudny)|Poziom6 (-)|Leze smoka (BOSS)|Powrot|");
+		case 1:	ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Sancre Tor (trudny)|Opuszczona wioska (trudny)|Krypta Pacmana (chaos)|Leze smoka (BOSS)|Powrot|");
 			if (wybor !=8) level(wybor); else return;labirynt(); break;
 		case 2: karczma(); break;
 		case 3: kowal(); break;
@@ -726,7 +727,6 @@ public:
 
 		tempTekst1 = "play sounds/" + tablicaTekstu[losowaLiczba] + string(" ");
 		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
-
 	}
 
 	void poslijPociskDlugi(char jakiZnaczek, int jakiKolor)
@@ -860,7 +860,6 @@ public:
 	void uzycieCzaru()
 	{
 		ktoryRuch = 0;
-
 		if (rodzajMagii == 1)
 			czarOfensywny();
 		else
@@ -1170,7 +1169,7 @@ public:
 			wylaczMuzyke();
 			Sleep(100);
 			mciSendString("play sounds/levelUP.wav ",NULL,1,NULL);
-			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1) + "hp: " + to_string(postac.maxhp) + string("->") + to_string(postac.maxhp+postac.budowa*1.2) + string("   mp: " )+ to_string(postac.maxmp) + string("->") + to_string(postac.maxmp*1.4));
+			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1) + "hp: " + to_string(postac.maxhp) + string("->") + to_string(int(postac.maxhp+postac.budowa*1.2)) + string("   mp: " )+ to_string(postac.maxmp) + string("->") + to_string(int(postac.maxmp*1.4)));
 			postac.doswiadczenie = postac.doswiadczenie-postac.maksymalneDoswiadczenie;
 			postac.maksymalneDoswiadczenie=int(postac.maksymalneDoswiadczenie*1.4);
 			postac.maxhp=int(postac.maxhp+postac.budowa*1.2);
@@ -1440,7 +1439,6 @@ public:
 		else if(id==144){nazwaitemu = "Stalowy wielki miecz dwureczny"; obrona = 0; atak=28; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3520;}
 		else if(id==145){nazwaitemu = "Demoniczny miecz zaglady"; obrona = 3; atak=30; iZrecznosc=4; iInteligencja=3; iSila=4; wartoscPrzedmiotu =5210;}
 		else if(id==146){nazwaitemu = "Miecz ostatnie Dranga"; obrona = -10; atak=50; iZrecznosc=0; iInteligencja=0; iSila=10; wartoscPrzedmiotu =10210;}
-
 	}
 
 	void magic(int id)
@@ -1524,6 +1522,7 @@ public:
 			cout << " || Inteligencja: " <<iInteligencja;
 		cout <<endl;
 	}
+
 	string wyswietlItem(int idItemu)
 	{
 		string ciagZnakow;
