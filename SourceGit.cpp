@@ -65,7 +65,7 @@ public:
 		doswiadczenie = 0;
 		punktyDoRozdania=0;
 		maksymalneDoswiadczenie = 100; 
-		zloto = 0;
+		zloto = 10000;
 		hp = 100;
 		mp = 10;
 		maxhp=100;
@@ -618,10 +618,10 @@ public:
 		cout << pionowa;
 		if (timerGracza >=50) zmienKolor(64+15);
 		else zmienKolor(128+15);
-		gotoxy(5+timerGracza,15); cout << prawo; szary();
+		gotoxy(int(5+timerGracza),15); cout << prawo; szary();
 		if (timerPotwora >=50) zmienKolor(64+15);
 		else zmienKolor(128+15);
-		gotoxy(5+timerPotwora,16); cout << white; szary();
+		gotoxy(int(5+timerPotwora),16); cout << white; szary();
 		gotoxy(30,3);
 		cout << "     ";
 		gotoxy(30,3);
@@ -832,26 +832,26 @@ public:
 		gotoxy(45,10);cout<<" ";
 	}
 
-	void poslijPocisk(char jakiZnaczek, int jakiKolor)
+	void poslijPocisk(int jakiZnaczek, int jakiKolor)
 	{
 		for (int i = 1; i<13;i++)
 		{
 			zmienKolor(jakiKolor);
 			gotoxy(33+i,10);cout << " ";
-			gotoxy(34+i,10);cout << jakiZnaczek;
+			gotoxy(34+i,10);cout << char(jakiZnaczek);
 			Sleep(50);
 			szary();
 		}  
 		gotoxy(34+12,10); cout << " ";
 	}
 
-	void poslijPociskWGracza(char jakiZnaczek, int jakiKolor)
+	void poslijPociskWGracza(int jakiZnaczek, int jakiKolor)
 	{
 		for (int i = 1; i<13;i++)
 		{
 			zmienKolor(jakiKolor);
 			gotoxy(47-i,10);cout << " ";
-			gotoxy(46-i,10);cout << jakiZnaczek;
+			gotoxy(46-i,10);cout << char(jakiZnaczek);
 			Sleep(50);
 			szary();
 		}  
@@ -975,6 +975,7 @@ public:
 			if(timerGracza>=50)timerGracza -= 50;
 			if (czyZasiegowy == false)
 				odejsciePotwora();
+			wybranyRuchGracza = 0;
 		}
 		else if (wybranyRuchPotwora == 2) //spowolnienie
 		{
@@ -989,7 +990,7 @@ public:
 			odtworzDzwiek("przyspieszenie.mp3|");
 			odswiezEkranWalki();
 		}
-			odswiezEkranWalki();
+		odswiezEkranWalki();
 		wybranyRuchPotwora = 0;
 	}
 
@@ -1052,20 +1053,23 @@ public:
 					if(postac.posiadaneCzary[i]==1)
 						tmp+=nazwaCzaru + "|";
 				}
+				tmp += "Powrot|";
 				ramkaWyboru("Spellbook:", tmp);
-				odswiezEkranWalki();
-				for (int i = 1; i <= 100; i++)
-				{
-					magic(i);
-					if (tablicaTekstu[wybor-1] == nazwaCzaru)
-					{
-						uzytyCzar = i;
-						break;
-					}
-				}
 				system("cls");
 				odswiezEkranWalki();
-				sprawdzMane(kosztMany);
+				if (tablicaTekstu[wybor-1] != "Powrot")
+				{
+					for (int i = 1; i <= 100; i++)
+					{
+						magic(i);
+						if (tablicaTekstu[wybor-1] == nazwaCzaru)
+						{
+							uzytyCzar = i;
+							break;
+						}
+					}
+					sprawdzMane(kosztMany);
+				}
 			}
 			else if (wybor == 4)//uzycie potionow jest natychmiastowe
 			{
@@ -1186,7 +1190,7 @@ public:
 			//
 			// do wybalansowania
 			if (wybranyRuchGracza == 0) varAtakuGracza = 1; 
-			if (wybranyRuchPotwora == 0) varAtakuPotwora = 1; 
+			if (wybranyRuchPotwora == 0 || timerPotwora<50) varAtakuPotwora = 1; 
 			if (turaSpowolnieniaGracza > 0) varSpowolnieniaGracza = 0.7;
 			else varSpowolnieniaGracza = 1;
 			if (turaSpowolnieniaPotwora > 0) varSpowolnieniaPotwora = 0.7;
@@ -1203,6 +1207,15 @@ public:
 			//
 			timerPotwora+=szybkoscPotwora*varSpowolnieniaPotwora*varPrzyspieszeniaPotwora*varAtakuPotwora*varObronyPotwora;
 			timerGracza +=szybkoscGracza *varSpowolnieniaGracza *varPrzyspieszeniaGracza *varAtakuGracza *varObronyGracza;
+			/*gotoxy(30,30); cout << "    ";
+			gotoxy(30,30); cout << szybkoscGracza *varSpowolnieniaGracza *varPrzyspieszeniaGracza *varAtakuGracza *varObronyGracza;
+			gotoxy(30,31); cout << "    ";
+			gotoxy(30,31); cout << timerGracza;
+			gotoxy(70,30); cout << "    ";
+			gotoxy(70,30); cout << szybkoscPotwora*varSpowolnieniaPotwora*varPrzyspieszeniaPotwora*varAtakuPotwora*varObronyPotwora;
+			gotoxy(70,31); cout << "    ";
+			gotoxy(70,31); cout << timerPotwora;*/
+			//debugger do balansu predkosci :d
 			//
 			if (timerPotwora>70)timerPotwora = 70;
 			if (timerGracza>70) timerGracza  = 70;
@@ -1589,8 +1602,8 @@ public:
 			odtworzDzwiek("spowolnienie.wav|");
 
 		}
-			odswiezEkranWalki();
-			timerGracza = 0;
+		odswiezEkranWalki();
+		timerGracza = 0;
 
 	}
 
