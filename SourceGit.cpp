@@ -65,7 +65,7 @@ public:
 		doswiadczenie = 0;
 		punktyDoRozdania=0;
 		maksymalneDoswiadczenie = 100; 
-		zloto = 1;
+		zloto = 0;
 		hp = 100;
 		mp = 10;
 		maxhp=100;
@@ -153,16 +153,17 @@ public:
 	bool wykonanoRuch;
 	char jaka;
 	unsigned int gdzie;
-	bool stanDefensywny;
-	int	przyspieszenieGraczaTura;
+	bool stanDefensywnyGracza,stanDefensywnyPotwora;
+	int	turaPrzyspieszeniaGracza,turaSpowolnieniaGracza,turaPrzyspieszeniaPotwora,turaSpowolnieniaPotwora;
+
 	string potw;
 	int x;
 	int respawnX;
 	int y;
 	int respawnY;
-	int ktoryRuch;
+	int wybranyRuchGracza,wybranyRuchPotwora;
 	int maksymalneHpPotwora;
-	int timerPotwora, timerGracza;
+	double timerPotwora, timerGracza, varSpowolnieniaPotwora,varPrzyspieszeniaPotwora,varAtakuPotwora,varObronyPotwora,varSpowolnieniaGracza,varPrzyspieszeniaGracza,varAtakuGracza,varObronyGracza;
 	int czyTrafienieKrytyczne,dmg;
 	char nick[100];
 	int uzylhp;
@@ -631,12 +632,21 @@ public:
 		gotoxy(45,3);cout << "     ";gotoxy(45,3);czerwony();cout << hpPotwora;szary();cout << "/";czerwony();cout << maksymalneHpPotwora;szary();
 		if (podczasRuchu == false)
 		{
-			gotoxy(33,9); cout << "    ";
-			gotoxy(33,9); if (przyspieszenieGraczaTura > 0)cout << char(175);
+			gotoxy(33,8); cout << " ";
+			gotoxy(33,8); if (turaSpowolnieniaGracza > 0)cout << char(174);
+			gotoxy(33,9); cout << " ";
+			gotoxy(33,9); if (turaPrzyspieszeniaGracza > 0)cout << char(175);
+			gotoxy(47,8); cout << " ";
+			gotoxy(47,8); if (turaSpowolnieniaPotwora > 0)cout << char(174);
+			gotoxy(47,9); cout << " ";
+			gotoxy(47,9); if (turaPrzyspieszeniaPotwora > 0)cout << char(175);
 			gotoxy(33,10);cout << prawo;
-			if (stanDefensywny == true) cout << char(233);
+			if (stanDefensywnyGracza == true) cout << char(233);
+			gotoxy(46,10);
+			if (stanDefensywnyPotwora == true) cout << char(233);
+			gotoxy(47,10);
 			if (rodzajPotwora == 2) czerwony(); //TODO: dokonczyc
-			gotoxy(47,10);cout << white;
+			cout << white;
 			szary();
 		}
 	}
@@ -647,7 +657,7 @@ public:
 			tempTekst1 = "Zaatakowales " + potw + string("a!");
 		else
 			tempTekst1 = "Zostales zaatakowany przez " + potw + string("a!");
-		tempTekst2 = "Potwor " + potw + string(" jest poziomu ");
+		tempTekst2 = " Potwor " + potw + string(" jest poziomu ");
 		if (rodzajPotwora==1) tempTekst2 += "slabego.";
 		else if (rodzajPotwora==2) tempTekst2 += "normalnego.";
 		else if (rodzajPotwora==3) tempTekst2 += "mocnego.";
@@ -655,20 +665,28 @@ public:
 		ramkaInformacji(tempTekst1 + tempTekst2);
 	}
 
-	void podejdzDoWroga()
+	void podejscieGracza()
 	{
 		for (int i = 0; i<13;i++)
 		{
+			gotoxy(33+i,8); cout << " ";
+			gotoxy(34+i,8); if (turaSpowolnieniaGracza > 0)cout << char(174);
+			gotoxy(33+i,9); cout << " ";
+			gotoxy(34+i,9); if (turaPrzyspieszeniaGracza > 0)cout << char(175);
 			gotoxy(33+i,10);cout << " ";
 			gotoxy(34+i,10);cout << prawo;
 			Sleep(50);
 		}  
 	}
 
-	void odejdzOdWroga()
+	void odejscieGracza()
 	{
 		for (int i = 0; i<13;i++)
 		{
+			gotoxy(46-i,8); cout << " ";
+			gotoxy(45-i,8); if (turaSpowolnieniaGracza > 0)cout << char(174);
+			gotoxy(46-i,9); cout << " ";
+			gotoxy(45-i,9); if (turaPrzyspieszeniaGracza > 0)cout << char(175);
 			gotoxy(46-i,10);cout << " ";
 			gotoxy(45-i,10);cout << lewo;
 			Sleep(50);
@@ -676,6 +694,34 @@ public:
 		gotoxy(33,10);cout << prawo;
 	}
 
+
+	void podejsciePotwora()
+	{
+		for(int i=0;i<13;i++)
+		{
+			gotoxy(47-i,8); cout << " ";
+			gotoxy(46-i,8); if (turaSpowolnieniaPotwora > 0)cout << char(174);
+			gotoxy(47-i,9); cout << " ";
+			gotoxy(46-i,9); if (turaPrzyspieszeniaPotwora > 0)cout << char(175);
+			gotoxy(47-i,10);cout<<" ";
+			gotoxy(46-i,10);cout<<white;
+			Sleep(50);
+		}
+	}
+
+	void odejsciePotwora()
+	{
+		for(int i=0;i<13;i++)
+		{
+			gotoxy(34+i,8); cout << " ";
+			gotoxy(35+i,8); if (turaSpowolnieniaPotwora > 0)cout << char(174);
+			gotoxy(34+i,9); cout << " ";
+			gotoxy(35+i,9); if (turaPrzyspieszeniaPotwora > 0)cout << char(175);
+			gotoxy(34+i,10);cout<<" ";
+			gotoxy(35+i,10);cout<<white;
+			Sleep(50);
+		}
+	}
 	void wyswietlNadWrogiem(int zmianaWartosci,int czyKrytyk, int jakiKolor)
 	{
 		zmienKolor(jakiKolor);
@@ -704,7 +750,7 @@ public:
 		szary();
 	}
 
-	void odtworzLosowyDzwiek(string listaDzwiekow)
+	void odtworzDzwiek(string listaDzwiekow)
 	{
 		for (int i = 0; i < 30; i++)
 			tablicaTekstu[i] = "puste";
@@ -812,31 +858,12 @@ public:
 		gotoxy(47-13,10);cout << " ";
 	}
 
-	void podejscieWroga()
-	{
-		for(int i=0;i<13;i++)
-		{
-			gotoxy(47-i,10);cout<<" ";
-			gotoxy(46-i,10);cout<<white;
-			Sleep(50);
-		}
-	}
-
-	void odejscieWroga()
-	{
-		for(int i=0;i<13;i++)
-		{
-			gotoxy(34+i,10);cout<<" ";
-			gotoxy(35+i,10);cout<<white;
-			Sleep(50);
-		}
-	}
 
 	void atakNormalnyGracza()
 	{
 		odswiezEkranWalki();
 		dmg = int((rand() % 7)*0.1*(postac.sila+zliczSile()) + postac.sila+zliczDmg()+zliczSile());
-		podejdzDoWroga();
+		podejscieGracza();
 		if ( ((rand() % 99)+1)< crit)
 		{
 			czyTrafienieKrytyczne = 1;
@@ -844,22 +871,24 @@ public:
 		}
 		else
 			czyTrafienieKrytyczne = 0;
+		if (stanDefensywnyPotwora == true) dmg=dmg/2;
 		hpPotwora= hpPotwora-dmg;
-		ktoryRuch = 0;
-		if (timerPotwora>=50) timerPotwora -= 35;
+		wybranyRuchGracza = 0;
+		if (timerPotwora>=50) timerPotwora -= 50;
 		timerGracza = 0;
 		odswiezEkranWalki(true);
 		if (czyTrafienieKrytyczne==1)
-			odtworzLosowyDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|");
+			odtworzDzwiek("krytyk.wav|krytyk2.mp3|krytyk3.mp3|");
 		else
-			odtworzLosowyDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");
+			odtworzDzwiek("hit1.wav|hit2.wav|hit3.wav|hit4.wav|hit5.mp3|");
 		wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,3);
-		odejdzOdWroga();
+		odejscieGracza();
+		odswiezEkranWalki();
 	}
 
 	void uzycieCzaru()
 	{
-		ktoryRuch = 0;
+		wybranyRuchGracza = 0;
 		if (rodzajMagii == 1)
 			czarOfensywny();
 		else
@@ -876,29 +905,92 @@ public:
 			return false;
 		}
 		wykonanoRuch = true;
-		ktoryRuch = 3;
+		wybranyRuchGracza = 3;
 		return true;
+	}
+
+	void wyborRuchuPotwora()
+	{
+		int losowaLiczba;
+
+		if (timerGracza >55)
+		{
+			losowaLiczba = rand() % 100;
+			if (losowaLiczba > 40)
+			{
+				stanDefensywnyPotwora = true;
+				timerPotwora = 0;
+				odswiezEkranWalki();
+				odtworzDzwiek("shield.wav|");
+				return;
+			}
+		}
+		else
+		{
+			losowaLiczba = rand() % 100;
+			if (losowaLiczba > 60)
+			{
+				if (losowaLiczba>80 && turaSpowolnieniaGracza == 0)
+				{
+					wybranyRuchPotwora = 2;
+					varAtakuPotwora = 0.5;
+				}
+				else if ( turaPrzyspieszeniaPotwora == 0)
+				{
+					wybranyRuchPotwora = 3;
+					varAtakuPotwora = 0.4;
+				}
+				else
+				{
+					wybranyRuchPotwora = 1;
+					varAtakuPotwora = 0.7; 
+				}
+			}
+			else
+			{
+				wybranyRuchPotwora = 1;
+				varAtakuPotwora = 0.7; 
+			}
+		}
 	}
 
 	void ruchPotwora()
 	{
-		if (hpPotwora >0){
+		stanDefensywnyPotwora = false;
+		if (wybranyRuchPotwora == 1) //zwykly atak
+		{
 			int pdmg;
 			odswiezEkranWalki();
 			pdmg = potdmgmin+(rand()%7) -zliczDef();
 			if (pdmg<0) pdmg = 0;
-			if (stanDefensywny == true) pdmg = int(pdmg/2);
+			if (stanDefensywnyGracza == true) pdmg = int(pdmg/2);
 			postac.hp=postac.hp-pdmg;
 			if (czyZasiegowy == false)
-				podejscieWroga();
+				podejsciePotwora();
 			else
 				poslijPociskWGracza(5,12);
 			odswiezEkranWalki(true);
-			odtworzLosowyDzwiek("punch1.mp3|punch2.mp3|punch3.mp3|punch4.mp3|punch5.mp3|punch6.mp3|");
+			odtworzDzwiek("punch1.mp3|punch2.mp3|punch3.mp3|punch4.mp3|punch5.mp3|punch6.mp3|");
 			wyswietlNadGraczem(pdmg,0,12);
+			if(timerGracza>=50)timerGracza -= 50;
 			if (czyZasiegowy == false)
-				odejscieWroga();
+				odejsciePotwora();
 		}
+		else if (wybranyRuchPotwora == 2) //spowolnienie
+		{
+			turaSpowolnieniaGracza = 3;
+			poslijPociskWGracza(175,10);
+			odtworzDzwiek("spowolnienie.wav|");
+			odswiezEkranWalki();
+		}
+		else if (wybranyRuchPotwora == 3) //przyspieszenie
+		{
+			turaPrzyspieszeniaPotwora=3;
+			odtworzDzwiek("przyspieszenie.mp3|");
+			odswiezEkranWalki();
+		}
+			odswiezEkranWalki();
+		wybranyRuchPotwora = 0;
 	}
 
 	void sprawdzCzyPotworZyje()
@@ -930,6 +1022,7 @@ public:
 
 	void wyborRuchuGracza()
 	{
+		wykonanoRuch = false;
 		while (wykonanoRuch == false)
 		{
 			gotoxy(10,30);
@@ -937,20 +1030,21 @@ public:
 			menuWyboru(10,31,"Atak|Obrona|Magia|Mikstury|",false);
 			if (wybor == 1){
 				wykonanoRuch = true;
-				ktoryRuch = 1;
+				wybranyRuchGracza = 1;
+				varAtakuGracza = 0.7;
 			}
 			else if (wybor == 2)
 			{
-				stanDefensywny = true;
+				stanDefensywnyGracza = true;
 				wykonanoRuch = true;
-				ktoryRuch = 0;
+				wybranyRuchGracza = 0;
 				timerGracza = 0;
 				odswiezEkranWalki();
-				odtworzLosowyDzwiek("shield.wav|");
+				odtworzDzwiek("shield.wav|");
 			}
 			else if (wybor == 3)
 			{
-				ktoryRuch = 3;
+				wybranyRuchGracza = 3;
 				string tmp="";
 				for (int i = 1; i <= 100; i++)
 				{
@@ -987,7 +1081,7 @@ public:
 						system("cls");
 						odswiezEkranWalki();
 						wykonanoRuch = true;
-						ktoryRuch =0;
+						wybranyRuchGracza =0;
 						timerGracza = 0;
 						mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
 						wyswietlNadGraczem(-50,0,2);
@@ -1001,7 +1095,7 @@ public:
 						if (postac.mp>postac.maxmp) postac.mp = postac.maxmp;
 						postac.mppot=postac.mppot-1;
 						system("cls");
-						ktoryRuch =0;
+						wybranyRuchGracza =0;
 						timerGracza = 0;
 						odswiezEkranWalki();
 						wykonanoRuch = true;
@@ -1036,61 +1130,82 @@ public:
 			timerPotwora = 50;
 		else
 			timerGracza = 50;
-		przyspieszenieGraczaTura = 0;
+		turaPrzyspieszeniaGracza = 0;
+		turaPrzyspieszeniaPotwora = 0;
+		turaSpowolnieniaGracza = 0;
+		turaSpowolnieniaPotwora = 0;
+		wybranyRuchGracza = 0;
+		wybranyRuchPotwora = 0;
 		odswiezEkranWalki();
-		szybkoscGracza = 2;
-		ktoryRuch = 0;
-		while (hpPotwora>0 && postac.hp>0)
+		szybkoscGracza = 1;
+		wybranyRuchGracza = 0;
+		while (hpPotwora>0 && postac.hp>0) //petla walki
 		{
 			FlushConsoleInputBuffer(hInput);    
-			wykonanoRuch = false;
 			odswiezEkranWalki(true);
 			if (timerGracza >= 50)
 			{
-				if (ktoryRuch == 0)
-					wyborRuchuGracza(); //RUCH GRACZA
-				if (timerGracza >= 70)
+				if (wybranyRuchGracza == 0)
+					wyborRuchuGracza(); 
+				if (timerGracza == 70)
 				{
-					if (przyspieszenieGraczaTura>0)
-						przyspieszenieGraczaTura--;
-					stanDefensywny = false;
-					if (ktoryRuch == 1)
+					if (turaPrzyspieszeniaGracza>0)
+						turaPrzyspieszeniaGracza--;
+					if (turaSpowolnieniaGracza>0)
+						turaSpowolnieniaGracza--;
+					stanDefensywnyGracza = false;
+					if (wybranyRuchGracza == 1)
 						atakNormalnyGracza();
-					else if (ktoryRuch == 3)
+					else if (wybranyRuchGracza == 3)
 						uzycieCzaru();
+					timerGracza = 0;
 				}
 			}
 			if (timerPotwora >= 50)
 			{
-				szybkoscPotwora=1;
+				if (wybranyRuchPotwora == 0)
+					wyborRuchuPotwora(); 
 				if (timerPotwora >= 70) 
 				{
 					ruchPotwora(); 
-					ktoryRuch = 0;
-					if (timerGracza>=50) timerGracza -= 25;
+					if (turaPrzyspieszeniaPotwora>0)
+						turaPrzyspieszeniaPotwora--;
+					if (turaSpowolnieniaPotwora>0)
+						turaSpowolnieniaPotwora--;
+					stanDefensywnyPotwora = false;
 					timerPotwora = 0;
-					szybkoscPotwora=2; //TODO: powrot do poprzedniej wartosci
 				}
 			}
-			else
-				szybkoscPotwora=2;
 			if (postac.hp<1)
 			{
 				gameover();
 				return;
 			}
 			sprawdzCzyPotworZyje();
-			Sleep(100);
-			timerPotwora+=szybkoscPotwora;
-			if (timerPotwora>70)
-				timerPotwora = 70;
-			timerGracza+=szybkoscGracza;
-			if (stanDefensywny == true)
-				timerGracza+=1;
-			if (przyspieszenieGraczaTura > 0)
-				timerGracza+=1;
-			if (timerGracza>70)
-				timerGracza = 70;
+			Sleep(50);
+			//
+			// do wybalansowania
+			if (wybranyRuchGracza == 0) varAtakuGracza = 1; 
+			if (wybranyRuchPotwora == 0) varAtakuPotwora = 1; 
+			if (turaSpowolnieniaGracza > 0) varSpowolnieniaGracza = 0.7;
+			else varSpowolnieniaGracza = 1;
+			if (turaSpowolnieniaPotwora > 0) varSpowolnieniaPotwora = 0.7;
+			else varSpowolnieniaPotwora = 1;
+			if (turaPrzyspieszeniaGracza > 0) varPrzyspieszeniaGracza = 1.3;
+			else varPrzyspieszeniaGracza = 1;
+			if (turaPrzyspieszeniaPotwora > 0) varPrzyspieszeniaPotwora = 1.3;
+			else varPrzyspieszeniaPotwora = 1;
+			if (stanDefensywnyGracza == true) varObronyGracza = 1.2;
+			else varObronyGracza = 1;
+			if (stanDefensywnyPotwora == true) varObronyPotwora = 1.2;
+			else varObronyPotwora = 1;
+			//
+			//
+			timerPotwora+=szybkoscPotwora*varSpowolnieniaPotwora*varPrzyspieszeniaPotwora*varAtakuPotwora*varObronyPotwora;
+			timerGracza +=szybkoscGracza *varSpowolnieniaGracza *varPrzyspieszeniaGracza *varAtakuGracza *varObronyGracza;
+			//
+			if (timerPotwora>70)timerPotwora = 70;
+			if (timerGracza>70) timerGracza  = 70;
 		}
 		while (postac.doswiadczenie>postac.maksymalneDoswiadczenie)       
 			postac.poziom=postac.poziom+ lvlup();
@@ -1104,31 +1219,31 @@ public:
 	{
 		int k = rand() % 6;
 		if (rodzajPotwora==1){
-			if (k==0) {potw = "Szczur"; hpPotwora = 25; potdmgmin = 5;potgold=15;szybkoscPotwora=2;czyZasiegowy = false;}
-			if (k==1) {potw = "Pajak"; hpPotwora = 30; potdmgmin = 6;potgold=25;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 5;}
-			if (k==2) {potw = "Nietoperz"; hpPotwora = 45; potdmgmin = 7;potgold=45;szybkoscPotwora=2;czyZasiegowy = false;}
-			if (k==3) {potw = "Ognik"; hpPotwora = 50; potdmgmin = 8;potgold=65;szybkoscPotwora=2;czyZasiegowy = true;}
-			if (k==4) {potw = "Skunks"; hpPotwora = 55; potdmgmin = 9;potgold=65;szybkoscPotwora=2;czyZasiegowy = false;}
-			if (k==5) {potw = "Lis"; hpPotwora = 60; potdmgmin = 10;potgold=65;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==0) {potw = "Szczur"; hpPotwora = 25; potdmgmin = 5;potgold=15;szybkoscPotwora=1;czyZasiegowy = false;}
+			if (k==1) {potw = "Pajak"; hpPotwora = 30; potdmgmin = 6;potgold=25;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 5;}
+			if (k==2) {potw = "Nietoperz"; hpPotwora = 45; potdmgmin = 7;potgold=45;szybkoscPotwora=1;czyZasiegowy = false;}
+			if (k==3) {potw = "Ognik"; hpPotwora = 50; potdmgmin = 8;potgold=65;szybkoscPotwora=1;czyZasiegowy = true;}
+			if (k==4) {potw = "Skunks"; hpPotwora = 55; potdmgmin = 9;potgold=65;szybkoscPotwora=1;czyZasiegowy = false;}
+			if (k==5) {potw = "Lis"; hpPotwora = 60; potdmgmin = 10;potgold=65;szybkoscPotwora=1;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==2){
-			if (k==0) {potw = "Szkielet"; hpPotwora = 180; potdmgmin = 20;potgold=150;szybkoscPotwora=2;czyZasiegowy = false;}
-			if (k==1) {potw = "Goblin"; hpPotwora = 200; potdmgmin = 21;potgold=175;szybkoscPotwora=2;czyZasiegowy = false;}
-			if (k==2) {potw = "Szaman"; hpPotwora = 220; potdmgmin = 22;potgold=200;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 4;}
-			if (k==3) {potw = "Troll"; hpPotwora = 240; potdmgmin = 23;potgold=220;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 7;}
-			if (k==4) {potw = "Elf"; hpPotwora = 260; potdmgmin = 24;potgold=220;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 15;}
-			if (k==5) {potw = "Minotaur"; hpPotwora = 280; potdmgmin = 25;potgold=220;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==0) {potw = "Szkielet"; hpPotwora = 180; potdmgmin = 20;potgold=150;szybkoscPotwora=1;czyZasiegowy = false;}
+			if (k==1) {potw = "Goblin"; hpPotwora = 200; potdmgmin = 21;potgold=175;szybkoscPotwora=1;czyZasiegowy = false;}
+			if (k==2) {potw = "Szaman"; hpPotwora = 220; potdmgmin = 22;potgold=200;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 4;}
+			if (k==3) {potw = "Troll"; hpPotwora = 240; potdmgmin = 23;potgold=220;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 7;}
+			if (k==4) {potw = "Elf"; hpPotwora = 260; potdmgmin = 24;potgold=220;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 15;}
+			if (k==5) {potw = "Minotaur"; hpPotwora = 280; potdmgmin = 25;potgold=220;szybkoscPotwora=1;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==3){
-			if (k==0) {potw = "Wampir"; hpPotwora = 400; potdmgmin = 35;potgold=280;szybkoscPotwora=2;czyZasiegowy = false;}
-			if (k==1) {potw = "Duch"; hpPotwora = 420; potdmgmin = 36;potgold=300;szybkoscPotwora=2;czyZasiegowy = false;}
-			if (k==2) {potw = "Ogr"; hpPotwora = 440; potdmgmin = 37;potgold=320;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 22;}
-			if (k==3) {potw = "Wilkolak"; hpPotwora = 460; potdmgmin = 38;potgold=340;szybkoscPotwora=2;czyZasiegowy = false;}
-			if (k==4) {potw = "Dzin"; hpPotwora = 480; potdmgmin = 39;potgold=340;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 8;}
-			if (k==5) {potw = "Golem"; hpPotwora = 500; potdmgmin = 40;potgold=340;szybkoscPotwora=2;czyZasiegowy = false;}
+			if (k==0) {potw = "Wampir"; hpPotwora = 400; potdmgmin = 35;potgold=280;szybkoscPotwora=1;czyZasiegowy = false;}
+			if (k==1) {potw = "Duch"; hpPotwora = 420; potdmgmin = 36;potgold=300;szybkoscPotwora=1;czyZasiegowy = false;}
+			if (k==2) {potw = "Ogr"; hpPotwora = 440; potdmgmin = 37;potgold=320;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 22;}
+			if (k==3) {potw = "Wilkolak"; hpPotwora = 460; potdmgmin = 38;potgold=340;szybkoscPotwora=1;czyZasiegowy = false;}
+			if (k==4) {potw = "Dzin"; hpPotwora = 480; potdmgmin = 39;potgold=340;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 8;}
+			if (k==5) {potw = "Golem"; hpPotwora = 500; potdmgmin = 40;potgold=340;szybkoscPotwora=1;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==4){
-			if (k==0) {potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=5000;szybkoscPotwora=2;czyZasiegowy = true; typAtaku = 3;}
+			if (k==0) {potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=5000;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 3;}
 			else
 			{potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=5000;}
 		}
@@ -1443,10 +1558,11 @@ public:
 
 	void magic(int id)
 	{
-		if(id==1){nazwaCzaru = "Ognisty Podmuch"; kosztMany = 8; wartoscCzaru = 100; przelicznik=1.2; rodzajAnimacji=1; p1=12; p2=12; p3=0; p4=0; rodzajMagii = 1; }
-		else if(id==2){nazwaCzaru = "Swietlisty Grom"; kosztMany = 12; wartoscCzaru = 500; przelicznik=2; rodzajAnimacji=3; p1=126; p2=158; p3=14; p4=12; rodzajMagii = 1;}
-		else if(id==50){nazwaCzaru = "Przyspieszenie"; kosztMany = 5; wartoscCzaru = 200; przelicznik=0; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2;}
-		else if(id==51){nazwaCzaru = "Lekkie Uzdrowienie"; kosztMany = 5; wartoscCzaru = 100; przelicznik=1.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2;}
+		if(id==1){nazwaCzaru = "Ognisty Podmuch"; kosztMany = 8; wartoscCzaru = 100; przelicznik=1.2; rodzajAnimacji=1; p1=12; p2=12; p3=0; p4=0; rodzajMagii = 1; varAtakuGracza = varAtakuGracza = 0.7;}
+		else if(id==2){nazwaCzaru = "Swietlisty Grom"; kosztMany = 12; wartoscCzaru = 500; przelicznik=2; rodzajAnimacji=3; p1=126; p2=158; p3=14; p4=12; rodzajMagii = 1; varAtakuGracza = 0.6;}
+		else if(id==52){nazwaCzaru = "Spowolnienie"; kosztMany = 4; wartoscCzaru = 1000; przelicznik=0; rodzajAnimacji=1; p1=174; p2=0; p3=10; p4=0; rodzajMagii = 2; varAtakuGracza = 0.5;}
+		else if(id==50){nazwaCzaru = "Przyspieszenie"; kosztMany = 5; wartoscCzaru = 200; przelicznik=0; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2; varAtakuGracza = 0.5;}
+		else if(id==51){nazwaCzaru = "Lekkie Uzdrowienie"; kosztMany = 5; wartoscCzaru = 100; przelicznik=1.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2;varAtakuGracza = 0.8;}
 	}
 
 	void czarDefensywny()
@@ -1458,17 +1574,24 @@ public:
 			if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
 			mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
 			wyswietlNadGraczem(-int((postac.inteligencja+zliczInteligencje())*przelicznik),0,2);
-			timerGracza = 0;
-			if (timerPotwora>=50) timerPotwora -= 35;
-			odswiezEkranWalki();
 		}
 		else if (uzytyCzar == 50)
 		{
-			przyspieszenieGraczaTura = 3;
-			timerGracza = 0;
-			odtworzLosowyDzwiek("przyspieszenie.mp3|");
-			odswiezEkranWalki();
+			postac.mp-=kosztMany;
+			turaPrzyspieszeniaGracza = 3;
+			odtworzDzwiek("przyspieszenie.mp3|");
 		}
+		else if (uzytyCzar = 52)
+		{
+			postac.mp-=kosztMany;
+			turaSpowolnieniaPotwora = 3;
+			poslijPocisk(174,10);
+			odtworzDzwiek("spowolnienie.wav|");
+
+		}
+			odswiezEkranWalki();
+			timerGracza = 0;
+
 	}
 
 	void czarOfensywny()
@@ -1478,9 +1601,9 @@ public:
 		dmg = int((rand() % 7)*0.1*postac.inteligencja + (postac.inteligencja+zliczInteligencje())*przelicznik);
 		odswiezEkranWalki();
 		if (czyTrafienieKrytyczne==1)
-			odtworzLosowyDzwiek("thunder1.wav|"); 
+			odtworzDzwiek("thunder3.wav|"); 
 		else
-			odtworzLosowyDzwiek("thunder1.wav|thunder2.wav|thunder3.wav|");
+			odtworzDzwiek("thunder1.wav|thunder2.wav|");
 		if(rodzajAnimacji==1)
 			poslijPocisk(p1,p2);
 		else if(rodzajAnimacji==2)
@@ -1495,7 +1618,8 @@ public:
 		else
 			czyTrafienieKrytyczne = 0;
 		timerGracza = 0;
-		if (timerPotwora>=50) timerPotwora -= 35;
+		if (timerPotwora>=50) timerPotwora -= 50;
+		if(stanDefensywnyPotwora == true) dmg=dmg/2;
 		hpPotwora= hpPotwora-dmg;
 		odswiezEkranWalki(true);
 		wyswietlNadWrogiem(dmg,czyTrafienieKrytyczne,12);
@@ -1656,7 +1780,7 @@ public:
 		system("cls");
 		if (postac.posiadaneCzary[ktoryCzar] ==1)
 		{
-			ramkaInformacji("Ju¿ posiadasz ten czar.");
+			ramkaInformacji("Juz posiadasz ten czar.");
 		}
 		else
 		{
@@ -1931,7 +2055,7 @@ public:
 	{
 		int ilosczlota;
 		otwarteskrzynki++;
-		odtworzLosowyDzwiek("skrzynka1.wav|skrzynka2.wav|");
+		odtworzDzwiek("skrzynka1.wav|skrzynka2.wav|");
 		if (trudnoscPoziomu == 1) {ilosczlota = (rand() % 20)+20;zdobyteZloto=zdobyteZloto+ilosczlota;}
 		if (trudnoscPoziomu == 2) {ilosczlota = (rand() % 100)+500;zdobyteZloto=zdobyteZloto+ilosczlota;}
 		if (trudnoscPoziomu == 3) {ilosczlota = (rand() % 100)+1000;zdobyteZloto=zdobyteZloto+ilosczlota;}
@@ -2545,7 +2669,8 @@ public:
 			while (wyszedlem==0)
 			{
 				if (postac.hp<1) return;
-				if (wygrana ==1){
+				if (wygrana ==1)
+				{
 					reset();
 					wygrana =0;
 					wylaczMuzyke();
@@ -2557,7 +2682,7 @@ public:
 					wktora = 1;
 					if (sciana[x-1][y]==0)
 					{
-						odtworzLosowyDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
+						odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
 						if (x>0)
 							x--;
 						reset();
@@ -2570,7 +2695,7 @@ public:
 					wktora = 2;
 					if (sciana[x+1][y]==0)
 					{
-						odtworzLosowyDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
+						odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
 						x++;
 						reset();
 						gotoxy(x-1,y);
@@ -2582,7 +2707,7 @@ public:
 					wktora = 3;
 					if (sciana[x][y-1]==0)
 					{
-						odtworzLosowyDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
+						odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
 						if (y>0)
 							y--;
 						reset();
@@ -2595,7 +2720,7 @@ public:
 					wktora = 4;
 					if (sciana[x][y+1]==0)
 					{ 
-						odtworzLosowyDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
+						odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
 						y++;
 						reset();
 						gotoxy(x,y-1);
