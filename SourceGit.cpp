@@ -1011,10 +1011,10 @@ public:
 			cout << " ";
 			ramkaInformacji("Wygrales! " + potw + string(" nie zyje!"));
 			int potexp = int(maksymalneHpPotwora+0.5*(rand()%20));
+			potgold = potgold+(rand()%20);
 			ramkaInformacji("Otrzymujesz " + to_string(potexp) + string(" punktow doswiadczenia! Otrzymales ") + to_string (potgold) + string(" sztuk zlota"));
 			zdobyteDoswiadczenie=zdobyteDoswiadczenie+potexp;
 			postac.doswiadczenie=postac.doswiadczenie+potexp;
-			potgold = potgold+(rand()%20);
 			zabitepotwory++;
 			postac.zloto=postac.zloto+potgold;
 			zdobyteZloto=zdobyteZloto+potgold;
@@ -2069,14 +2069,15 @@ public:
 		int ilosczlota;
 		otwarteskrzynki++;
 		odtworzDzwiek("skrzynka1.wav|skrzynka2.wav|");
-		if (trudnoscPoziomu == 1) {ilosczlota = (rand() % 20)+20;zdobyteZloto=zdobyteZloto+ilosczlota;}
-		if (trudnoscPoziomu == 2) {ilosczlota = (rand() % 100)+500;zdobyteZloto=zdobyteZloto+ilosczlota;}
-		if (trudnoscPoziomu == 3) {ilosczlota = (rand() % 100)+1000;zdobyteZloto=zdobyteZloto+ilosczlota;}
-		if (trudnoscPoziomu == 4) {ilosczlota = (rand() % 100)+2000;zdobyteZloto=zdobyteZloto+ilosczlota;}
-		if (wktora==1){gotoxy(x-1,y);sciana[x-1][y]= 0; cout << " ";}
-		if (wktora==2){gotoxy(x+1,y);sciana[x+1][y]= 0; cout << " ";}
-		if (wktora==3){gotoxy(x,y-1);sciana[x][y-1]= 0; cout << " ";}
-		if (wktora==4){gotoxy(x,y+1);sciana[x][y+1]= 0; cout << " ";}
+		if (trudnoscPoziomu == 1) ilosczlota = (rand() % 20)+20;
+		else if (trudnoscPoziomu == 2) ilosczlota = (rand() % 100)+500;
+		else if (trudnoscPoziomu == 3) ilosczlota = (rand() % 100)+1000;
+		else if (trudnoscPoziomu == 4) ilosczlota = (rand() % 100)+2000;
+		postac.zloto+=ilosczlota;
+		if (wktora==1)sciana[x-1][y]= 0;
+		else if (wktora==2)sciana[x+1][y]= 0;
+		else if (wktora==3)sciana[x][y-1]= 0;
+		else if (wktora==4)sciana[x][y+1]= 0;
 		ramkaInformacji("Otrzymales " + to_string(ilosczlota) + string(" szt zlota.") +". Posiadasz teraz " + to_string(postac.zloto) + string(" szt zlota."));
 		system("cls");
 		wygrana = 1;
