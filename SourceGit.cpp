@@ -65,7 +65,7 @@ public:
 		doswiadczenie = 0;
 		punktyDoRozdania=0;
 		maksymalneDoswiadczenie = 100; 
-		zloto = 10000;
+		zloto = 0;
 		hp = 100;
 		mp = 10;
 		maxhp=100;
@@ -126,7 +126,7 @@ public:
 	int ilestam;
 	int wyszedlem;
 	int zdobyteDoswiadczenie;
-	int szybkoscPotwora,szybkoscGracza;
+	double szybkoscPotwora,szybkoscGracza;
 	int rodzajAnimacji;
 	string nazwaitemu;
 	string nazwaCzaru;
@@ -579,7 +579,7 @@ public:
 		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Mag|Alchemik|Zobacz statystyki postaci|Lista Posiadanych przedmiotow|Sakiewka|Opcje|Zapisz stan gry|");
 		switch (wybor)
 		{
-		case 1:	ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Sancre Tor (trudny)|Opuszczona wioska (trudny)|Krypta Pacmana (chaos)|Leze smoka (BOSS)|Powrot|");
+		case 1:	ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Sancre Tor (trudny)|Yuzaszkowo (trudny)|Krypta Pacmana (chaos)|Leze smoka (BOSS)|Powrot|");
 			if (wybor !=8) level(wybor); else return;labirynt(); break;
 		case 2: karczma(); break;
 		case 3: kowal(); break;
@@ -1142,7 +1142,7 @@ public:
 		wybranyRuchGracza = 0;
 		wybranyRuchPotwora = 0;
 		odswiezEkranWalki();
-		szybkoscGracza = 1;
+		szybkoscGracza = 1+ 0.015 * postac.zrecznosc;
 		wybranyRuchGracza = 0;
 		stanDefensywnyGracza = false;
 		stanDefensywnyPotwora = false;
@@ -1236,32 +1236,36 @@ public:
 		int k = rand() % 6;
 		if (rodzajPotwora==1){
 			if (k==0) {potw = "Szczur"; hpPotwora = 25; potdmgmin = 5;potgold=15;szybkoscPotwora=1.2;czyZasiegowy = false;}
-			if (k==1) {potw = "Pajak"; hpPotwora = 30; potdmgmin = 6;potgold=25;szybkoscPotwora=1.1;czyZasiegowy = true; typAtaku = 5;}
-			if (k==2) {potw = "Nietoperz"; hpPotwora = 45; potdmgmin = 7;potgold=45;szybkoscPotwora=1.3;czyZasiegowy = false;}
-			if (k==3) {potw = "Ognik"; hpPotwora = 50; potdmgmin = 8;potgold=65;szybkoscPotwora=1.05;czyZasiegowy = true;}
-			if (k==4) {potw = "Skunks"; hpPotwora = 55; potdmgmin = 9;potgold=65;szybkoscPotwora=1.08;czyZasiegowy = false;}
-			if (k==5) {potw = "Lis"; hpPotwora = 60; potdmgmin = 10;potgold=65;szybkoscPotwora=1.25;czyZasiegowy = false;}
+			else if (k==1) {potw = "Pajak"; hpPotwora = 30; potdmgmin = 6;potgold=25;szybkoscPotwora=1.1;czyZasiegowy = true; typAtaku = 5;}
+			else if (k==2) {potw = "Nietoperz"; hpPotwora = 45; potdmgmin = 7;potgold=45;szybkoscPotwora=1.3;czyZasiegowy = false;}
+			else if (k==3) {potw = "Ognik"; hpPotwora = 50; potdmgmin = 8;potgold=65;szybkoscPotwora=1.05;czyZasiegowy = true;}
+			else if (k==4) {potw = "Skunks"; hpPotwora = 55; potdmgmin = 9;potgold=65;szybkoscPotwora=1.08;czyZasiegowy = false;}
+			else if (k==5) {potw = "Lis"; hpPotwora = 60; potdmgmin = 10;potgold=65;szybkoscPotwora=1.25;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==2){
 			if (k==0) {potw = "Szkielet"; hpPotwora = 180; potdmgmin = 20;potgold=150;szybkoscPotwora=0.8;czyZasiegowy = false;}
-			if (k==1) {potw = "Goblin"; hpPotwora = 200; potdmgmin = 21;potgold=175;szybkoscPotwora=0.9;czyZasiegowy = false;}
-			if (k==2) {potw = "Szaman"; hpPotwora = 220; potdmgmin = 22;potgold=200;szybkoscPotwora=1.15;czyZasiegowy = true; typAtaku = 4;}
-			if (k==3) {potw = "Troll"; hpPotwora = 240; potdmgmin = 23;potgold=220;szybkoscPotwora=0.7;czyZasiegowy = true; typAtaku = 7;}
-			if (k==4) {potw = "Elf"; hpPotwora = 260; potdmgmin = 24;potgold=220;szybkoscPotwora=1.4;czyZasiegowy = true; typAtaku = 15;}
-			if (k==5) {potw = "Minotaur"; hpPotwora = 280; potdmgmin = 25;potgold=220;szybkoscPotwora=1.05;czyZasiegowy = false;}
+			else if (k==1) {potw = "Goblin"; hpPotwora = 200; potdmgmin = 21;potgold=175;szybkoscPotwora=0.9;czyZasiegowy = false;}
+			else if (k==2) {potw = "Szaman"; hpPotwora = 220; potdmgmin = 22;potgold=200;szybkoscPotwora=1.15;czyZasiegowy = true; typAtaku = 4;}
+			else if (k==3) {potw = "Troll"; hpPotwora = 240; potdmgmin = 23;potgold=220;szybkoscPotwora=0.7;czyZasiegowy = true; typAtaku = 7;}
+			else if (k==4) {potw = "Elf"; hpPotwora = 260; potdmgmin = 24;potgold=220;szybkoscPotwora=1.4;czyZasiegowy = true; typAtaku = 15;}
+			else if (k==5) {potw = "Minotaur"; hpPotwora = 280; potdmgmin = 25;potgold=220;szybkoscPotwora=1.05;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==3){
 			if (k==0) {potw = "Wampir"; hpPotwora = 400; potdmgmin = 35;potgold=280;szybkoscPotwora=1;czyZasiegowy = false;}
-			if (k==1) {potw = "Duch"; hpPotwora = 420; potdmgmin = 36;potgold=300;szybkoscPotwora=1;czyZasiegowy = false;}
-			if (k==2) {potw = "Ogr"; hpPotwora = 440; potdmgmin = 37;potgold=320;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 22;}
-			if (k==3) {potw = "Wilkolak"; hpPotwora = 460; potdmgmin = 38;potgold=340;szybkoscPotwora=1;czyZasiegowy = false;}
-			if (k==4) {potw = "Dzin"; hpPotwora = 480; potdmgmin = 39;potgold=340;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 8;}
-			if (k==5) {potw = "Golem"; hpPotwora = 500; potdmgmin = 40;potgold=340;szybkoscPotwora=1;czyZasiegowy = false;}
+			else if (k==1) {potw = "Duch"; hpPotwora = 420; potdmgmin = 36;potgold=300;szybkoscPotwora=1;czyZasiegowy = false;}
+			else if (k==2) {potw = "Ogr"; hpPotwora = 440; potdmgmin = 37;potgold=320;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 22;}
+			else if (k==3) {potw = "Wilkolak"; hpPotwora = 460; potdmgmin = 38;potgold=340;szybkoscPotwora=1;czyZasiegowy = false;}
+			else if (k==4) {potw = "Dzin"; hpPotwora = 480; potdmgmin = 39;potgold=340;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 8;}
+			else if (k==5) {potw = "Golem"; hpPotwora = 500; potdmgmin = 40;potgold=340;szybkoscPotwora=1;czyZasiegowy = false;}
 		}
 		if (rodzajPotwora==4){
-			if (k==0) {potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=5000;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 3;}
-			else
-			{potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=5000;}
+			if (postac.wybranyPoziom == 1){potw = "Szczurolak"; hpPotwora = 200; potdmgmin = 15;potgold=200;szybkoscPotwora=1.1;czyZasiegowy = false;}
+			else if (postac.wybranyPoziom == 2){potw = "Spiderpig"; hpPotwora = 400; potdmgmin = 35;potgold=800;szybkoscPotwora=1.15;czyZasiegowy = true; typAtaku = 5;}
+			else if (postac.wybranyPoziom == 3){potw = "Gigant"; hpPotwora = 600; potdmgmin = 40;potgold=1600;szybkoscPotwora=1.2;czyZasiegowy = false;}
+			else if (postac.wybranyPoziom == 4){potw = "Cyklop"; hpPotwora = 800; potdmgmin = 45;potgold=2000;szybkoscPotwora=1.25;czyZasiegowy = false;}
+			else if (postac.wybranyPoziom == 5){potw = "Yuseg z Yuzaszkowa"; hpPotwora = 1000; potdmgmin = 50;potgold=3000;szybkoscPotwora=1.3;czyZasiegowy = true; typAtaku = 22;}
+			else if (postac.wybranyPoziom == 6){potw = "Behemot"; hpPotwora = 1500; potdmgmin = 55;potgold=4000;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 30;}
+			else if (postac.wybranyPoziom == 7){potw = "Smok"; hpPotwora = 5000; potdmgmin = 80;potgold=10000;szybkoscPotwora=1;czyZasiegowy = true; typAtaku = 3;}
 		}
 		return potw;
 	}
@@ -1300,7 +1304,7 @@ public:
 			wylaczMuzyke();
 			Sleep(100);
 			mciSendString("play sounds/levelUP.wav ",NULL,1,NULL);
-			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1) + "hp: " + to_string(postac.maxhp) + string("->") + to_string(int(postac.maxhp+postac.budowa*1.2)) + string("   mp: " )+ to_string(postac.maxmp) + string("->") + to_string(int(postac.maxmp*1.4)));
+			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1) + " HP: " + to_string(postac.maxhp) + string("->") + to_string(int(postac.maxhp+postac.budowa*1.2)) + string("   MP: " )+ to_string(postac.maxmp) + string("->") + to_string(int(postac.maxmp*1.4)));
 			postac.doswiadczenie = postac.doswiadczenie-postac.maksymalneDoswiadczenie;
 			postac.maksymalneDoswiadczenie=int(postac.maksymalneDoswiadczenie*1.4);
 			postac.maxhp=int(postac.maxhp+postac.budowa*1.2);
