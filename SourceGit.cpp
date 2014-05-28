@@ -1722,46 +1722,46 @@ public:
 						gotoxy(72,19);
 						cout <<punktyKomputera;
 					}
-					if(punktyGracza>punktyKomputera)
-					{
-						ramka();
-						gotoxy(36,16);
-						cout << "Gratulacje";
-						gotoxy(32,18);
-						cout <<"Wygrales " << stawka*2 << " zlota!";
-						postac.zloto+=stawka;
-					}
-					else if(punktyGracza<punktyKomputera)
-					{
-						ramka();
-						gotoxy(36,16);
-						cout << "Niestety";
-						gotoxy(30,18);
-						cout <<"Przegrales " << stawka << " sztuk zlota!";
-						postac.zloto-=stawka;
-					}
-					else
-					{
-						ramka();
-						gotoxy(36,16);
-						cout << "Remis!";
-						gotoxy(32,18);
-						cout << "Twoje zloto wraca do ciebie.";
-					}
-					Sleep(1000);
-					ramkaWyboru("Co chcialbys teraz zrobic","Zagrac jeszcze raz!|Powrot...|");
-					if(wybor==1)
-					{
-						system("cls");
-						pokaz();
-						kosci();
-					}
-					else
-					{
-						system("cls");
-						pokaz();
-						karczma();
-					}
+				}
+				if(punktyGracza>punktyKomputera)
+				{
+					ramka();
+					gotoxy(36,16);
+					cout << "Gratulacje";
+					gotoxy(32,18);
+					cout <<"Wygrales " << stawka*2 << " zlota!";
+					postac.zloto+=stawka;
+				}
+				else if(punktyGracza<punktyKomputera)
+				{
+					ramka();
+					gotoxy(36,16);
+					cout << "Niestety";
+					gotoxy(30,18);
+					cout <<"Przegrales " << stawka << " sztuk zlota!";
+					postac.zloto-=stawka;
+				}
+				else
+				{
+					ramka();
+					gotoxy(36,16);
+					cout << "Remis!";
+					gotoxy(32,18);
+					cout << "Twoje zloto wraca do ciebie.";
+				}
+				Sleep(1000);
+				ramkaWyboru("Co chcialbys teraz zrobic","Zagrac jeszcze raz!|Powrot...|");
+				if(wybor==1)
+				{
+					system("cls");
+					pokaz();
+					kosci();
+				}
+				else
+				{
+					system("cls");
+					pokaz();
+					karczma();
 				}
 			}
 		}
