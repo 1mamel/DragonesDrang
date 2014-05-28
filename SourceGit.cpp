@@ -310,6 +310,7 @@ public:
 
 	void ramka(int ileDodatkowo = 0)
 	{
+		ileDodatkowo+= 2;
 		if (ileDodatkowo%2 == -1) ileDodatkowo++; //nauczylismy sie liczyc :D
 		gotoxy(16,13-ileDodatkowo/2); cout << lewy_gorny; for (int i = 0; i<47;i++) cout << pozioma; cout << prawy_gorny;
 		for (int i = 0; i<10+ileDodatkowo;i++){
@@ -318,7 +319,7 @@ public:
 		gotoxy(16,24+ileDodatkowo/2); cout << lewy_dolny; for (int i = 0; i<47;i++) cout << pozioma; cout << prawy_dolny;   
 	}
 
-	void ramkaWyboru(string pytanie, string dluzszyTekst)
+		void ramkaWyboru(string informacja, string dluzszyTekst)
 	{
 		int i = 0;
 		int j = 0;
@@ -340,15 +341,19 @@ public:
 		string::size_type pos;
 		while(true)
 		{
-			if (pytanie.length() > 50)
-				pos = pytanie.find(' ',40);
-			else
+			pos = 0;
+			pos = informacja.find('|',0);
+			if (pos <40 && pos !=0 ){}
+			else if (informacja.length() >=40 ){
+				pos = informacja.find(' ',30);
+			}
+			else if(informacja.length() <40)
 			{
-				tablicaTekstu[j] = pytanie;
+				tablicaTekstu[j] = informacja;
 				break;
 			}
-			tablicaTekstu[j] = pytanie.substr(0, pos);
-			pytanie = pytanie.substr(pos);
+			tablicaTekstu[j] = informacja.substr(0, pos);
+			informacja = informacja.substr(pos+1);
 			j++;
 		}
 		int z = (int(i+j))/2 +1;
@@ -372,15 +377,20 @@ public:
 		string::size_type pos;
 		while(true)
 		{
-			if (informacja.length() > 50)
-				pos = informacja.find(' ',40);
-			else
+			pos = 0;
+			pos = informacja.find('|',0);
+			if (pos <40 && pos !=0 ){}
+			else if (informacja.length() >=40 ){
+				pos = informacja.find(' ',30);
+			}
+			else if(informacja.length() <40)
 			{
 				tablicaTekstu[j] = informacja;
+				j++;
 				break;
 			}
 			tablicaTekstu[j] = informacja.substr(0, pos);
-			informacja = informacja.substr(pos);
+			informacja = informacja.substr(pos+1);
 			j++;
 		}
 		ramka(j-7);
@@ -388,11 +398,11 @@ public:
 		for (int g = 0; g < 30; g++){
 			if (tablicaTekstu[g]== "puste")
 				break;
-			gotoxy(39-(tablicaTekstu[g].length())/2 +1,18+g +j/2);
+			gotoxy(39-(tablicaTekstu[g].length())/2 +1,18+g -j/2);
 			cout << tablicaTekstu[g];
 		}
 
-		gotoxy(19,20+j+j/2 -1);
+		gotoxy(19,20+j-j/2 -1);
 		cout << "Nacisnij dowolny klawisz by kontynuowac...";
 		_getch();
 	}
@@ -2060,7 +2070,7 @@ public:
 		if(id==1){nazwaCzaru = "Ognisty Podmuch"; kosztMany = 8; wartoscCzaru = 100; przelicznik=1.2; rodzajAnimacji=1; p1=12; p2=0; p3=12; p4=0; rodzajMagii = 1; varAtakuGracza =  0.7; dzwiekAtaku="|"; dzwiekKryta="|";}
 		else if(id==2){nazwaCzaru = "Swietlisty Grom"; kosztMany = 12; wartoscCzaru = 500; przelicznik=2; rodzajAnimacji=3; p1=126; p2=158; p3=14; p4=12; rodzajMagii = 1; varAtakuGracza = 0.6; dzwiekAtaku="thunder1.wav|thunder2.wav|"; dzwiekKryta="thunder3.wav|";}
 		else if(id==3){nazwaCzaru = "Kula Ognia"; kosztMany = 10; wartoscCzaru = 400; przelicznik=1.5; rodzajAnimacji=4; p1=12; p2=12; p3=12; p4=12; rodzajMagii =1; varAtakuGracza = 0.8; dzwiekAtaku="|"; dzwiekKryta="|";}
-		else if(id==4){nazwaCzaru = "Lodowy Odlamek"; kosztMany = 10; wartoscCzaru = 800; przelicznik=2.2; rodzajAnimacji=1; p1=42; p2=0; p3=9; p4=0; rodzajMagii=1; varAtakuGracza = 0.4; dzwiekAtaku="|"; dzwiekKryta="|";}
+		else if(id==4){nazwaCzaru = "Lodowy Odlamek"; kosztMany = 10; wartoscCzaru = 800; przelicznik=2.2; rodzajAnimacji=1; p1=42; p2=0; p3=9; p4=0; rodzajMagii=1; varAtakuGracza = 0.5; dzwiekAtaku="|"; dzwiekKryta="|";}
 		else if(id==5){nazwaCzaru = "Smagajace Pnacza"; kosztMany = 10; wartoscCzaru = 1000; przelicznik=1.4; rodzajAnimacji=3; p1=62; p2=136; p3=2; p4=10; rodzajMagii=1; varAtakuGracza = 0.7; dzwiekAtaku="|"; dzwiekKryta="|";}
 		else if(id==50){nazwaCzaru = "Przyspieszenie"; kosztMany = 5; wartoscCzaru = 200; przelicznik=0; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2; varAtakuGracza = 0.5; dzwiekAtaku="przyspieszenie.mp3|"; dzwiekKryta="|";}
 		else if(id==51){nazwaCzaru = "Lekkie Uzdrowienie"; kosztMany = 5; wartoscCzaru = 100; przelicznik=1.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2;varAtakuGracza = 0.8; dzwiekAtaku="heal.mp3|"; dzwiekKryta="|";}
@@ -2171,7 +2181,7 @@ public:
 		string ciagZnakow;
 		magic(idCzaru);
 		ciagZnakow = nazwaCzaru + string(" # Wartosc: ") + to_string (wartoscCzaru);
-		if (postac.posiadaneCzary[idCzaru] == 1) ciagZnakow= ciagZnakow + " (Posiadasz)";
+		if (postac.posiadaneCzary[idCzaru] == 1) ciagZnakow= ciagZnakow + " (Znasz)";
 		return ciagZnakow;
 	}
 
@@ -2208,7 +2218,14 @@ public:
 		system("cls");
 		if (postac.posiadanePrzedmioty[ktoryPrzedmiot] ==1 || postac.posiadanePrzedmioty[ktoryPrzedmiot]==2)
 		{
-			ramkaWyboru("Co chcialbys zrobic z " + nazwaitemu + string("?"),"Sprzedac za " + to_string(int(wartoscPrzedmiotu/1.2)) + string(" sztuk zlota|Ubrac|Powrot...|"));
+			tempTekst1 = "|Dodatkowe statystyki:";
+			if(obrona != 0 ) tempTekst1 += ("|Obrona: "+ to_string(obrona));
+			if(atak != 0 ) tempTekst1 += ("|Atak: "+ to_string(atak));
+			if(iSila != 0 ) tempTekst1 += ("|Sila: "+ to_string(iSila));
+			if(iZrecznosc != 0 ) tempTekst1 += ("|Zrecznosc: "+ to_string(iZrecznosc));
+			if(iInteligencja != 0 ) tempTekst1 += ("|Inteligencja: "+ to_string(iInteligencja));
+			tempTekst1 += "|";
+			ramkaWyboru("Co chcialbys zrobic z " + nazwaitemu + string("?") + tempTekst1,"Sprzedac za " + to_string(int(wartoscPrzedmiotu/1.2)) + string(" sztuk zlota|Ubrac|Powrot...|"));
 			if (wybor == 1)
 			{
 				postac.posiadanePrzedmioty[ktoryPrzedmiot]=0; 
@@ -2241,7 +2258,14 @@ public:
 		}
 		else
 		{
-			ramkaWyboru("Co chcialbys zrobic z " + nazwaitemu + string("?"),"Kupic za " + to_string(int(wartoscPrzedmiotu)) + string(" sztuk zlota|Powrot...|"));
+			tempTekst1 = "|Dodatkowe statystyki:";
+			if(obrona != 0 ) tempTekst1 += ("|Obrona: "+ to_string(obrona));
+			if(atak != 0 ) tempTekst1 += ("|Atak: "+ to_string(atak));
+			if(iSila != 0 ) tempTekst1 += ("|Sila: "+ to_string(iSila));
+			if(iZrecznosc != 0 ) tempTekst1 += ("|Zrecznosc: "+ to_string(iZrecznosc));
+			if(iInteligencja != 0 ) tempTekst1 += ("|Inteligencja: "+ to_string(iInteligencja));
+			tempTekst1 += "|";
+			ramkaWyboru("Co chcialbys zrobic z " + nazwaitemu + string("?") + tempTekst1,"Kupic za " + to_string(int(wartoscPrzedmiotu)) + string(" sztuk zlota|Powrot...|"));
 			if (wybor == 1)
 			{
 				if (postac.zloto >= wartoscPrzedmiotu){
@@ -2286,11 +2310,22 @@ public:
 		system("cls");
 		if (postac.posiadaneCzary[ktoryCzar] ==1)
 		{
-			ramkaInformacji("Juz posiadasz ten czar.");
+			ramkaInformacji("Juz znasz ten czar.");
 		}
 		else
 		{
-			ramkaWyboru("Co chcialbys zrobic z " + nazwaCzaru + string("?"),"Kupic za " + to_string(int(wartoscCzaru)) + string(" sztuk zlota|Powrot...|"));
+			tempTekst1 = ("|Koszt nauki: " + to_string(int(wartoscCzaru)) + string(" sztuk zlota"));
+			tempTekst1 += ("|Koszt many: "+ to_string(kosztMany));
+			if (przelicznik != 0  && rodzajMagii ==1) tempTekst1 += ("|Przelicznik obrazen: "+ to_string(int(przelicznik)));
+			if (przelicznik != 0  && rodzajMagii ==2) tempTekst1 += ("|Przelicznik uzdrowienia: "+ to_string(int(przelicznik)));
+			tempTekst1 += ("|Predkosc rzucania czaru: ");
+			if (varAtakuGracza == 0.5) tempTekst1 += ("Bardzo wolno");
+			if (varAtakuGracza == 0.6) tempTekst1 += ("Wolno");
+			if (varAtakuGracza == 0.7) tempTekst1 += ("Normalnie");
+			if (varAtakuGracza == 0.8) tempTekst1 += ("Szybko");
+			if (varAtakuGracza == 0.9) tempTekst1 += ("Bardzo szybko");
+			tempTekst1 += "|";
+			ramkaWyboru("Chcialbys poznac tajniki czaru " + nazwaCzaru + string("?")+tempTekst1,"Tak!|Powrot...|");
 			if (wybor == 1)
 			{
 				if (postac.zloto >= wartoscCzaru){
@@ -3061,7 +3096,7 @@ public:
 								for (int j=1;j<100;j++)
 									plik << endl << postac.posiadaneCzary[j];
 								plik.close();
-								ramkaInformacji("Nadpisalem gre gracza:" +string(nick));
+								ramkaInformacji("Nadpisalem gre gracza: " +string(nick));
 							}
 							else
 								p=0;
@@ -3109,7 +3144,7 @@ public:
 				}
 				else
 				{
-					ramkaInformacji("Kamil Pilch, Mateusz Czendlik, Jozef Tomaszko ATH Bielsko-Biala 2014");
+					ramkaInformacji("Kamil Pilch|Mateusz Czendlik|Jozef Tomaszko|ATH Bielsko-Biala 2014");
 				}
 		}
 	}
