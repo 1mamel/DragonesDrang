@@ -319,7 +319,7 @@ public:
 		gotoxy(16,24+ileDodatkowo/2); cout << lewy_dolny; for (int i = 0; i<47;i++) cout << pozioma; cout << prawy_dolny;   
 	}
 
-		void ramkaWyboru(string informacja, string dluzszyTekst)
+	void ramkaWyboru(string informacja, string dluzszyTekst)
 	{
 		int i = 0;
 		int j = 0;
@@ -574,7 +574,7 @@ public:
 	}
 
 	void menu()
-	{  
+	{ 
 		mciSendString("stop sounds/tawerna.wav ",NULL,1,NULL);
 		mciSendString("stop sounds/walka.mp3 ",NULL,1,NULL);
 		mciSendString("stop sounds/alchemik.wav ",NULL,1,NULL);
@@ -588,7 +588,7 @@ public:
 		system("cls");
 		pokaz();
 		mciSendString("play sounds/miasto.mp3 ",NULL,1,NULL);
-		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Mag|Alchemik|Zobacz statystyki postaci|Lista Posiadanych przedmiotow|Sakiewka|Opcje|Zapisz stan gry|");
+		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Mag|Alchemik|Zobacz statystyki postaci|Lista Posiadanych przedmiotow|Sakiewka|Opcje|Zapisz stan gry|Zakoncz|");
 		switch (wybor)
 		{
 		case 1:	ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Sancre Tor (trudny)|Yuzaszkowo (trudny)|Krypta Pacmana (chaos)|Leze smoka (BOSS)|Powrot|");
@@ -602,16 +602,25 @@ public:
 		case 8: mikstury(); break;
 		case 9: opcje(); break;
 		case 10: save(); break;
+		case 11: wylaczMuzyke(); glowne(); break;
 		}
 	}
 
 	void odswiezEkranWalki(bool podczasRuchu = false)
 	{
 		zmienKolor(8);
+		gotoxy(4,14);
+		cout << lewy_gorny;
 		gotoxy(5,14);
 		for (int i = 0; i < 71; i++) cout << pozioma;
+		gotoxy(76,14);
+		cout << prawy_gorny;
+		gotoxy(4,17);
+		cout << lewy_dolny;
 		gotoxy(5,17);
 		for (int i = 0; i < 71; i++) cout << pozioma;
+		gotoxy(76,17);
+		cout <<prawy_dolny;
 		gotoxy(4,15); cout << pionowa;
 		for (int i = 0; i < 71; i++)
 		{
@@ -641,7 +650,7 @@ public:
 		gotoxy(31,4);cout << "     ";
 		gotoxy(31,4);
 		niebieski();cout << postac.mp ;szary();cout << "/" ;niebieski();cout << postac.maxmp;szary();
-		gotoxy(45,3);cout << "     ";gotoxy(45,3);czerwony();cout << hpPotwora;szary();cout << "/";czerwony();cout << maksymalneHpPotwora;szary();
+		gotoxy(45,3);cout << "          ";gotoxy(45,3);czerwony();cout << hpPotwora;szary();cout << "/";czerwony();cout << maksymalneHpPotwora;szary();
 		if (podczasRuchu == false)
 		{
 			gotoxy(33,8); cout << " ";
@@ -1489,7 +1498,7 @@ public:
 				else 
 					ramkaInformacji("Nie stac cie na te luksusy zebraku...");
 			}
-			else if (true)
+			else if (wybor == 3)
 			{
 				if (postac.zloto>1499) 
 				{
@@ -1505,6 +1514,12 @@ public:
 				} 
 				else 
 					ramkaInformacji("Za wysokie progi na twoje nogi biedaku... Prosze wyjdz i nie wracaj");
+			}
+			else
+			{
+				system ("cls");
+				pokaz();
+				karczma();
 			}
 		} 
 		else if(wybor==2)
@@ -2061,7 +2076,7 @@ public:
 		else if(id==143){nazwaitemu = "Walerianski mlot bojowy"; obrona = 0; atak=23; iZrecznosc=3; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3150;}
 		else if(id==144){nazwaitemu = "Stalowy wielki miecz dwureczny"; obrona = 0; atak=28; iZrecznosc=0; iInteligencja=0; iSila=0; wartoscPrzedmiotu = 3520;}
 		else if(id==145){nazwaitemu = "Demoniczny miecz zaglady"; obrona = 3; atak=30; iZrecznosc=4; iInteligencja=3; iSila=4; wartoscPrzedmiotu =5210;}
-		else if(id==146){nazwaitemu = "Miecz ostatnie Dranga"; obrona = -10; atak=50; iZrecznosc=0; iInteligencja=0; iSila=10; wartoscPrzedmiotu =10210;}
+		else if(id==146){nazwaitemu = "Miecz Zniszczonego Krola"; obrona = -10; atak=50; iZrecznosc=0; iInteligencja=0; iSila=10; wartoscPrzedmiotu =10210;}
 	}
 
 	void magic(int id)
@@ -2215,7 +2230,6 @@ public:
 	void wybory(int ktoryPrzedmiot)
 	{     
 		items(ktoryPrzedmiot);
-		system("cls");
 		if (postac.posiadanePrzedmioty[ktoryPrzedmiot] ==1 || postac.posiadanePrzedmioty[ktoryPrzedmiot]==2)
 		{
 			tempTekst1 = "|Dodatkowe statystyki:";
@@ -2316,8 +2330,10 @@ public:
 		{
 			tempTekst1 = ("|Koszt nauki: " + to_string(int(wartoscCzaru)) + string(" sztuk zlota"));
 			tempTekst1 += ("|Koszt many: "+ to_string(kosztMany));
-			if (przelicznik != 0  && rodzajMagii ==1) tempTekst1 += ("|Przelicznik obrazen: "+ to_string(int(przelicznik)));
-			if (przelicznik != 0  && rodzajMagii ==2) tempTekst1 += ("|Przelicznik uzdrowienia: "+ to_string(int(przelicznik)));
+			if (przelicznik != 0  && rodzajMagii ==1) tempTekst1 += ("|Przelicznik obrazen: "+ to_string(przelicznik));
+			if (przelicznik != 0  && rodzajMagii ==2) tempTekst1 += ("|Przelicznik uzdrowienia: "+ to_string(przelicznik));
+			if(przelicznik>0)
+				tempTekst1 = tempTekst1.substr(0,tempTekst1.length()-5);
 			tempTekst1 += ("|Predkosc rzucania czaru: ");
 			if (varAtakuGracza == 0.5) tempTekst1 += ("Bardzo wolno");
 			if (varAtakuGracza == 0.6) tempTekst1 += ("Wolno");
@@ -3075,7 +3091,7 @@ public:
 				cout << "ver. beta 0.5";
 				gotoxy(10,20);
 				cout << "Witaj w menu glownym!";
-				menuWyboru(18,22,"Nowa gra|Wczytaj gre|Edytor mapy|Tworcy|");
+				menuWyboru(18,22,"Nowa gra|Wczytaj gre|Edytor mapy|Tworcy|Wyjscie|");
 				if (wybor == 1)
 				{
 					while (p==0){
@@ -3142,10 +3158,10 @@ public:
 					if (wybor == 8) { postac.hp = 0; return;}
 					edytor();
 				}
-				else
-				{
+				else if (wybor == 4)
 					ramkaInformacji("Kamil Pilch|Mateusz Czendlik|Jozef Tomaszko|ATH Bielsko-Biala 2014");
-				}
+				else 
+					exit(0);
 		}
 	}
 
@@ -3342,6 +3358,8 @@ Gra::Gra()
 		//	cin.get();
 		//}
 		glowne();
+		if (wybor == 5)
+			return;
 		while (postac.hp>0)
 			menu();
 		inicjalizujZmienne();
