@@ -65,7 +65,7 @@ public:
 		doswiadczenie = 0;
 		punktyDoRozdania=0;
 		maksymalneDoswiadczenie = 100; 
-		zloto = 0;
+		zloto = 10000;
 		hp = 100;
 		mp = 10;
 		maxhp=100;
@@ -129,6 +129,8 @@ public:
 	double szybkoscPotwora,szybkoscGracza;
 	int punkty;
 	int rodzajAnimacji;
+	string dzwiekKryta;
+	string dzwiekAtaku;
 	string nazwaitemu;
 	string nazwaCzaru;
 	ofstream plik;
@@ -156,7 +158,6 @@ public:
 	unsigned int gdzie;
 	bool stanDefensywnyGracza,stanDefensywnyPotwora;
 	int	turaPrzyspieszeniaGracza,turaSpowolnieniaGracza,turaPrzyspieszeniaPotwora,turaSpowolnieniaPotwora;
-
 	string potw;
 	int x;
 	int respawnX;
@@ -723,6 +724,7 @@ public:
 			Sleep(50);
 		}
 	}
+
 	void wyswietlNadWrogiem(int zmianaWartosci,int czyKrytyk, int jakiKolor)
 	{
 		zmienKolor(jakiKolor);
@@ -756,7 +758,6 @@ public:
 		for (int i = 0; i < 30; i++)
 			tablicaTekstu[i] = "puste";
 		unsigned int ileTekstu;
-
 		int przyKtorym = 1;
 		int i = 0;
 		while(true)
@@ -833,6 +834,47 @@ public:
 		gotoxy(45,10);cout<<" ";
 	}
 
+	void poslijPociskWybuchowy(char jakiZnaczek, char jakiZnaczek2, int jakiKolor, int kolorWybuchu)
+	{
+		for (int i = 1; i<13;i++)
+		{
+			zmienKolor(jakiKolor);
+			gotoxy(33+i,10);cout << " ";
+			gotoxy(34+i,10);cout << char(jakiZnaczek);
+			Sleep(50);
+			szary();
+		}  
+		gotoxy(34+12,10); cout << " "; 
+		gotoxy(34+10,10); cout << "   ";
+		zmienKolor(kolorWybuchu);
+		gotoxy(48,9);cout<<jakiZnaczek2;
+		gotoxy(46,11);cout<<jakiZnaczek2;
+		gotoxy(46,9);cout<<jakiZnaczek2;
+		gotoxy(48,11);cout<<jakiZnaczek2;
+		Sleep(150);
+		gotoxy(49,8);cout<<jakiZnaczek2;
+		gotoxy(47,12);cout<<jakiZnaczek2;
+		gotoxy(47,8);cout<<jakiZnaczek2;
+		gotoxy(49,12);cout<<jakiZnaczek2;
+		gotoxy(45,8);cout<<jakiZnaczek2;
+		gotoxy(45,12);cout<<jakiZnaczek2;
+		gotoxy(49,10);cout<<jakiZnaczek2;
+		gotoxy(45,10);cout<<jakiZnaczek2;
+		Sleep(150);
+		gotoxy(48,9);cout<<" ";
+		gotoxy(46,11);cout<<" ";
+		gotoxy(46,9);cout<<" ";
+		gotoxy(48,11);cout<<" ";
+		gotoxy(49,8);cout<<" ";
+		gotoxy(47,12);cout<<" ";
+		gotoxy(47,8);cout<<" ";
+		gotoxy(49,12);cout<<" ";
+		gotoxy(45,8);cout<<" ";
+		gotoxy(45,12);cout<<" ";
+		gotoxy(49,10);cout<<" ";
+		gotoxy(45,10);cout<<" ";
+	}
+
 	void poslijPocisk(int jakiZnaczek, int jakiKolor)
 	{
 		for (int i = 1; i<13;i++)
@@ -858,7 +900,6 @@ public:
 		}  
 		gotoxy(47-13,10);cout << " ";
 	}
-
 
 	void atakNormalnyGracza()
 	{
@@ -913,7 +954,6 @@ public:
 	void wyborRuchuPotwora()
 	{
 		int losowaLiczba;
-
 		if (timerGracza >55)
 		{
 			losowaLiczba = rand() % 100;
@@ -1478,9 +1518,13 @@ public:
 		if(wybor==1)
 		{
 			int przycisk=0;
+			int przycisk2=0;
 			ramka();
 			gotoxy(30,18);
 			cout << "Ile stawiasz?: ";
+			przycisk2=_getch();
+			if(przycisk2=13)
+				gotoxy(45,18);
 			cin >> stawka;
 			if (stawka>postac.zloto) 
 				ramkaInformacji("Nie masz przy sobie " + to_string(stawka) + string(" sztuk zlota"));
@@ -1536,7 +1580,7 @@ public:
 					int x=33;
 					int i=0;
 					gotoxy(2,40);
-					cout<<"x - zaznaczanie karty przeznaczonej do ponownego rzutu, ENTER - zatwierdzenie";
+					cout<<gora <<" - zaznaczanie karty przeznaczonej do ponownego rzutu, ENTER - zatwierdzenie";
 					gotoxy(33,30);
 					czerwony();
 					cout<<tablica[0];
@@ -1590,7 +1634,7 @@ public:
 								szary();
 							}
 						}
-						if(knefel==120)
+						if(knefel==72)
 						{
 							if(tablicaKolejegoLosowania[i]==0)
 							{
@@ -1656,21 +1700,30 @@ public:
 					if(punktyGracza>punktyKomputera)
 					{
 						ramka();
-						gotoxy(38,16);
-						cout << "Gratulacje" ;
-						gotoxy(34,18);
+						gotoxy(36,16);
+						cout << "Gratulacje";
+						gotoxy(32,18);
 						cout <<"Wygrales " << stawka*2 << " zlota!";
 						postac.zloto+=stawka;
+					}
+					else if(punktyGracza<punktyKomputera)
+					{
+						ramka();
+						gotoxy(36,16);
+						cout << "Niestety";
+						gotoxy(30,18);
+						cout <<"Przegrales " << stawka << " sztuk zlota!";
+						postac.zloto-=stawka;
 					}
 					else
 					{
 						ramka();
-						gotoxy(38,16);
-						cout << "Niestety" ;
+						gotoxy(36,16);
+						cout << "Remis!";
 						gotoxy(32,18);
-						cout <<"Przegrales " << stawka << " sztuk zlota!";
-						postac.zloto-=stawka;
+						cout << "Twoje zloto wraca do ciebie.";
 					}
+					Sleep(1000);
 					ramkaWyboru("Co chcialbys teraz zrobic","Zagrac jeszcze raz!|Powrot...|");
 					if(wybor==1)
 					{
@@ -2003,35 +2056,41 @@ public:
 
 	void magic(int id)
 	{
-		if(id==1){nazwaCzaru = "Ognisty Podmuch"; kosztMany = 8; wartoscCzaru = 100; przelicznik=1.2; rodzajAnimacji=1; p1=12; p2=12; p3=0; p4=0; rodzajMagii = 1; varAtakuGracza = varAtakuGracza = 0.7;}
-		else if(id==2){nazwaCzaru = "Swietlisty Grom"; kosztMany = 12; wartoscCzaru = 500; przelicznik=2; rodzajAnimacji=3; p1=126; p2=158; p3=14; p4=12; rodzajMagii = 1; varAtakuGracza = 0.6;}
-		else if(id==52){nazwaCzaru = "Spowolnienie"; kosztMany = 4; wartoscCzaru = 1000; przelicznik=0; rodzajAnimacji=1; p1=174; p2=0; p3=10; p4=0; rodzajMagii = 2; varAtakuGracza = 0.5;}
-		else if(id==50){nazwaCzaru = "Przyspieszenie"; kosztMany = 5; wartoscCzaru = 200; przelicznik=0; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2; varAtakuGracza = 0.5;}
-		else if(id==51){nazwaCzaru = "Lekkie Uzdrowienie"; kosztMany = 5; wartoscCzaru = 100; przelicznik=1.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2;varAtakuGracza = 0.8;}
+		//p1 - znaczek pocisku p2 - znaczek wybuchu p3 - kolor pocisku p4 - kolor wybuchu
+		if(id==1){nazwaCzaru = "Ognisty Podmuch"; kosztMany = 8; wartoscCzaru = 100; przelicznik=1.2; rodzajAnimacji=1; p1=12; p2=0; p3=12; p4=0; rodzajMagii = 1; varAtakuGracza =  0.7; dzwiekAtaku="|"; dzwiekKryta="|";}
+		else if(id==2){nazwaCzaru = "Swietlisty Grom"; kosztMany = 12; wartoscCzaru = 500; przelicznik=2; rodzajAnimacji=3; p1=126; p2=158; p3=14; p4=12; rodzajMagii = 1; varAtakuGracza = 0.6; dzwiekAtaku="thunder1.wav|thunder2.wav|"; dzwiekKryta="thunder3.wav|";}
+		else if(id==3){nazwaCzaru = "Kula Ognia"; kosztMany = 10; wartoscCzaru = 400; przelicznik=1.5; rodzajAnimacji=4; p1=12; p2=12; p3=12; p4=12; rodzajMagii =1; varAtakuGracza = 0.8; dzwiekAtaku="|"; dzwiekKryta="|";}
+		else if(id==4){nazwaCzaru = "Lodowy Odlamek"; kosztMany = 10; wartoscCzaru = 800; przelicznik=2.2; rodzajAnimacji=1; p1=42; p2=0; p3=9; p4=0; rodzajMagii=1; varAtakuGracza = 0.4; dzwiekAtaku="|"; dzwiekKryta="|";}
+		else if(id==5){nazwaCzaru = "Smagajace Pnacza"; kosztMany = 10; wartoscCzaru = 1000; przelicznik=1.4; rodzajAnimacji=3; p1=62; p2=136; p3=2; p4=10; rodzajMagii=1; varAtakuGracza = 0.7; dzwiekAtaku="|"; dzwiekKryta="|";}
+		else if(id==50){nazwaCzaru = "Przyspieszenie"; kosztMany = 5; wartoscCzaru = 200; przelicznik=0; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2; varAtakuGracza = 0.5; dzwiekAtaku="przyspieszenie.mp3|"; dzwiekKryta="|";}
+		else if(id==51){nazwaCzaru = "Lekkie Uzdrowienie"; kosztMany = 5; wartoscCzaru = 100; przelicznik=1.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2;varAtakuGracza = 0.8; dzwiekAtaku="heal.mp3|"; dzwiekKryta="|";}
+		else if(id==52){nazwaCzaru = "Spowolnienie"; kosztMany = 4; wartoscCzaru = 1000; przelicznik=0; rodzajAnimacji=1; p1=174; p2=0; p3=10; p4=0; rodzajMagii = 2; varAtakuGracza = 0.5; dzwiekAtaku="spowolnienie.wav|"; dzwiekKryta="|";}
+		else if(id==53){nazwaCzaru = "Uzdrowienie"; kosztMany = 10; wartoscCzaru = 600; przelicznik=2; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2; varAtakuGracza = 0.7; dzwiekAtaku="|"; dzwiekKryta="|";}
+		else if(id==54){nazwaCzaru = "Mocne Uzdrowienie"; kosztMany = 10; wartoscCzaru = 900; przelicznik=2.5; rodzajAnimacji=0; p1=0; p2=0; p3=0; p4=0; rodzajMagii = 2; varAtakuGracza = 0.7; dzwiekAtaku="|"; dzwiekKryta="|";}
 	}
 
 	void czarDefensywny()
 	{
-		if(uzytyCzar == 51)
+		if(uzytyCzar == 51 || uzytyCzar == 53 || uzytyCzar == 54)
 		{
 			postac.mp-=kosztMany;
 			postac.hp+=int((postac.inteligencja+zliczInteligencje())*przelicznik);
 			if (postac.hp> postac.maxhp) postac.hp =postac.maxhp;
-			mciSendString("play sounds/heal.mp3 ",NULL,1,NULL);
+			odtworzDzwiek(dzwiekAtaku);
 			wyswietlNadGraczem(-int((postac.inteligencja+zliczInteligencje())*przelicznik),0,2);
 		}
 		else if (uzytyCzar == 50)
 		{
 			postac.mp-=kosztMany;
 			turaPrzyspieszeniaGracza = 3;
-			odtworzDzwiek("przyspieszenie.mp3|");
+			odtworzDzwiek(dzwiekAtaku);
 		}
 		else if (uzytyCzar = 52)
 		{
 			postac.mp-=kosztMany;
 			turaSpowolnieniaPotwora = 3;
 			poslijPocisk(174,10);
-			odtworzDzwiek("spowolnienie.wav|");
+			odtworzDzwiek(dzwiekAtaku);
 
 		}
 		odswiezEkranWalki();
@@ -2046,15 +2105,17 @@ public:
 		dmg = int((rand() % 7)*0.1*postac.inteligencja + (postac.inteligencja+zliczInteligencje())*przelicznik);
 		odswiezEkranWalki();
 		if (czyTrafienieKrytyczne==1)
-			odtworzDzwiek("thunder3.wav|"); 
+			odtworzDzwiek(dzwiekKryta); 
 		else
-			odtworzDzwiek("thunder1.wav|thunder2.wav|");
+			odtworzDzwiek(dzwiekAtaku);
 		if(rodzajAnimacji==1)
-			poslijPocisk(p1,p2);
+			poslijPocisk(p1,p3);
 		else if(rodzajAnimacji==2)
-			poslijPociskDlugi(p1,p2);
+			poslijPociskDlugi(p1,p3);
 		else if(rodzajAnimacji==3)
 			poslijPociskDlugiWybuchowy(p1,p2,p3,p4);
+		else if(rodzajAnimacji==4)
+			poslijPociskWybuchowy(p1,p2,p3,p4);
 		if ( ((rand() % 99)+1)< crit)
 		{
 			czyTrafienieKrytyczne = 1;
@@ -2979,7 +3040,7 @@ public:
 				cout << "ver. beta 0.5";
 				gotoxy(10,20);
 				cout << "Witaj w menu glownym!";
-				menuWyboru(18,22,"Nowa gra|Wczytaj gre|Edytor mapy|");
+				menuWyboru(18,22,"Nowa gra|Wczytaj gre|Edytor mapy|Tworcy|");
 				if (wybor == 1)
 				{
 					while (p==0){
@@ -3040,11 +3101,15 @@ public:
 					SetConsoleTitle( nick );
 					return;
 				}
-				else
+				else if (wybor == 3)
 				{
 					ramkaWyboru("Wybierz poziom do zaladowania:","Poziom 1|Poziom 2|Poziom 3|Poziom 4|Poziom 5|Poziom 6|Poziom 7|Powrot|");
 					if (wybor == 8) { postac.hp = 0; return;}
 					edytor();
+				}
+				else
+				{
+					ramkaInformacji("Kamil Pilch, Mateusz Czendlik, Jozef Tomaszko ATH Bielsko-Biala 2014");
 				}
 		}
 	}
