@@ -1578,6 +1578,10 @@ public:
 				Sleep(250);
 				while(rundy>0)
 				{
+					for (int i = 0; i < 5; i++)
+					{
+						tablicaKolejegoLosowania[i]=0;
+					}
 					system ("cls");
 					pokaz();
 					gotoxy(32,6);
