@@ -216,7 +216,7 @@ public:
 		iloscskrzynek=0;
 		zapamietaj = -1;
 		wygrana = 1;
-		autozapis=0;
+		autozapis=1;
 		opusc =1;
 		wktora = 4;
 		for (int i = 0; i < 100; i++){
@@ -1546,20 +1546,20 @@ public:
 			int przycisk2=0;
 			ramka();
 			gotoxy(30,18);
+			FlushConsoleInputBuffer(hInput);    
 			cout << "Ile stawiasz?: ";
-			przycisk2=_getch();
-			if(przycisk2=13)
-				gotoxy(45,18);
+			gotoxy(45,18);
 			cin >> stawka;
 			if (stawka>postac.zloto) 
 				ramkaInformacji("Nie masz przy sobie " + to_string(stawka) + string(" sztuk zlota"));
 			else
 			{
+				ramka();
+				gotoxy(20,16);
+				cout << "Ile rund chcialbys rozegrac? (maksimum 10): " ;
 				while(przycisk!=13)
 				{
-					ramka();
-					gotoxy(20,16);
-					cout << "Ile rund chcialbys rozegrac? (maksimum 10): " ;
+
 					gotoxy(38,18);
 					cout <<"< " << rundy << " >";
 					przycisk=_getch();
@@ -1991,19 +1991,8 @@ public:
 
 	void opcje()
 	{
-		ramkaWyboru("Opcje","Predkosc wczytywania tekstu podczas walki|Autozapis|Powrot|");
+		ramkaWyboru("Opcje","Autozapis|Powrot|");
 		if (wybor == 1)
-		{
-			ramkaWyboru("Predkosc wczytywania tekstu","0 sekund|1 sekunda|2 sekundy|Powrot|");
-			if (wybor == 1)
-				postac.opoznienieTekstu =0;
-			else if (wybor == 2)
-				postac.opoznienieTekstu = 1000;
-			else if (wybor == 3)
-				postac.opoznienieTekstu = 2000;
-			ramkaInformacji("Predkosc wczytywania tekstu: " + to_string(postac.opoznienieTekstu/1000) + string(" sekund."));
-		}
-		else if (wybor == 2)
 		{
 			ramkaWyboru("Wlaczyc Autozapis?","Tak|Nie|Powrot|");
 			if (wybor == 1)
@@ -2628,6 +2617,7 @@ public:
 		else if (wktora==4)sciana[x][y+1]= 0;
 		ramkaInformacji("Otrzymales " + to_string(ilosczlota) + string(" szt zlota.") +". Posiadasz teraz " + to_string(postac.zloto) + string(" szt zlota."));
 		system("cls");
+		zdobyteZloto +=ilosczlota;
 		wygrana = 1;
 	};
 
@@ -2837,32 +2827,39 @@ public:
 	void zmienPozycje(int jakiPotwor, int numerPotwora,int i,int j)
 	{
 		int gdzie =(rand() % 4);
-		if (gdzie == 0){
+		if (gdzie == 0)
+		{
 			if ((x==i-1)&&(y==j)){usePotwor(jakiPotwor,true);sciana[i][j]=0;}else
 				if (sciana[i-1][j]==0){
 					gotoxy(i,j);cout << " ";
-					if(r[i][j]!=0){gotoxy(i-1,j);cout << white;}
+					if(r[i][j]!=0){gotoxy(i-1,j);if(jakiPotwor == 1)cout << white;else if (jakiPotwor ==2) {czerwony();cout << white;szary();} else if (jakiPotwor==3) cout << black;}
 					sciana[i][j]=0;sciana[i-1][j]=numerPotwora;
-				}}
-		if (gdzie == 1){
+				}
+		}
+		if (gdzie == 1)
+		{
 			if ((x==i+1)&&(y==j)){usePotwor(jakiPotwor,true);sciana[i][j]=0;}else
 				if (sciana[i+1][j]==0){
 					gotoxy(i,j);cout << " ";
-					if(r[i][j]!=0){gotoxy(i+1,j);cout << white;}
+					if(r[i][j]!=0){gotoxy(i+1,j);if(jakiPotwor == 1)cout << white;else if (jakiPotwor ==2) {czerwony();cout << white;szary();} else if (jakiPotwor==3) cout << black;}
 					sciana[i][j]=0;sciana[i+1][j]=numerPotwora;
-				}}
-		if (gdzie == 2){              
+				}
+		}
+		if (gdzie == 2)
+		{              
 			if ((x==i)&&(y==j-1)){usePotwor(jakiPotwor,true);sciana[i][j]=0;}else                   
 				if (sciana[i][j-1]==0){
 					gotoxy(i,j);cout << " ";
-					if(r[i][j]!=0){gotoxy(i,j-1);cout << white;}
+					if(r[i][j]!=0){gotoxy(i,j-1);if(jakiPotwor == 1)cout << white;else if (jakiPotwor ==2) {czerwony();cout << white;szary();} else if (jakiPotwor==3) cout << black;}
 					sciana[i][j]=0;sciana[i][j-1]=numerPotwora;
-				}}
-		if (gdzie == 3){                 
+				}
+		}
+		if (gdzie == 3)
+		{                 
 			if ((x==i)&&(y==j+1)){usePotwor(jakiPotwor,true);sciana[i][j]=0;}else                
 				if (sciana[i][j+1]==0){
 					gotoxy(i,j);cout << " ";
-					if(r[i][j]!=0){gotoxy(i,j+1);cout << white;}
+					if(r[i][j]!=0){gotoxy(i,j+1);if(jakiPotwor == 1)cout << white;else if (jakiPotwor ==2) {czerwony();cout << white;szary();} else if (jakiPotwor==3) cout << black;}
 					sciana[i][j]=0;sciana[i][j+1]=numerPotwora;}
 		}
 	}
@@ -2920,12 +2917,12 @@ public:
 					gotoxy(x,y);
 					if (sciana[x][y]==0){cout << " ";};
 					if (sciana[x][y]==1){cout << scianka;};
-					if (sciana[x][y]==2) {cout << white;};
+					if (sciana[x][y]==2){cout << white;};
 					if (sciana[x][y]==3){czerwony();cout << white;szary();};
-					if (sciana[x][y]==4) {cout << wyjscie;};
-					if (sciana[x][y]==5) {cout << wejscie;};
+					if (sciana[x][y]==4){cout << wyjscie;};
+					if (sciana[x][y]==5){cout << wejscie;};
 					if (sciana[x][y]==6){cout << skrzynka;};
-					if (sciana[x][y]==7) {cout << drzwi;};
+					if (sciana[x][y]==7){cout << drzwi;};
 					if (sciana[x][y]==8){cout << black;};
 					if (sciana[x][y]==9){zolty();cout << black;szary();};
 					x--;
@@ -3080,22 +3077,22 @@ public:
 			for (int i=0;i<81;i++)
 				for (int j=0;j<40;j++)
 				{   
-					if (sciana[i][j]==0){gotoxy(i,j);cout << " ";};
-					if (sciana[i][j]==1){gotoxy(i,j);cout << scianka;};
-					if (sciana[i][j]==2){gotoxy(i,j);cout << white;};
-					if (sciana[i][j]==3){gotoxy(i,j);czerwony();cout << white;szary();};
-					if (sciana[i][j]==4){gotoxy(i,j);cout << wyjscie;};
-					if (sciana[i][j]==5){gotoxy(i,j);cout << wejscie;};
-					if (sciana[i][j]==6){gotoxy(i,j);cout << skrzynka;};
-					if (sciana[i][j]==7){gotoxy(i,j);cout << drzwi;};
-					if (sciana[i][j]==8){gotoxy(i,j);cout << black;};
-					if (sciana[i][j]==9){gotoxy(i,j);zolty();cout << black;szary();};
+					if (sciana[i][j]==0){gotoxy(i,j);cout << " ";}
+					else if (sciana[i][j]==1){gotoxy(i,j);cout << scianka;}
+					else if (sciana[i][j]==2){gotoxy(i,j);cout << white;}
+					else if (sciana[i][j]==3){gotoxy(i,j);czerwony();cout << white;szary();}
+					else if (sciana[i][j]==4){gotoxy(i,j);cout << wyjscie;}
+					else if (sciana[i][j]==5){gotoxy(i,j);cout << wejscie;}
+					else if (sciana[i][j]==6){gotoxy(i,j);cout << skrzynka;}
+					else if (sciana[i][j]==7){gotoxy(i,j);cout << drzwi;}
+					else if (sciana[i][j]==8){gotoxy(i,j);cout << black;}
+					else if (sciana[i][j]==9){gotoxy(i,j);zolty();cout << black;szary();};
 				}
 				gotoxy(68,40);
 				cout << "ver. beta 0.5";
 				gotoxy(10,20);
 				cout << "Witaj w menu glownym!";
-				menuWyboru(18,22,"Nowa gra|Wczytaj gre|Edytor mapy|Tworcy|Wyjscie|");
+				menuWyboru(10,22,"Nowa gra|Wczytaj gre|Edytor mapy|Tworcy|Wyjscie|",false);
 				if (wybor == 1)
 				{
 					while (p==0){
@@ -3132,7 +3129,7 @@ public:
 								plik << endl << postac.posiadaneCzary[j];
 							plik.close();
 							p=1;
-							ramkaInformacji("Stworzylem nowy plik postaci pod nazwa:" +string(nick));
+							ramkaInformacji("Stworzylem nowy plik postaci pod nazwa: " +string(nick));
 						}
 					}
 					mciSendString("stop sounds/intro.MID ",NULL,1,NULL);
