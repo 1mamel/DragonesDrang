@@ -101,9 +101,9 @@ szablonPostaci::szablonPostaci()
 	mppot=5;
 	wybranyPoziom = 0;
 	maxmp=10;
-	for (int i = 0; i<201;i++){
+	for (int i = 0; i<200;i++){
 		posiadanePrzedmioty[i] = 0;}
-	for (int j = 0; j<101;j++){
+	for (int j = 0; j<100;j++){
 		posiadaneCzary[j] = 0;}
 }
 
@@ -545,18 +545,20 @@ public:
 	void menu()
 	{ 
 		tempexp=postac.doswiadczenie;
-		for (int i = 0; i<41;i++){
+		for (int i = 0; i<40;i++){
 			for (int j = 0; j<81;j++){
 				r[j][i]=0;}}
 		fstream plik;
 		system("cls");
+		ileWynosiObrona = zliczDef();
+		ileWynosiAtak = postac.sila+zliczDmg()+zliczSile();
 		pokaz();
 		odtworzMuzyke("miasto.mp3");
 		ramkaWyboru("Co chcesz zrobic?","Wyrusz...|Karczma|Kowal i ekwipunek|Mag|Alchemik|Zobacz statystyki postaci|Lista Posiadanych przedmiotow|Sakiewka|Opcje|Zapisz stan gry|Wroc do menu glownego|");
 		switch (wybor)
 		{
 		case 1: ramkaWyboru("Gdzie chcialbys wyruszyc?", "Ayleid (latwy)|Dasek Moor (normalny)|Lochy cmentarza (normalny++)|Sancre Tor (trudny)|Yuzaszkowo (trudny)|Krypta Pacmana (chaos)|Leze smoka (BOSS)|Powrot|");
-			if (wybor !=8) level(wybor); else return;labirynt(); break;
+			if (wybor !=8) level(wybor); else return; if ((autozapis==1)&&(postac.hp>1)) save(); labirynt(); break;
 		case 2: karczma(); break;
 		case 3: kowal(); break;
 		case 4: mag(); break;
@@ -639,10 +641,10 @@ public:
 	void ramkaAtaku(bool czyPotwor)
 	{
 		if (czyPotwor == true)
-			tempTekst1 = "Zaatakowales " + potw + string("a!");
+			tempTekst1 = "Zaatakowales " + potw + string("a!|");
 		else
-			tempTekst1 = "Zostales zaatakowany przez " + potw + string("a!");
-		tempTekst2 = " Potwor " + potw + string(" jest poziomu ");
+			tempTekst1 = "Zostales zaatakowany przez " + potw + string("a!|");
+		tempTekst2 = potw + string(" jest poziomu ");
 		if (rodzajPotwora==1) tempTekst2 += "slabego.";
 		else if (rodzajPotwora==2) tempTekst2 += "normalnego.";
 		else if (rodzajPotwora==3) tempTekst2 += "mocnego.";
@@ -759,6 +761,33 @@ public:
 		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
 	}
 
+	//void odtworzMuzyke(string muzyka, bool czyRandomCzas = false)          poddaje sie po 3 dniach... czemu to dziala tylko gdy po odtworzeniu muzyki jest CIN.GET()?! nawet for nie dal rady...
+	//{
+	//	if (muzyka != ostatniaOdtwarzanaMuzyka)
+	//	{
+	//		tempTekst1 = "stop sounds/" + ostatniaOdtwarzanaMuzyka + string(" ");
+	//		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
+	//		ostatniaOdtwarzanaMuzyka = muzyka;
+	//	}
+	//	if( czyRandomCzas == true) 
+	//	{
+	//		LPSTR dlugoscMuzyki ;
+	//		int dlugoscMuzykiInt;
+	//		for (int i = 0; i < 5; i++)
+	//		{
+	//			tempTekst1 = "status sounds/" + muzyka + string(" length");
+	//			mciSendString((LPCSTR)tempTekst1.c_str(),dlugoscMuzyki,128,NULL);
+	//			dlugoscMuzykiInt = atoi(dlugoscMuzyki);
+	//			tempTekst1 = "play sounds/" + muzyka + string(" from ") + to_string(rand()%(dlugoscMuzykiInt/2 ));
+	//			mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
+	//		}
+	//	}
+	//	else
+	//	{
+	//		tempTekst1 = "play sounds/" + muzyka + string(" ");
+	//		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
+	//	}
+	//}
 	void odtworzMuzyke(string muzyka)
 	{
 		if (muzyka != ostatniaOdtwarzanaMuzyka) //odswiezanie muzyki :)
@@ -770,7 +799,6 @@ public:
 		tempTekst1 = "play sounds/" + muzyka + string(" ");
 		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
 	}
-
 	void poslijPociskDlugi(char jakiZnaczek, kolor jakiKolor)
 	{
 		for (int i = 1; i<13;i++)
@@ -1159,7 +1187,6 @@ public:
 	{
 		FlushConsoleInputBuffer(hInput);    
 		odtworzMuzyke("walka.mp3");
-		//mciSendString("play sounds/walka.mp3 ",NULL,1,NULL);
 		potwor();
 		ramkaAtaku(czyPotworZaatakowal);
 		maksymalneHpPotwora=hpPotwora;
@@ -1318,16 +1345,16 @@ public:
 		gotoxy(0,3);
 		cout<< "obrona: ";
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-		cout <<zliczDef() ;
+		cout <<ileWynosiObrona ;
 		zmienKolor(jasnoSzary);
 		gotoxy(70,3);
 		cout << "Dmg: ";
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
-		cout << postac.sila+zliczDmg()+zliczSile();
+		cout << ileWynosiAtak;
 		zmienKolor(jasnoSzary);
 		cout << "-";
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
-		cout  << 6*0.1*postac.sila + postac.sila+zliczDmg()+zliczSile();
+		cout  << 6*0.1*postac.sila + ileWynosiAtak;
 		zmienKolor(jasnoSzary);
 		gotoxy(0,5);
 	}
@@ -2192,10 +2219,13 @@ public:
 			if (wybor == 1)
 			{
 				postac.posiadanePrzedmioty[ktoryPrzedmiot]=0; 
+				ileWynosiObrona = zliczDef();
+				ileWynosiAtak = postac.sila+zliczDmg()+zliczSile();
+				pokaz();
 				postac.zloto = int(postac.zloto+wartoscPrzedmiotu/1.2);
 				odtworzDzwiek("goldu.wav|");
-
 				ramkaInformacji("Sprzedales " + nazwaitemu +string(" za ") + to_string(int(wartoscPrzedmiotu/1.2)) +string(" sztuk zlota"));
+
 			}
 			else if (wybor == 2)
 			{
@@ -2216,6 +2246,9 @@ public:
 					for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 					for (int i=120;i<140;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}}
 				postac.posiadanePrzedmioty[ktoryPrzedmiot]=2;
+				ileWynosiObrona = zliczDef();
+				ileWynosiAtak = postac.sila+zliczDmg()+zliczSile();
+				pokaz();
 			}
 			else
 				return;
@@ -2256,6 +2289,9 @@ public:
 							for (int i=100;i<120;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}
 							for (int i=120;i<140;i++){if (postac.posiadanePrzedmioty[i]==2) postac.posiadanePrzedmioty[i]=1;}}
 						postac.posiadanePrzedmioty[ktoryPrzedmiot]=2; 
+						ileWynosiObrona = zliczDef();
+						ileWynosiAtak = postac.sila+zliczDmg()+zliczSile();
+						pokaz();
 						odtworzDzwiek("cloth.wav|");
 					}
 				}
@@ -2354,7 +2390,10 @@ public:
 				tempTekst2 +=  string("Powrot...|");
 				ramkaWyboru("Co wybierasz?", tempTekst2);
 				if (wybor != tempInt)
+				{
 					wybory(wybor+typ);
+
+				}
 				else
 					break;
 			}
@@ -2592,7 +2631,7 @@ public:
 
 	void range() // kwintesencja zawzietosci ludzkiej: krzywa wieza ifow (jesli sie ja odpowiednio wytabuje to tak naprawde jest kolkiem)
 	{
-		for (int i = 0; i<41;i++)
+		for (int i = 0; i<40;i++)
 			for (int j = 0; j<81;j++)
 				r[j][i]=0;
 		if(x>2)r[x-3][y-6]=5;if(x>1)r[x-2][y-6]=5;if(x>0)r[x-1][y-6]=5;r[x][y-6]=5;r[x+1][y-6]=5;r[x+2][y-6]=5;r[x+3][y-6]=5;    
@@ -2785,9 +2824,9 @@ public:
 		}
 	}
 
-	void tura()
+	void tura() //TODO: po przesunieciu potwora w dol albo w prawo petle znowu napotykaja tego samego potwora, naprawic
 	{
-		for (int j = 0; j<41;j++){
+		for (int j = 0; j<40;j++){
 			for (int i = 0; i<81;i++){
 				if (sciana[i][j] == 2)
 					zmienPozycje(1,2,i,j);
@@ -3112,6 +3151,19 @@ public:
 	{
 		odtworzMuzyke("death.mp3");
 		ramkaInformacji("Twoja postac nie zyje. Przegrales");
+		ramkaWyboru("Czy chcesz wczytac ostatni zapis?","Tak|Nie|");
+		if (wybor == 1) 
+		{
+			zplik.open(sciezka,ios::in);
+			zplik>>nick >>postac.poziom >>postac.doswiadczenie >>postac.maksymalneDoswiadczenie  >>postac.hp >>postac.maxhp >>postac.mp >>postac.maxmp >>postac.sila >>postac.inteligencja >>postac.zrecznosc >>postac.budowa  >>postac.zloto >>postac.hppot >>postac.mppot >>postac.opoznienieTekstu>>autozapis;
+			for (int i=1;i<200;i++)
+				zplik>>postac.posiadanePrzedmioty[i];
+			for (int j=1;j<100;j++)
+				zplik>>postac.posiadaneCzary[j];
+			opusc = 0;
+			zplik.close();
+			menu();
+		}
 	}
 
 	void sprawdzAkcjeIUzyj(int numerAkcji)
@@ -3125,135 +3177,141 @@ public:
 		if (numerAkcji==8) usePotwor(3,false);
 		if (numerAkcji==9) usePotwor(4,false);
 	}
-
+	int ileWynosiObrona;
+	int ileWynosiAtak;
 	void labirynt()
 	{
 		system("cls");
 		reset();
 		postac.doswiadczenie=tempexp;
 		iloscpotworow=0;
+		iloscskrzynek=0;
 		int opozniaczTuryPotwora = 0;
 		for (int i=0;i<81;i++)
+		{
 			for (int j=0;j<40;j++)
 			{
 				if (sciana[i][j]==2) iloscpotworow++;
-				if (sciana[i][j]==3) iloscpotworow++;
-				if (sciana[i][j]==7) iloscskrzynek++;
+				else if (sciana[i][j]==3) iloscpotworow++;
+				else if (sciana[i][j]==6) iloscskrzynek++;
 			}
-			zdobyteZloto=0;
-			zdobyteDoswiadczenie=0;
-			zabitepotwory=0;
-			otwarteskrzynki=0;
-			rodzajPotwora=0;
-			wyszedlem =0;
-			while (wyszedlem==0)
+		}
+		zdobyteZloto=0;
+		zdobyteDoswiadczenie=0;
+		zabitepotwory=0;
+		otwarteskrzynki=0;
+		rodzajPotwora=0;
+		wyszedlem =0;
+		wygrana = 1;
+
+		while (wyszedlem==0)
+		{
+			odtworzMuzyke(muzykaPoziomu);
+			if (postac.hp<1) return;
+			if (wygrana ==1)
 			{
-				odtworzMuzyke(muzykaPoziomu);
-				if (postac.hp<1) return;
-				if (wygrana ==1)
-				{
-					reset();
-					wygrana =0;
-					FlushConsoleInputBuffer(hInput); 
-				}
-				if (GetAsyncKeyState(VK_LEFT))
-				{
-					wktora = 1;
-					if (sciana[x-1][y]==0)
-					{
-						odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
-						if (x>0)
-							x--;
-						reset();
-						gotoxy(x+1,y);
-						cout << " ";
-					}
-				}
-				if (GetAsyncKeyState(VK_RIGHT))
-				{
-					wktora = 2;
-					if (sciana[x+1][y]==0)
-					{
-						odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
-						x++;
-						reset();
-						gotoxy(x-1,y);
-						cout << " ";
-					}
-				}
-				if (GetAsyncKeyState(VK_UP))
-				{
-					wktora = 3;
-					if (sciana[x][y-1]==0)
-					{
-						odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
-						if (y>0)
-							y--;
-						reset();
-						gotoxy(x,y+1);
-						cout << " ";
-					}
-				}
-				if (GetAsyncKeyState(VK_DOWN))
-				{
-					wktora = 4;
-					if (sciana[x][y+1]==0)
-					{ 
-						odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
-						y++;
-						reset();
-						gotoxy(x,y-1);
-						cout << " ";
-					}
-				}
-				if (GetAsyncKeyState('X'))
-				{
-					if (wktora==1)
-						sprawdzAkcjeIUzyj(sciana[x-1][y]);
-					else if (wktora==2)
-						sprawdzAkcjeIUzyj(sciana[x+1][y]);
-					else if (wktora==3)
-						sprawdzAkcjeIUzyj(sciana[x][y-1]);
-					else if (wktora==4)
-						sprawdzAkcjeIUzyj(sciana[x][y+1]);
-				}
-				if (GetAsyncKeyState('Z'))
-				{
-					mikstury();
-					system("CLS");
-					reset();
-				}
-				if (GetAsyncKeyState(VK_F1))
-				{
-					ramkaInformacji(string("Klawisze:|X - akcja|Z - sakiewka|Strzalki - poruszanie sie| |Legenda:|") + char(skrzynka) + string(" - Skrzynia|") + char(white) + " - Potwor|" + char(drzwi) + " - Drzwi|");
-					system("cls");
-					reset();
-				}
-				gotoxy(x,y);
-				if (wktora==1) cout << lewo;
-				if (wktora==2) cout << prawo;
-				if (wktora==3) cout << gora;
-				if (wktora==4) cout << dol;
-				if (postac.hp<1) return;
-				pokaz();
-				zmienKolor(bialy);
-				gotoxy(0,40);
-				cout <<"F1 - Pomoc";
-				gotoxy(64,40);
-				cout <<  skrzynka << ": "<< otwarteskrzynki << "\\" << iloscskrzynek << "   " << white << ": " <<  zabitepotwory << "\\" << iloscpotworow;
-				zmienKolor(jasnoSzary);
-				Sleep(50);
-				if (opozniaczTuryPotwora == 4) //spowolnienie chodzenia potworow
-				{
-					opozniaczTuryPotwora = 0;
-					tura();
-				}
-				opozniaczTuryPotwora++;
+				reset();
+				wygrana =0;
+				FlushConsoleInputBuffer(hInput); 
 			}
-			rodzajPotwora=0;
-			wygrana = 1;
-			if ((autozapis==1)&&(postac.hp>1)) save();
-			return;
+			if (GetAsyncKeyState(VK_LEFT))
+			{
+				wktora = 1;
+				if (sciana[x-1][y]==0)
+				{
+					odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
+					if (x>0)
+						x--;
+					reset();
+					gotoxy(x+1,y);
+					cout << " ";
+				}
+			}
+			if (GetAsyncKeyState(VK_RIGHT))
+			{
+				wktora = 2;
+				if (sciana[x+1][y]==0)
+				{
+					odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
+					x++;
+					reset();
+					gotoxy(x-1,y);
+					cout << " ";
+				}
+			}
+			if (GetAsyncKeyState(VK_UP))
+			{
+				wktora = 3;
+				if (sciana[x][y-1]==0)
+				{
+					odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
+					if (y>0)
+						y--;
+					reset();
+					gotoxy(x,y+1);
+					cout << " ";
+				}
+			}
+			if (GetAsyncKeyState(VK_DOWN))
+			{
+				wktora = 4;
+				if (sciana[x][y+1]==0)
+				{ 
+					odtworzDzwiek("krok1.wav|krok2.wav|krok3.wav|krok4.wav|");
+					y++;
+					reset();
+					gotoxy(x,y-1);
+					cout << " ";
+				}
+			}
+			if (GetAsyncKeyState('X'))
+			{
+				if (wktora==1)
+					sprawdzAkcjeIUzyj(sciana[x-1][y]);
+				else if (wktora==2)
+					sprawdzAkcjeIUzyj(sciana[x+1][y]);
+				else if (wktora==3)
+					sprawdzAkcjeIUzyj(sciana[x][y-1]);
+				else if (wktora==4)
+					sprawdzAkcjeIUzyj(sciana[x][y+1]);
+			}
+			if (GetAsyncKeyState('Z'))
+			{
+				mikstury();
+				system("CLS");
+				reset();
+			}
+			if (GetAsyncKeyState(VK_F1))
+			{
+				ramkaInformacji(string("Klawisze:|X - akcja|Z - sakiewka|Strzalki - poruszanie sie| |Legenda:|") + char(skrzynka) + string(" - Skrzynia|") + char(white) + " - Potwor|" + char(drzwi) + " - Drzwi|");
+				system("cls");
+				reset();
+			}
+			gotoxy(x,y);
+			if (wktora==1) cout << lewo;
+			if (wktora==2) cout << prawo;
+			if (wktora==3) cout << gora;
+			if (wktora==4) cout << dol;
+			if (postac.hp<1) return;
+			pokaz();
+			zmienKolor(bialy);
+			gotoxy(0,40);
+			cout <<"F1 - Pomoc";
+			gotoxy(64,40);
+			cout <<  skrzynka << ": "<< otwarteskrzynki << "\\" << iloscskrzynek << "   " << white << ": " <<  zabitepotwory << "\\" << iloscpotworow;
+			zmienKolor(jasnoSzary);
+			Sleep(50);
+			if (opozniaczTuryPotwora == 4) //spowolnienie chodzenia potworow
+			{
+				opozniaczTuryPotwora = 0;
+				tura();
+			}
+			opozniaczTuryPotwora++;
+		}
+		rodzajPotwora=0;
+		wygrana = 1;
+		if ((autozapis==1)&&(postac.hp>1)) save();
+		return;
 	}
 	Gra();
 };
