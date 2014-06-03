@@ -230,6 +230,7 @@ public:
 		for (int i = 0; i < 30; i++)
 			tablicaTekstu[i] = "puste";
 	}
+
 	void inicjalizujCzcionke()
 	{
 		lewo = 17;
@@ -400,7 +401,6 @@ public:
 			j++;
 		}
 		ramka(j-7);
-
 		for (int g = 0; g < 30; g++){
 			if (tablicaTekstu[g]== "puste")
 				break;
@@ -788,6 +788,7 @@ public:
 	//		mciSendString((LPCSTR)tempTekst1.c_str(),NULL,1,NULL);
 	//	}
 	//}
+
 	void odtworzMuzyke(string muzyka)
 	{
 		if (muzyka != ostatniaOdtwarzanaMuzyka) //odswiezanie muzyki :)
@@ -1333,7 +1334,6 @@ public:
 
 	void pokaz()
 	{
-
 		crit=int(sqrt(postac.zrecznosc+zliczZrecznosc())*4);
 		gotoxy(0,0);zmienKolor(bialy);cout << doswiadczenie;zmienKolor(jasnoSzary);cout << " - ";zmienKolor(bialy); cout << postac.doswiadczenie<<"/"<<postac.maksymalneDoswiadczenie;zmienKolor(jasnoSzary);cout << "(";zmienKolor(bialy);cout << postac.poziom;zmienKolor(jasnoSzary);cout<<")";
 		gotoxy(0,1);zmienKolor(jasnoCzerwony);cout << zycie;zmienKolor(jasnoSzary);cout << " - " ;zmienKolor(jasnoCzerwony);cout << postac.hp;zmienKolor(jasnoSzary);cout << "/";zmienKolor(jasnoCzerwony);cout <<postac.maxhp;
@@ -1363,7 +1363,6 @@ public:
 	{
 		if (postac.doswiadczenie > postac.maksymalneDoswiadczenie-1)
 		{
-
 			FlushConsoleInputBuffer(hInput); 
 			odtworzDzwiek("levelUP.wav|");
 			ramkaInformacji("GRATULACJE! Awansowales na poziom: " + to_string(postac.poziom+1) + " HP: " + to_string(postac.maxhp) + string("->") + to_string(int(postac.maxhp+postac.budowa*1.2)) + string("   MP: " )+ to_string(postac.maxmp) + string("->") + to_string(int(postac.maxmp*1.4)));
@@ -1460,7 +1459,6 @@ public:
 				return;
 			}
 		}
-
 	}
 
 	void karczma()
@@ -1523,7 +1521,6 @@ public:
 		} 
 		else if(wybor==2)
 			kosci();
-
 	}
 
 	void kosci()
@@ -1575,6 +1572,10 @@ public:
 				Sleep(250);
 				while(rundy>0)
 				{
+					for (int i = 0; i < 5; i++)
+					{
+						tablicaKolejegoLosowania[i]=0;
+					}
 					system ("cls");
 					pokaz();
 					gotoxy(32,6);
@@ -1708,55 +1709,54 @@ public:
 						punktyKomputera++;
 					rundy--;
 					Sleep(2000);
-					Sleep(1000);
-					ramkaWyboru("Co chcialbys teraz zrobic","Zagrac jeszcze raz!|Powrot...|");
-					if(wybor==1)
-					{
-						system("cls");
-						pokaz();
-						kosci();
-					}
-					else
-						return;
-					if(rundy==0)
-					{
-						gotoxy(10,19);
-						cout<<"                 ";
-						gotoxy(10,19);
-						cout <<punktyGracza;
-						gotoxy(72,19);
-						cout<<"                 ";
-						gotoxy(72,19);
-						cout <<punktyKomputera;
-					}
-
-					if(punktyGracza>punktyKomputera)
-					{
-						ramka();
-						gotoxy(36,16);
-						cout << "Gratulacje";
-						gotoxy(32,18);
-						cout <<"Wygrales " << stawka*2 << " zlota!";
-						postac.zloto+=stawka;
-					}
-					else if(punktyGracza<punktyKomputera)
-					{
-						ramka();
-						gotoxy(36,16);
-						cout << "Niestety";
-						gotoxy(30,18);
-						cout <<"Przegrales " << stawka << " sztuk zlota!";
-						postac.zloto-=stawka;
-					}
-					else
-					{
-						ramka();
-						gotoxy(36,16);
-						cout << "Remis!";
-						gotoxy(32,18);
-						cout << "Twoje zloto wraca do ciebie.";
-					}
 				}
+				if(rundy==0)
+				{
+					gotoxy(10,19);
+					cout<<"                 ";
+					gotoxy(10,19);
+					cout <<punktyGracza;
+					gotoxy(72,19);
+					cout<<"                 ";
+					gotoxy(72,19);
+					cout <<punktyKomputera;
+				}
+				if(punktyGracza>punktyKomputera)
+				{
+					ramka();
+					gotoxy(36,16);
+					cout << "Gratulacje";
+					gotoxy(32,18);
+					cout <<"Wygrales " << stawka*2 << " zlota!";
+					postac.zloto+=stawka;
+				}
+				else if(punktyGracza<punktyKomputera)
+				{
+					ramka();
+					gotoxy(36,16);
+					cout << "Niestety";
+					gotoxy(30,18);
+					cout <<"Przegrales " << stawka << " sztuk zlota!";
+					postac.zloto-=stawka;
+				}
+				else
+				{
+					ramka();
+					gotoxy(36,16);
+					cout << "Remis!";
+					gotoxy(32,18);
+					cout << "Twoje zloto wraca do ciebie.";
+				}
+				Sleep(1000);
+				ramkaWyboru("Co chcialbys teraz zrobic","Zagrac jeszcze raz!|Powrot...|");
+				if(wybor==1)
+				{
+					system("cls");
+					pokaz();
+					kosci();
+				}
+				else
+					return;
 			}
 		}
 		else if(wybor==2)
@@ -1994,7 +1994,6 @@ public:
 	}   
 
 	string tablicaTekstu[30];
-
 	unsigned int ileTekstu;
 
 	//Helm od 1
@@ -2095,7 +2094,6 @@ public:
 			turaSpowolnieniaPotwora = 3;
 			poslijPocisk(174,jasnoZielony);
 			odtworzDzwiek(dzwiekAtaku + "|");
-
 		}
 		odswiezEkranWalki();
 		timerGracza = 0;
@@ -2392,7 +2390,6 @@ public:
 				if (wybor != tempInt)
 				{
 					wybory(wybor+typ);
-
 				}
 				else
 					break;
@@ -2400,7 +2397,6 @@ public:
 			system("cls");
 			pokaz();
 		}
-
 	}
 
 	void mag()
@@ -2446,11 +2442,7 @@ public:
 				pokaz();
 			}
 		}
-
 	}
-
-
-
 
 	void zmienKolor(kolor jakiKolor, kolor jakieTlo = czarny)
 	{
@@ -2648,7 +2640,6 @@ public:
 		if(x>3)r[x-4][y+5]=5;if(x>2)r[x-3][y+5]=1;if(x>1)r[x-2][y+5]=1;if(x>0)r[x-1][y+5]=1;r[x][y+5]=1;r[x+1][y+5]=1;r[x+2][y+5]=1;r[x+3][y+5]=1;r[x+4][y+5]=5;
 		if(x>2)r[x-3][y+6]=5;if(x>1)r[x-2][y+6]=5;if(x>0)r[x-1][y+6]=5;r[x][y+6]=5;r[x+1][y+6]=5;r[x+2][y+6]=5;r[x+3][y+6]=5;
 	}
-
 
 	void wczytnick(int ktoryTekst)
 	{
@@ -2917,7 +2908,6 @@ public:
 					b=0;
 				}
 			}
-
 			if ((GetAsyncKeyState('Q')& 0x8000) != 0){sciana[x][y] = 0;}
 			if ((GetAsyncKeyState('1')& 0x8000) != 0){sciana[x][y] = 1;}
 			if ((GetAsyncKeyState('2')& 0x8000) != 0){sciana[x][y] = 2;}
@@ -3203,7 +3193,6 @@ public:
 		rodzajPotwora=0;
 		wyszedlem =0;
 		wygrana = 1;
-
 		while (wyszedlem==0)
 		{
 			odtworzMuzyke(muzykaPoziomu);
@@ -3336,7 +3325,6 @@ Gra::Gra()
 			menu();
 	}
 }
-
 
 int main()
 {
