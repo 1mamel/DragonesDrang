@@ -114,6 +114,8 @@ public:
 	char sciezka[100];
 	int r[81][40];
 	int sciana[81][40];
+	int wygladCzaru[20][81][40];
+	int kolorCzaru[20][81][40];
 	int trudnoscPoziomu;
 	int otwarteskrzynki;
 	int iloscpotworow;
@@ -2448,6 +2450,10 @@ public:
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), jakiKolor + 16*jakieTlo);
 	}
+	void resetujKolor()
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+	}
 
 	/*
 	int klasa(int id)
@@ -2504,7 +2510,7 @@ public:
 	}
 
 	string muzykaPoziomu;
-
+	int iloscKlatek,wartoscSleepu;
 	void level(int ktoryPoziom)
 	{
 		ifstream wczytajpoziom;
@@ -2564,6 +2570,23 @@ public:
 		wygrana = 1;
 		system("cls");
 	};
+
+	void resetEdytoraCzarow()
+	{
+		for (int j=0;j<81;j++)
+		{
+			for (int k=0;k<40;k++)
+			{   
+				gotoxy(j,k);
+				zmienKolor(kolor(kolorCzaru[ktoraKlatka][j][k]));
+				cout << char(wygladCzaru[ktoraKlatka][j][k]);
+				gotoxy(j,k);
+				if (wygladCzaru[ktoraKlatka][j][k] == 0) cout << " ";
+			}
+		}
+		gotoxy(0,0);
+		cout << ktoraKlatka;
+	}
 
 	void resetEdytora()
 	{
@@ -2859,6 +2882,60 @@ public:
 		else if (sciana[x][y]==9){zmienKolor(zolty);cout << black;zmienKolor(jasnoSzary);}
 	}
 
+	void zapiszCzar()
+	{
+		ofstream plik;  
+		tempTekst1 = "czary/" + nazwaCzaru + string(".txt");
+		plik.open(tempTekst1,ios::out);
+		plik << iloscKlatek <<endl;
+		plik << wartoscSleepu<<endl;
+		for (int i = 0; i < iloscKlatek; i++)
+		{
+			for (int j=0;j<81;j++)
+			{
+				for (int k=0;k<40;k++)
+				{
+					plik <<wygladCzaru[i][j][k]<<endl;
+					plik <<kolorCzaru[i][j][k]<<endl;
+				}
+			}
+		}
+		plik.close();
+		ramkaInformacji("Pomyslnie zapisano czar");
+	}
+
+	void wczytajCzar()
+	{
+		ifstream plik;
+		iloscKlatek = 1;
+		wartoscSleepu = 1;
+		tempTekst1 = "czary/" + nazwaCzaru + string(".txt");
+		plik.open(tempTekst1,ios::in);
+		plik >> iloscKlatek;
+		plik >> wartoscSleepu;
+		for (int i = 0; i < iloscKlatek; i++)
+		{
+			for (int j=0;j<81;j++)
+			{
+				for (int k=0;k<40;k++)
+				{
+					plik >>wygladCzaru[i][j][k];
+					plik >>kolorCzaru[i][j][k];
+				}
+			}
+		}
+		plik.close();
+	}
+
+	int ktoraKlatka;
+
+	void rysujPoleCzaru()
+	{
+		gotoxy(x,y);
+		zmienKolor(kolor(kolorCzaru[ktoraKlatka][x][y]));
+		cout << char(wygladCzaru[ktoraKlatka][x][y]);
+	}
+
 	void edytor ()
 	{
 		int b=0;
@@ -3010,6 +3087,181 @@ public:
 		}
 	}
 
+	int wybranyWyglad;
+	int wybranyKolor;
+
+	void edytorCzarow()
+	{
+		iloscKlatek = 5;
+		ktoraKlatka = 0;
+		for (int i = 0; i < iloscKlatek; i++)
+		{
+			for (int j=0;j<81;j++)
+			{
+				for (int k=0;k<40;k++)
+				{
+					wygladCzaru[i][j][k] = 0;
+					kolorCzaru[i][j][k] = 0;
+				}
+			}
+		}
+		int b=0;
+		x = 40;
+		y = 20;
+		wybranyWyglad = 5;
+		wybranyKolor = 7;
+		nazwaCzaru = "dupa";
+		wartoscSleepu = 50;
+		//zapiszCzar();
+		wczytajCzar();
+		system("cls");
+		resetEdytoraCzarow();
+		while(true){
+			gotoxy(47,10);cout << white;
+			gotoxy(33,10);cout << prawo;
+			if ((GetAsyncKeyState(VK_LSHIFT)& 0x8000) != 0)
+				Sleep(100);
+			else
+				Sleep(300);
+			if ((GetAsyncKeyState(VK_LEFT)& 0x8000) != 0)
+			{
+				if (x>0)
+				{
+					rysujPoleCzaru();
+					x--;
+					b=0;
+				}
+			}
+			if ((GetAsyncKeyState(VK_RIGHT)& 0x8000) != 0)
+			{
+				if (x==80){}
+				else{
+					rysujPoleCzaru();
+					x++;
+					b=0;
+				}
+			}
+			if ((GetAsyncKeyState(VK_UP)& 0x8000) != 0)
+			{
+				if (y>0)
+				{
+					rysujPoleCzaru();
+					y--;
+					b=0;
+				}
+			}
+			if ((GetAsyncKeyState(VK_DOWN)& 0x8000) != 0)
+			{
+				if (y==39){}
+				else
+				{
+					rysujPoleCzaru();
+					y++; 
+					b=0;
+				}
+			}
+			if ((GetAsyncKeyState(VK_ESCAPE)& 0x8000) != 0){                                         
+				ramkaWyboru("Czy napewno chcesz wyjsc?","Tak|Nie|");
+				if (wybor ==1){
+					ramkaWyboru("Czy chcesz zapisac przed wyjsciem?","Tak|Nie|");
+					if (wybor ==1){
+						zapiszMape();
+						return;
+					}
+					else 
+					{
+						system("cls");
+						return;
+					}
+				}
+				else
+				{
+					system("cls");
+					resetEdytoraCzarow();
+				}
+			}
+			if ((GetAsyncKeyState('Q')& 0x8000) != 0)
+			{
+				wygladCzaru[ktoraKlatka][x][y] = wybranyWyglad;
+				kolorCzaru[ktoraKlatka][x][y] = wybranyKolor;
+			}
+			if ((GetAsyncKeyState('W')& 0x8000) != 0)
+			{
+				FlushConsoleInputBuffer(hInput); 
+				int przycisk = 1;
+				while(przycisk!=13){
+					resetujKolor();
+					ramka();
+					gotoxy(50,16);
+					zmienKolor(kolor(wybranyKolor));
+					cout << char(wybranyWyglad);
+					przycisk=_getch();
+					if (przycisk!=13)
+						przycisk=_getch();
+					if (przycisk==72) 
+						wybranyKolor++;
+					if (przycisk==80) 
+						wybranyKolor--;
+					if (przycisk==75) 
+						wybranyWyglad--;
+					if (przycisk==77) 
+						wybranyWyglad++;
+				}
+				resetEdytoraCzarow();
+			}
+			if ((GetAsyncKeyState('R')& 0x8000) != 0)
+			{
+				FlushConsoleInputBuffer(hInput); 
+				int przycisk = 1;
+				while(przycisk!=13){
+					resetujKolor();
+					ramka();
+					gotoxy(50,16);
+					cout << ktoraKlatka;
+					przycisk=_getch();
+					if (przycisk!=13)
+						przycisk=_getch();
+					if (przycisk==75) 
+					{
+						ktoraKlatka--;
+						if (ktoraKlatka == -1) ktoraKlatka = iloscKlatek-1;
+
+					}
+					if (przycisk==77) 
+					{
+						ktoraKlatka++;
+						if (ktoraKlatka == iloscKlatek) ktoraKlatka = 0;
+					}
+				}
+				resetEdytoraCzarow();
+			}
+			if ((GetAsyncKeyState('S')& 0x8000) != 0){
+				ramkaWyboru("Czy napewno chcesz zapisac?","Tak|Nie|");
+				if (wybor ==1)
+					zapiszCzar();
+				system("cls");
+				resetEdytoraCzarow();
+			}
+			if (b==1)
+			{
+				gotoxy(x,y);
+				zmienKolor(kolor(0));
+				cout << " ";
+				resetujKolor();
+			}
+			if (b==0)
+			{
+				gotoxy(x,y);
+				zmienKolor(kolor(wybranyKolor));
+				cout << char(wybranyWyglad);
+				resetujKolor();
+
+			}
+			b++;
+			if (b==2)b=0;
+		}
+	}
+
 	void glowne()
 	{
 		while(true)
@@ -3039,7 +3291,7 @@ public:
 				cout << "ver. beta 0.5";
 				gotoxy(10,20);
 				cout << "Witaj w menu glownym!";
-				menuWyboru(18,22,"Nowa gra|Wczytaj gre|Edytor mapy|Tworcy|Wyjscie|");
+				menuWyboru(18,22,"Nowa gra|Wczytaj gre|Edytor mapy|Edytor czarow|Tworcy|Wyjscie|");
 				if (wybor == 1)
 				{
 					while (p==0){
@@ -3104,6 +3356,10 @@ public:
 					edytor();
 				}
 				else if (wybor == 4)
+				{
+					edytorCzarow();
+				}
+				else if (wybor == 5)
 					ramkaInformacji("Kamil Pilch|Mateusz Czendlik|Jozef Tomaszko|ATH Bielsko-Biala 2014");
 				else 
 					return;
