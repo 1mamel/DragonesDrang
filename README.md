@@ -1,9 +1,9 @@
 DragonesDrang
 =============
+Projekt zaczęty i skończony w 1 gimnazjum, wykorzystany raz na studiach.
+
 
 >By przygotować projekt:
->
->W nowym projekcie: 
 >
 >alt+f7Zmienić:
 >
